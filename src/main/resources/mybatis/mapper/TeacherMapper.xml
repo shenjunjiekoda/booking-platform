@@ -149,7 +149,13 @@
       <include refid="Example_Where_Clause" />
     </if>
   </select>
-  <update id="updateByExampleSelective" parameterType="map">
+    <select id="selectByTeacherId" resultMap="BaseResultMap">
+      select
+      <include refid="Base_Column_List" />
+      from teacher
+      where teacher_id = #{teacherId,jdbcType=VARCHAR}
+    </select>
+    <update id="updateByExampleSelective" parameterType="map">
     update teacher
     <set>
       <if test="record.id != null">

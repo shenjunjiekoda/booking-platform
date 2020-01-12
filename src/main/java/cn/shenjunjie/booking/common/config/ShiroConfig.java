@@ -21,7 +21,7 @@ import java.util.Map;
 @Configuration
 public class ShiroConfig {
 
-    @Bean
+    @Bean("shiroFilter")
     public ShiroFilterFactoryBean getShiroFilterFactoryBean(@Qualifier("defaultWebSecurityManager") DefaultWebSecurityManager defaultWebSecurityManager) {
         ShiroFilterFactoryBean bean = new ShiroFilterFactoryBean();
         bean.setSecurityManager(defaultWebSecurityManager);
@@ -33,8 +33,12 @@ public class ShiroConfig {
             role: 有某个角色的权限
          */
         Map<String, String> filterMap = Maps.newLinkedHashMap();
-//        filterMap.put("/user/add","perms[user:add]");
         filterMap.put("/login", "anon");
+        filterMap.put("/druid/**", "anon");
+        filterMap.put("/swagger/**", "anon");
+        filterMap.put("/v2/api-docs", "anon");
+        filterMap.put("/swagger-ui.html", "anon");
+        filterMap.put("/swagger-resources/**", "anon");
         filterMap.put("/**", "authc");
         bean.setFilterChainDefinitionMap(filterMap);
         bean.setLoginUrl("/tologin");

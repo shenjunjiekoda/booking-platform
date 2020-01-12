@@ -9,19 +9,6 @@ group = 'cn.shenjunjie'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '1.8'
 
-//buildscript {
-//    repositories {
-//        maven {
-//            url "https://plugins.gradle.org/m2/"
-//        }
-//    }
-//    dependencies {
-//        classpath "gradle.plugin.com.arenagod.gradle:mybatis-generator-plugin:1.4"
-//    }
-//}
-//
-//apply plugin: "com.arenagod.gradle.MybatisGenerator"
-
 configurations {
     compileOnly {
         extendsFrom annotationProcessor
@@ -42,15 +29,19 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
-    compile("org.springframework.boot:spring-boot-starter:2.2.2.RELEASE")
-    compile("mysql:mysql-connector-java:5.1.48")
-    compile("org.apache.shiro:shiro-spring-boot-starter:1.4.2")
-    compile("org.mybatis.spring.boot:mybatis-spring-boot-starter:2.1.1")
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter', version: '2.2.2.RELEASE'
+    compile group: 'mysql', name: 'mysql-connector-java', version: '8.0.17'
+    compile group: 'org.apache.shiro', name: 'shiro-spring-boot-starter', version: '1.4.2'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-actuator', version: '2.2.2.RELEASE'
+    compile group: 'org.mybatis.spring.boot', name: 'mybatis-spring-boot-starter', version: '2.1.1'
     compile group: 'org.mybatis.generator', name: 'mybatis-generator-core', version: '1.4.0'
     compile group: 'com.alibaba', name: 'druid-spring-boot-starter', version: '1.1.21'
     compile group: 'com.github.pagehelper', name: 'pagehelper-spring-boot-starter', version: '1.2.13'
     compile group: 'com.google.guava', name: 'guava', version: '28.2-jre'
     compile group: 'com.alibaba', name: 'fastjson', version: '1.2.62'
+//    compile group: 'com.spring4all', name: 'swagger-spring-boot-starter', version: '1.9.1.RELEASE'
+    compile group: 'io.springfox', name: 'springfox-swagger2', version: '2.9.2'
+    compile group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.9.2'
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }

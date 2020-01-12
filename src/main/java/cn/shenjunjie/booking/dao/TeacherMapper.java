@@ -23,6 +23,8 @@ public interface TeacherMapper {
 
     Teacher selectByPrimaryKey(Long id);
 
+    Teacher selectByTeacherId(@Param("teacherId") String teacherId);
+
     int updateByExampleSelective(@Param("record") Teacher record, @Param("example") TeacherExample example);
 
     int updateByExample(@Param("record") Teacher record, @Param("example") TeacherExample example);

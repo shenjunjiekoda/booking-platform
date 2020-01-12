@@ -1,6 +1,7 @@
 package cn.shenjunjie.booking.repo;
 
 import cn.shenjunjie.booking.dao.TeacherMapper;
+import cn.shenjunjie.booking.entity.Teacher;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.Resource;
@@ -15,5 +16,9 @@ public class TeacherRepo {
 
     @Resource
     private TeacherMapper teacherMapper;
+
+    public Teacher selectByTeacherId(String teacherId) {
+        return teacherMapper.selectByTeacherId(teacherId);
+    }
 
 }

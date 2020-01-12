@@ -1,5 +1,6 @@
 package cn.shenjunjie.booking.common.config;
 
+import cn.shenjunjie.booking.entity.Teacher;
 import cn.shenjunjie.booking.repo.TeacherRepo;
 import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
@@ -48,15 +49,11 @@ public class UserRealm extends AuthorizingRealm {
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
         log.info("执行了=>认证doGetAuthenticationInfo token:{}", JSON.toJSONString(token));
-        String username = "admin";
-        String password = "123456";
-
         UsernamePasswordToken userToken = (UsernamePasswordToken) token;
-
-        if (!userToken.getUsername().equals(username)) {
+        Teacher teacher = teacherRepo.selectByTeacherId(userToken.getUsername());
+        if (!userToken.getUsername().equals(teacher.getTeacherId())) {
             return null;
         }
-        //密码认证，shiro实现
-        return new SimpleAuthenticationInfo("", password, "");
+        return new SimpleAuthenticationInfo(teacher, teacher.getPassword(), "");
     }
 }
