@@ -2,16 +2,36 @@ plugins {
     id 'org.springframework.boot' version '2.2.2.RELEASE'
     id 'io.spring.dependency-management' version '1.0.8.RELEASE'
     id 'java'
+    id "com.arenagod.gradle.MybatisGenerator" version "1.4"
 }
 
 group = 'cn.shenjunjie'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '1.8'
 
+//buildscript {
+//    repositories {
+//        maven {
+//            url "https://plugins.gradle.org/m2/"
+//        }
+//    }
+//    dependencies {
+//        classpath "gradle.plugin.com.arenagod.gradle:mybatis-generator-plugin:1.4"
+//    }
+//}
+//
+//apply plugin: "com.arenagod.gradle.MybatisGenerator"
+
 configurations {
     compileOnly {
         extendsFrom annotationProcessor
     }
+    mybatisGenerator
+}
+
+mybatisGenerator {
+    verbose = true
+    configFile = 'C:\\Users\\JunjieShen\\Desktop\\tips\\myproject\\booking-platform\\src\\main\\resources\\mybatis\\generator.xml'
 }
 
 repositories {
@@ -31,7 +51,6 @@ dependencies {
     compile group: 'com.github.pagehelper', name: 'pagehelper-spring-boot-starter', version: '1.2.13'
     compile group: 'com.google.guava', name: 'guava', version: '28.2-jre'
     compile group: 'com.alibaba', name: 'fastjson', version: '1.2.62'
-
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }

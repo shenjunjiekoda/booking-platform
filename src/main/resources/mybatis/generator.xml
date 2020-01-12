@@ -13,7 +13,7 @@
 		</commentGenerator>
 		<!--数据库链接地址账号密码 -->
 		<jdbcConnection driverClass="com.mysql.jdbc.Driver"
-			connectionURL="jdbc:mysql://127.0.0.1:3306/booking-platform" userId="root"
+			connectionURL="jdbc:mysql://127.0.0.1:3306/booking_platform?useSSL=false" userId="root"
 			password="123456">
 			<!--设置可以获取tables remarks信息 -->
 			<property name="useInformationSchema" value="true" />
@@ -26,47 +26,47 @@
 
 		<!--生成Model类存放位置 -->
 		<javaModelGenerator
-			targetPackage="cn.shenjunjie.booking.entity" targetProject="">
+			targetPackage="cn.shenjunjie.booking.entity" targetProject="C:\Users\JunjieShen\Desktop\tips\myproject\booking-platform\src\main\java">
 			<property name="enableSubPackages" value="true" />
 			<property name="trimStrings" value="true" />
 		</javaModelGenerator>
 		<!--生成映射文件存放位置 -->
 		<sqlMapGenerator
-			targetPackage="src.main.resources.mybatis.mapper" targetProject="">
+			targetPackage="src.main.resources.mybatis.mapper" targetProject="C:\Users\JunjieShen\Desktop\tips\myproject\booking-platform\">
 			<property name="enableSubPackages" value="true" />
 		</sqlMapGenerator>
 		<!--生成Dao类存放位置 -->
 		<javaClientGenerator type="XMLMAPPER"
-			targetPackage="cn.shenjunjie.booking.dao" targetProject="">
+			targetPackage="cn.shenjunjie.booking.dao" targetProject="C:\Users\JunjieShen\Desktop\tips\myproject\booking-platform\src\main\java">
 			<property name="enableSubPackages" value="true" />
 		</javaClientGenerator>
 
 		<!--生成对应表及类名 -->
-<!--		<table tableName="deployment" domainObjectName="Deployment"-->
+<!--		<table tableName="book" domainObjectName="Book"-->
 <!--			enableUpdateByExample="true" enableSelectByExample="true"-->
 <!--			selectByExampleQueryId="true" enableUpdateByPrimaryKey="true">-->
 <!--		</table>-->
-		<table tableName="deployment_service_info" domainObjectName="DeploymentServiceInfo"
-			enableUpdateByExample="true" enableSelectByExample="true"
-			selectByExampleQueryId="true" enableUpdateByPrimaryKey="true">
+		<table tableName="institute" domainObjectName="Institute"
+			   enableUpdateByExample="true" enableSelectByExample="true"
+			   selectByExampleQueryId="true" enableUpdateByPrimaryKey="true">
 		</table>
-<!--		<table tableName="service_info" domainObjectName="ServiceInfo"-->
+<!--		<table tableName="class" domainObjectName="Class"-->
 <!--			enableUpdateByExample="true" enableSelectByExample="true"-->
 <!--			selectByExampleQueryId="true" enableUpdateByPrimaryKey="true">-->
 <!--		</table>-->
-<!--		<table tableName="user" domainObjectName="User"-->
+<!--		<table tableName="course" domainObjectName="Course"-->
 <!--			enableUpdateByExample="true" enableSelectByExample="true"-->
 <!--			selectByExampleQueryId="true" enableUpdateByPrimaryKey="true">-->
 <!--		</table>-->
-<!--		<table tableName="role" domainObjectName="Role"-->
+<!--		<table tableName="plan" domainObjectName="Plan"-->
 <!--			enableUpdateByExample="true" enableSelectByExample="true"-->
 <!--			selectByExampleQueryId="true" enableUpdateByPrimaryKey="true">-->
 <!--		</table>-->
-<!--		<table tableName="role_menu" domainObjectName="RoleMenu"-->
-<!--			   enableUpdateByExample="true" enableSelectByExample="true"-->
-<!--			   selectByExampleQueryId="true" enableUpdateByPrimaryKey="true">-->
+<!--		<table tableName="plan_book" domainObjectName="PlanBook"-->
+<!--			enableUpdateByExample="true" enableSelectByExample="true"-->
+<!--			selectByExampleQueryId="true" enableUpdateByPrimaryKey="true">-->
 <!--		</table>-->
-<!--		<table tableName="menu" domainObjectName="Menu"-->
+<!--		<table tableName="teacher" domainObjectName="Teacher"-->
 <!--			   enableUpdateByExample="true" enableSelectByExample="true"-->
 <!--			   selectByExampleQueryId="true" enableUpdateByPrimaryKey="true">-->
 <!--		</table>-->

@@ -33,13 +33,11 @@ public class ShiroConfig {
             role: 有某个角色的权限
          */
         Map<String, String> filterMap = Maps.newLinkedHashMap();
-        //todo 给接口加上perms[页面名:按钮名]
-        filterMap.put("/deployment/add","perms[user:add]");
-        filterMap.put("/login","anon");
-        filterMap.put("/**","authc");
+//        filterMap.put("/user/add","perms[user:add]");
+        filterMap.put("/login", "anon");
+        filterMap.put("/**", "authc");
         bean.setFilterChainDefinitionMap(filterMap);
         bean.setLoginUrl("/tologin");
-
         return bean;
     }
 

@@ -1,6 +1,7 @@
 server:
   port: 9000
-  context-path: /booking
+  servlet:
+    context-path: /booking
 
 #shiro:
 #  enabled: false
