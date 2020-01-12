@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+  PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+  "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+<generatorConfiguration>
+	<!--数据库驱动 -->
+	<classPathEntry
+		location="C:\Users\JunjieShen\Desktop\tips\jar\mysql-connector-java-5.1.47.jar" />
+	<context id="DB2Tables" targetRuntime="MyBatis3">
+		<commentGenerator>
+			<property name="suppressDate" value="true" />
+			<property name="suppressAllComments" value="true" />
+		</commentGenerator>
+		<!--数据库链接地址账号密码 -->
+		<jdbcConnection driverClass="com.mysql.jdbc.Driver"
+			connectionURL="jdbc:mysql://127.0.0.1:3306/booking-platform" userId="root"
+			password="123456">
+			<!--设置可以获取tables remarks信息 -->
+			<property name="useInformationSchema" value="true" />
+			<!--设置可以获取remarks信息 -->
+			<property name="remarks" value="true" />
+		</jdbcConnection>
+		<javaTypeResolver>
+			<property name="forceBigDecimals" value="false" />
+		</javaTypeResolver>
+
+		<!--生成Model类存放位置 -->
+		<javaModelGenerator
+			targetPackage="cn.shenjunjie.booking.entity" targetProject="">
+			<property name="enableSubPackages" value="true" />
+			<property name="trimStrings" value="true" />
+		</javaModelGenerator>
+		<!--生成映射文件存放位置 -->
+		<sqlMapGenerator
+			targetPackage="src.main.resources.mybatis.mapper" targetProject="">
+			<property name="enableSubPackages" value="true" />
+		</sqlMapGenerator>
+		<!--生成Dao类存放位置 -->
+		<javaClientGenerator type="XMLMAPPER"
+			targetPackage="cn.shenjunjie.booking.dao" targetProject="">
+			<property name="enableSubPackages" value="true" />
+		</javaClientGenerator>
+
+		<!--生成对应表及类名 -->
+<!--		<table tableName="deployment" domainObjectName="Deployment"-->
+<!--			enableUpdateByExample="true" enableSelectByExample="true"-->
+<!--			selectByExampleQueryId="true" enableUpdateByPrimaryKey="true">-->
+<!--		</table>-->
+		<table tableName="deployment_service_info" domainObjectName="DeploymentServiceInfo"
+			enableUpdateByExample="true" enableSelectByExample="true"
+			selectByExampleQueryId="true" enableUpdateByPrimaryKey="true">
+		</table>
+<!--		<table tableName="service_info" domainObjectName="ServiceInfo"-->
+<!--			enableUpdateByExample="true" enableSelectByExample="true"-->
+<!--			selectByExampleQueryId="true" enableUpdateByPrimaryKey="true">-->
+<!--		</table>-->
+<!--		<table tableName="user" domainObjectName="User"-->
+<!--			enableUpdateByExample="true" enableSelectByExample="true"-->
+<!--			selectByExampleQueryId="true" enableUpdateByPrimaryKey="true">-->
+<!--		</table>-->
+<!--		<table tableName="role" domainObjectName="Role"-->
+<!--			enableUpdateByExample="true" enableSelectByExample="true"-->
+<!--			selectByExampleQueryId="true" enableUpdateByPrimaryKey="true">-->
+<!--		</table>-->
+<!--		<table tableName="role_menu" domainObjectName="RoleMenu"-->
+<!--			   enableUpdateByExample="true" enableSelectByExample="true"-->
+<!--			   selectByExampleQueryId="true" enableUpdateByPrimaryKey="true">-->
+<!--		</table>-->
+<!--		<table tableName="menu" domainObjectName="Menu"-->
+<!--			   enableUpdateByExample="true" enableSelectByExample="true"-->
+<!--			   selectByExampleQueryId="true" enableUpdateByPrimaryKey="true">-->
+<!--		</table>-->
+	</context>
+</generatorConfiguration>

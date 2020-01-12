@@ -1,0 +1,12 @@
+spring:
+  datasource:
+    druid:
+      url: jdbc:mysql://127.0.0.1:3306/booking-platform?zeroDateTimeBehavior=convertToNull&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false
+      username: root
+      password: 123456
+
+swagger:
+  basePackage: cn.shenjunjie.booking.console.controller
+  title: Swimlane APIs                      
+  version: 1.1.0                               
+  enable: true
