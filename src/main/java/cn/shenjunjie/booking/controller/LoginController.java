@@ -1,15 +1,14 @@
 package cn.shenjunjie.booking.controller;
 
 import cn.shenjunjie.booking.common.rest.RestBody;
-import com.alibaba.fastjson.JSON;
+import cn.shenjunjie.booking.dto.request.LoginRequest;
+import cn.shenjunjie.booking.service.LoginService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.authc.IncorrectCredentialsException;
-import org.apache.shiro.authc.UnknownAccountException;
-import org.apache.shiro.authc.UsernamePasswordToken;
-import org.apache.shiro.subject.Subject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Objects;
@@ -23,37 +22,29 @@ import java.util.Objects;
 @RestController
 public class LoginController {
 
-    @GetMapping("test1")
-    public String test1() {
-        return "hello~~~";
+    @Value("${shiro.login.expiredtime}")
+    private Long expiredTime;
+
+    @Autowired
+    private LoginService loginService;
+
+    @PostMapping("hello1")
+    public String hello1() {
+        return "hello1~~~";
     }
 
-    @GetMapping("/login")
-    public RestBody login(String username, String password) {
-        if (Objects.isNull(username)) {
+    @PostMapping("/login")
+    public RestBody login(@RequestBody LoginRequest request) {
+        if (Objects.isNull(request)) {
             return RestBody.fail("Empty Account");
         }
-        log.info("login username:{},password:{}", username, password);
-        Subject subject = SecurityUtils.getSubject();
-        //封装用户的登录数据
-        UsernamePasswordToken token = new UsernamePasswordToken(username, password);
-        log.info("token:{}", JSON.toJSONString(token));
-        try {
-            subject.login(token);
-            return RestBody.succeed("login success");
-        } catch (UnknownAccountException e) {
-            return RestBody.fail("Unknown Account");
-        } catch (IncorrectCredentialsException e) {
-            return RestBody.fail("Incorrect credential");
-        }
+        log.info("login request:{}", request);
+        return loginService.login(request, expiredTime);
     }
 
     @PostMapping("/logout")
     public RestBody logOut() {
-        Subject subject = SecurityUtils.getSubject();
-        log.info("logOut parms:{}", subject.getPrincipal());
-        subject.logout();
-        return RestBody.succeed("Log out.");
+        return loginService.logout();
     }
 
     @GetMapping("/tologin")

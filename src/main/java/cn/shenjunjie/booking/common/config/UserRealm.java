@@ -12,6 +12,7 @@ import org.apache.shiro.subject.PrincipalCollection;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.Resource;
+import java.util.Objects;
 
 /**
  * @author Junjie.Shen
@@ -51,6 +52,9 @@ public class UserRealm extends AuthorizingRealm {
         log.info("执行了=>认证doGetAuthenticationInfo token:{}", JSON.toJSONString(token));
         UsernamePasswordToken userToken = (UsernamePasswordToken) token;
         Teacher teacher = teacherRepo.selectByTeacherId(userToken.getUsername());
+        if (Objects.isNull(teacher)) {
+            return null;
+        }
         if (!userToken.getUsername().equals(teacher.getTeacherId())) {
             return null;
         }

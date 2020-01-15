@@ -1,5 +1,7 @@
 package cn.shenjunjie.booking.entity;
 
+import lombok.experimental.Accessors;
+
 /**
  * @author JunjieShen
  */

@@ -38,3 +38,8 @@ spring:
 mybatis:
   mapper-locations: classpath*:mybatis/mapper/*.xml
   config-locations: classpath*:mybatis/config.xml
+
+shiro:
+  login:
+    #登录态过期时间：2小时
+    expiredtime: 7200000
