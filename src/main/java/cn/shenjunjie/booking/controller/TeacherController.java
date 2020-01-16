@@ -1,7 +1,9 @@
 package cn.shenjunjie.booking.controller;
 
 import cn.shenjunjie.booking.common.rest.RestBody;
+import cn.shenjunjie.booking.entity.Teacher;
 import cn.shenjunjie.booking.repo.TeacherRepo;
+import cn.shenjunjie.booking.service.TeacherService;
 import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.SecurityUtils;
@@ -27,12 +29,11 @@ import javax.servlet.http.HttpServletRequest;
 public class TeacherController {
 
     @Autowired
-    private TeacherRepo teacherRepo;
+    private TeacherService teacherService;
 
-    @GetMapping("/edit")
-    public RestBody test1() {
-
-        return RestBody.succeed("");
+    @GetMapping("/curprofile")
+    public RestBody getCurProfile() {
+        return RestBody.succeed(teacherService.getCurProfile());
     }
 
     @GetMapping("/rest")

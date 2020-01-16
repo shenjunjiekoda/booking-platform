@@ -1,10 +1,11 @@
 package cn.shenjunjie.booking.entity;
 
-import lombok.experimental.Accessors;
+import lombok.ToString;
 
 /**
  * @author JunjieShen
  */
+@ToString
 public class Book {
     private Long id;
 

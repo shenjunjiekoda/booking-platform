@@ -2,6 +2,7 @@ package cn.shenjunjie.booking.service.impl;
 
 import cn.shenjunjie.booking.dto.request.AddBookRequest;
 import cn.shenjunjie.booking.dto.request.GetBooksRequest;
+import cn.shenjunjie.booking.dto.request.UpdateBookRequest;
 import cn.shenjunjie.booking.dto.response.GetBooksResponse;
 import cn.shenjunjie.booking.dto.response.PageBean;
 import cn.shenjunjie.booking.entity.Book;
@@ -45,6 +46,11 @@ public class BookServiceImpl implements BookService {
     @Override
     public void addBook(AddBookRequest request) {
         bookRepo.insertByAddBookRequest(request);
+    }
+
+    @Override
+    public void updateBook(UpdateBookRequest request) {
+        bookRepo.updateByUpdateBookRequest(request);
     }
 
 }

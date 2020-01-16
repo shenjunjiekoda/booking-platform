@@ -1,5 +1,6 @@
 package cn.shenjunjie.booking.common.exceptionhandler;
 
+import cn.shenjunjie.booking.common.exception.JsoupException;
 import cn.shenjunjie.booking.common.rest.RestBody;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authz.UnauthorizedException;
@@ -18,8 +19,14 @@ public class AuthExceptionHandler {
 
     @ExceptionHandler
     @ResponseBody
-    public RestBody ErrorHandler(UnauthorizedException e) {
+    public RestBody UnauthorizedExceptionHandler(UnauthorizedException e) {
         return RestBody.fail("You are not authorized, Please Contact admin for permissions.");
+    }
+
+    @ExceptionHandler
+    @ResponseBody
+    public RestBody JsoupExceptionHandler(JsoupException e) {
+        return RestBody.fail("Search in the web cannot be used.Please contact admin!");
     }
 
 }

@@ -3,6 +3,7 @@ package cn.shenjunjie.booking.repo;
 import cn.shenjunjie.booking.dao.BookMapper;
 import cn.shenjunjie.booking.dto.request.AddBookRequest;
 import cn.shenjunjie.booking.dto.request.GetBooksRequest;
+import cn.shenjunjie.booking.dto.request.UpdateBookRequest;
 import cn.shenjunjie.booking.entity.Book;
 import cn.shenjunjie.booking.entity.BookExample;
 import com.github.pagehelper.Page;
@@ -60,5 +61,17 @@ public class BookRepo {
         bookMapper.insertSelective(record);
     }
 
+    public void updateByUpdateBookRequest(UpdateBookRequest request) {
+        Book record = new Book();
+        record.setId(request.getId());
+        record.setName(request.getName());
+        record.setIsbn(request.getIsbn());
+        record.setAuthor(request.getAuthor());
+        record.setEdition(request.getEdition());
+        record.setPress(request.getPress());
+        record.setPublishedAt(request.getPublishedAt());
+        record.setRemark(request.getRemark());
+        bookMapper.updateByPrimaryKeySelective(record);
+    }
 
 }

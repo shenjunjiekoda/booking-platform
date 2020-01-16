@@ -3,13 +3,17 @@ package cn.shenjunjie.booking.controller;
 import cn.shenjunjie.booking.common.rest.RestBody;
 import cn.shenjunjie.booking.dto.request.AddBookRequest;
 import cn.shenjunjie.booking.dto.request.GetBooksRequest;
+import cn.shenjunjie.booking.dto.request.UpdateBookRequest;
 import cn.shenjunjie.booking.service.BookService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Objects;
 
 /**
  * @author Junjie.Shen
@@ -33,6 +37,9 @@ public class BookController {
     @PostMapping("/add")
     public RestBody addBook(AddBookRequest request) {
         log.info("addBook request:{}", request);
+        if(Objects.isNull(request)) {
+            return RestBody.fail("Empty request");
+        }
         if(!StringUtils.isEmpty(request.getName()) || (!StringUtils.isEmpty(request.getName().trim()))) {
             return RestBody.fail("Book's name cannot be empty");
         }
@@ -43,4 +50,17 @@ public class BookController {
         return RestBody.succeed();
     }
 
+    //todo 之后还要考虑如果该书籍在订单中，是否要变更
+    @PostMapping("/update")
+    public RestBody updateBook(@RequestBody UpdateBookRequest request) {
+        log.info("updateBook request:{}", request);
+        if(Objects.isNull(request)) {
+            return RestBody.fail("Empty request");
+        }
+        if(Objects.isNull(request.getId())) {
+            return RestBody.fail("Empty book id!");
+        }
+        bookService.updateBook(request);
+        return RestBody.succeed();
+    }
 }

@@ -28,11 +28,6 @@ public class LoginController {
     @Autowired
     private LoginService loginService;
 
-    @PostMapping("hello1")
-    public String hello1() {
-        return "hello1~~~";
-    }
-
     @PostMapping("/login")
     public RestBody login(@RequestBody LoginRequest request) {
         if (Objects.isNull(request)) {
