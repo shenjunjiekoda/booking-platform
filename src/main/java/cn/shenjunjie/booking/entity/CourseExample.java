@@ -11,7 +11,7 @@ public class CourseExample {
     protected List<Criteria> oredCriteria;
 
     public CourseExample() {
-        oredCriteria = new ArrayList<>();
+        oredCriteria = new ArrayList<Criteria>();
     }
 
     public void setOrderByClause(String orderByClause) {
@@ -68,7 +68,7 @@ public class CourseExample {
 
         protected GeneratedCriteria() {
             super();
-            criteria = new ArrayList<>();
+            criteria = new ArrayList<Criterion>();
         }
 
         public boolean isValid() {
@@ -233,79 +233,10 @@ public class CourseExample {
             addCriterion("name not between", value1, value2, "name");
             return (Criteria) this;
         }
-
-        public Criteria andWeekTimeIsNull() {
-            addCriterion("week_time is null");
-            return (Criteria) this;
-        }
-
-        public Criteria andWeekTimeIsNotNull() {
-            addCriterion("week_time is not null");
-            return (Criteria) this;
-        }
-
-        public Criteria andWeekTimeEqualTo(String value) {
-            addCriterion("week_time =", value, "weekTime");
-            return (Criteria) this;
-        }
-
-        public Criteria andWeekTimeNotEqualTo(String value) {
-            addCriterion("week_time <>", value, "weekTime");
-            return (Criteria) this;
-        }
-
-        public Criteria andWeekTimeGreaterThan(String value) {
-            addCriterion("week_time >", value, "weekTime");
-            return (Criteria) this;
-        }
-
-        public Criteria andWeekTimeGreaterThanOrEqualTo(String value) {
-            addCriterion("week_time >=", value, "weekTime");
-            return (Criteria) this;
-        }
-
-        public Criteria andWeekTimeLessThan(String value) {
-            addCriterion("week_time <", value, "weekTime");
-            return (Criteria) this;
-        }
-
-        public Criteria andWeekTimeLessThanOrEqualTo(String value) {
-            addCriterion("week_time <=", value, "weekTime");
-            return (Criteria) this;
-        }
-
-        public Criteria andWeekTimeLike(String value) {
-            addCriterion("week_time like", value, "weekTime");
-            return (Criteria) this;
-        }
-
-        public Criteria andWeekTimeNotLike(String value) {
-            addCriterion("week_time not like", value, "weekTime");
-            return (Criteria) this;
-        }
-
-        public Criteria andWeekTimeIn(List<String> values) {
-            addCriterion("week_time in", values, "weekTime");
-            return (Criteria) this;
-        }
-
-        public Criteria andWeekTimeNotIn(List<String> values) {
-            addCriterion("week_time not in", values, "weekTime");
-            return (Criteria) this;
-        }
-
-        public Criteria andWeekTimeBetween(String value1, String value2) {
-            addCriterion("week_time between", value1, value2, "weekTime");
-            return (Criteria) this;
-        }
-
-        public Criteria andWeekTimeNotBetween(String value1, String value2) {
-            addCriterion("week_time not between", value1, value2, "weekTime");
-            return (Criteria) this;
-        }
     }
 
     public static class Criteria extends GeneratedCriteria {
+
         protected Criteria() {
             super();
         }

@@ -12,7 +12,7 @@
 			<property name="suppressAllComments" value="true" />
 		</commentGenerator>
 		<!--数据库链接地址账号密码 -->
-		<jdbcConnection driverClass="com.mysql.cj.jdbc.Driver"
+		<jdbcConnection driverClass="com.mysql.jdbc.Driver"
 			connectionURL="jdbc:mysql://127.0.0.1:3306/booking_platform?useSSL=false" userId="root"
 			password="123456">
 			<!--设置可以获取tables remarks信息 -->
@@ -46,22 +46,22 @@
 <!--			enableUpdateByExample="true" enableSelectByExample="true"-->
 <!--			selectByExampleQueryId="true" enableUpdateByPrimaryKey="true">-->
 <!--		</table>-->
-		<table tableName="institute" domainObjectName="Institute"
-			   enableUpdateByExample="true" enableSelectByExample="true"
-			   selectByExampleQueryId="true" enableUpdateByPrimaryKey="true">
-		</table>
+<!--		<table tableName="institute" domainObjectName="Institute"-->
+<!--			   enableUpdateByExample="true" enableSelectByExample="true"-->
+<!--			   selectByExampleQueryId="true" enableUpdateByPrimaryKey="true">-->
+<!--		</table>-->
 <!--		<table tableName="class" domainObjectName="Class"-->
 <!--			enableUpdateByExample="true" enableSelectByExample="true"-->
 <!--			selectByExampleQueryId="true" enableUpdateByPrimaryKey="true">-->
 <!--		</table>-->
-<!--		<table tableName="course" domainObjectName="Course"-->
-<!--			enableUpdateByExample="true" enableSelectByExample="true"-->
-<!--			selectByExampleQueryId="true" enableUpdateByPrimaryKey="true">-->
-<!--		</table>-->
-<!--		<table tableName="plan" domainObjectName="Plan"-->
-<!--			enableUpdateByExample="true" enableSelectByExample="true"-->
-<!--			selectByExampleQueryId="true" enableUpdateByPrimaryKey="true">-->
-<!--		</table>-->
+		<table tableName="course" domainObjectName="Course"
+			enableUpdateByExample="true" enableSelectByExample="true"
+			selectByExampleQueryId="true" enableUpdateByPrimaryKey="true">
+		</table>
+		<table tableName="plan" domainObjectName="Plan"
+			enableUpdateByExample="true" enableSelectByExample="true"
+			selectByExampleQueryId="true" enableUpdateByPrimaryKey="true">
+		</table>
 <!--		<table tableName="plan_book" domainObjectName="PlanBook"-->
 <!--			enableUpdateByExample="true" enableSelectByExample="true"-->
 <!--			selectByExampleQueryId="true" enableUpdateByPrimaryKey="true">-->

@@ -1,8 +1,5 @@
 package cn.shenjunjie.booking.entity;
 
-/**
- * @author JunjieShen
- */
 public class Plan {
     private Long id;
 
@@ -11,6 +8,8 @@ public class Plan {
     private Long courseId;
 
     private Long classId;
+
+    private String week;
 
     public Long getId() {
         return id;
@@ -42,5 +41,13 @@ public class Plan {
 
     public void setClassId(Long classId) {
         this.classId = classId;
+    }
+
+    public String getWeek() {
+        return week;
+    }
+
+    public void setWeek(String week) {
+        this.week = week == null ? null : week.trim();
     }
 }

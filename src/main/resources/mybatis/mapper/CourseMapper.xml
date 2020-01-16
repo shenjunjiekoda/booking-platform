@@ -4,7 +4,6 @@
   <resultMap id="BaseResultMap" type="cn.shenjunjie.booking.entity.Course">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="name" jdbcType="VARCHAR" property="name" />
-    <result column="week_time" jdbcType="VARCHAR" property="weekTime" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -65,7 +64,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, name, week_time
+    id, name
   </sql>
   <select id="selectByExample" parameterType="cn.shenjunjie.booking.entity.CourseExample" resultMap="BaseResultMap">
     select
@@ -99,10 +98,8 @@
     </if>
   </delete>
   <insert id="insert" parameterType="cn.shenjunjie.booking.entity.Course">
-    insert into course (id, name, week_time
-      )
-    values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{weekTime,jdbcType=VARCHAR}
-      )
+    insert into course (id, name)
+    values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="cn.shenjunjie.booking.entity.Course">
     insert into course
@@ -113,9 +110,6 @@
       <if test="name != null">
         name,
       </if>
-      <if test="weekTime != null">
-        week_time,
-      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -123,9 +117,6 @@
       </if>
       <if test="name != null">
         #{name,jdbcType=VARCHAR},
-      </if>
-      <if test="weekTime != null">
-        #{weekTime,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -144,9 +135,6 @@
       <if test="record.name != null">
         name = #{record.name,jdbcType=VARCHAR},
       </if>
-      <if test="record.weekTime != null">
-        week_time = #{record.weekTime,jdbcType=VARCHAR},
-      </if>
     </set>
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
@@ -155,8 +143,7 @@
   <update id="updateByExample" parameterType="map">
     update course
     set id = #{record.id,jdbcType=BIGINT},
-      name = #{record.name,jdbcType=VARCHAR},
-      week_time = #{record.weekTime,jdbcType=VARCHAR}
+      name = #{record.name,jdbcType=VARCHAR}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -167,16 +154,12 @@
       <if test="name != null">
         name = #{name,jdbcType=VARCHAR},
       </if>
-      <if test="weekTime != null">
-        week_time = #{weekTime,jdbcType=VARCHAR},
-      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="cn.shenjunjie.booking.entity.Course">
     update course
-    set name = #{name,jdbcType=VARCHAR},
-      week_time = #{weekTime,jdbcType=VARCHAR}
+    set name = #{name,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

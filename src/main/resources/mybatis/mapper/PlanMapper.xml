@@ -6,6 +6,7 @@
     <result column="teacher_id" jdbcType="BIGINT" property="teacherId" />
     <result column="course_id" jdbcType="BIGINT" property="courseId" />
     <result column="class_id" jdbcType="BIGINT" property="classId" />
+    <result column="week" jdbcType="VARCHAR" property="week" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -66,7 +67,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, teacher_id, course_id, class_id
+    id, teacher_id, course_id, class_id, week
   </sql>
   <select id="selectByExample" parameterType="cn.shenjunjie.booking.entity.PlanExample" resultMap="BaseResultMap">
     select
@@ -101,9 +102,9 @@
   </delete>
   <insert id="insert" parameterType="cn.shenjunjie.booking.entity.Plan">
     insert into plan (id, teacher_id, course_id, 
-      class_id)
+      class_id, week)
     values (#{id,jdbcType=BIGINT}, #{teacherId,jdbcType=BIGINT}, #{courseId,jdbcType=BIGINT}, 
-      #{classId,jdbcType=BIGINT})
+      #{classId,jdbcType=BIGINT}, #{week,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="cn.shenjunjie.booking.entity.Plan">
     insert into plan
@@ -120,6 +121,9 @@
       <if test="classId != null">
         class_id,
       </if>
+      <if test="week != null">
+        week,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -133,6 +137,9 @@
       </if>
       <if test="classId != null">
         #{classId,jdbcType=BIGINT},
+      </if>
+      <if test="week != null">
+        #{week,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -157,6 +164,9 @@
       <if test="record.classId != null">
         class_id = #{record.classId,jdbcType=BIGINT},
       </if>
+      <if test="record.week != null">
+        week = #{record.week,jdbcType=VARCHAR},
+      </if>
     </set>
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
@@ -167,7 +177,8 @@
     set id = #{record.id,jdbcType=BIGINT},
       teacher_id = #{record.teacherId,jdbcType=BIGINT},
       course_id = #{record.courseId,jdbcType=BIGINT},
-      class_id = #{record.classId,jdbcType=BIGINT}
+      class_id = #{record.classId,jdbcType=BIGINT},
+      week = #{record.week,jdbcType=VARCHAR}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -184,6 +195,9 @@
       <if test="classId != null">
         class_id = #{classId,jdbcType=BIGINT},
       </if>
+      <if test="week != null">
+        week = #{week,jdbcType=VARCHAR},
+      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
@@ -191,7 +205,8 @@
     update plan
     set teacher_id = #{teacherId,jdbcType=BIGINT},
       course_id = #{courseId,jdbcType=BIGINT},
-      class_id = #{classId,jdbcType=BIGINT}
+      class_id = #{classId,jdbcType=BIGINT},
+      week = #{week,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

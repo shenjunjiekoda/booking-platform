@@ -5,9 +5,6 @@ import cn.shenjunjie.booking.entity.PlanExample;
 import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
-/**
- * @author JunjieShen
- */
 public interface PlanMapper {
     long countByExample(PlanExample example);
 

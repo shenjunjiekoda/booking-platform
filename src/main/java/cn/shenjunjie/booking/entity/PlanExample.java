@@ -11,7 +11,7 @@ public class PlanExample {
     protected List<Criteria> oredCriteria;
 
     public PlanExample() {
-        oredCriteria = new ArrayList<>();
+        oredCriteria = new ArrayList<Criteria>();
     }
 
     public void setOrderByClause(String orderByClause) {
@@ -68,7 +68,7 @@ public class PlanExample {
 
         protected GeneratedCriteria() {
             super();
-            criteria = new ArrayList<>();
+            criteria = new ArrayList<Criterion>();
         }
 
         public boolean isValid() {
@@ -343,9 +343,80 @@ public class PlanExample {
             addCriterion("class_id not between", value1, value2, "classId");
             return (Criteria) this;
         }
+
+        public Criteria andWeekIsNull() {
+            addCriterion("week is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeekIsNotNull() {
+            addCriterion("week is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeekEqualTo(String value) {
+            addCriterion("week =", value, "week");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeekNotEqualTo(String value) {
+            addCriterion("week <>", value, "week");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeekGreaterThan(String value) {
+            addCriterion("week >", value, "week");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeekGreaterThanOrEqualTo(String value) {
+            addCriterion("week >=", value, "week");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeekLessThan(String value) {
+            addCriterion("week <", value, "week");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeekLessThanOrEqualTo(String value) {
+            addCriterion("week <=", value, "week");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeekLike(String value) {
+            addCriterion("week like", value, "week");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeekNotLike(String value) {
+            addCriterion("week not like", value, "week");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeekIn(List<String> values) {
+            addCriterion("week in", values, "week");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeekNotIn(List<String> values) {
+            addCriterion("week not in", values, "week");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeekBetween(String value1, String value2) {
+            addCriterion("week between", value1, value2, "week");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeekNotBetween(String value1, String value2) {
+            addCriterion("week not between", value1, value2, "week");
+            return (Criteria) this;
+        }
     }
 
     public static class Criteria extends GeneratedCriteria {
+
         protected Criteria() {
             super();
         }

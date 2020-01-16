@@ -9,6 +9,14 @@ group = 'cn.shenjunjie'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '1.8'
 
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+[ compileJava, compileTestJava ]*.options*.encoding = "UTF-8"
+
+[compileJava, compileTestJava]*.options.collect {options -> options.encoding = 'UTF-8'}
+
 configurations {
     compileOnly {
         extendsFrom annotationProcessor
@@ -35,6 +43,7 @@ dependencies {
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-actuator', version: '2.2.2.RELEASE'
     compile group: 'org.mybatis.spring.boot', name: 'mybatis-spring-boot-starter', version: '2.1.1'
     compile group: 'org.mybatis.generator', name: 'mybatis-generator-core', version: '1.4.0'
+    //todo 去修一下druid的bug,经测试,version1.1.21 gradle build -x test 会报错，但是1.1.20版本不报错
     compile group: 'com.alibaba', name: 'druid-spring-boot-starter', version: '1.1.21'
     compile group: 'com.github.pagehelper', name: 'pagehelper-spring-boot-starter', version: '1.2.13'
     compile group: 'com.google.guava', name: 'guava', version: '28.2-jre'

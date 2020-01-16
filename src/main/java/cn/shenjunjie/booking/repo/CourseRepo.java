@@ -1,7 +1,6 @@
 package cn.shenjunjie.booking.repo;
 
 import cn.shenjunjie.booking.dao.CourseMapper;
-import cn.shenjunjie.booking.entity.Course;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.Resource;
