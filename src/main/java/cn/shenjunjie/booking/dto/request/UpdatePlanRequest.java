@@ -9,17 +9,22 @@ import javax.validation.constraints.NotBlank;
 /**
  * @author Junjie.Shen
  * @version 1.0
- * @date 2020/1/15 8:01
+ * @date 2020/2/27 15:49
  */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class LoginRequest {
+public class UpdatePlanRequest {
 
-    @NotBlank(message = "用户名不能为空")
-    private String username;
+    @NotBlank(message = "计划号不能为空")
+    private Long id;
 
-    @NotBlank(message = "密码不能为空")
-    private String password;
+    private String className;
+
+    private String teacherName;
+
+    private String courseName;
+
+    private String week;
 
 }

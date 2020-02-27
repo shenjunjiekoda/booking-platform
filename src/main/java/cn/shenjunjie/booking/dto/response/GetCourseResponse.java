@@ -1,22 +1,21 @@
-package cn.shenjunjie.booking.dto.request;
+package cn.shenjunjie.booking.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import javax.validation.constraints.NotBlank;
+import lombok.experimental.Accessors;
 
 /**
  * @author Junjie.Shen
  * @version 1.0
- * @date 2020/1/16 7:49
+ * @date 2020/2/27 15:04
  */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class AddInstituteRequest {
+@Accessors(chain = true)
+public class GetCourseResponse {
 
-    @NotBlank(message = "学院名不能为空")
     private String name;
 
 }

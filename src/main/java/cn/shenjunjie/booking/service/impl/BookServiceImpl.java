@@ -14,6 +14,7 @@ import com.github.pagehelper.Page;
 import com.google.common.collect.Lists;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
@@ -64,11 +65,13 @@ public class BookServiceImpl implements BookService {
         return booksFromWebResponseList;
     }
 
+    @Transactional
     @Override
     public void addBook(AddBookRequest request) {
         bookRepo.insertByAddBookRequest(request);
     }
 
+    @Transactional
     @Override
     public void updateBook(UpdateBookRequest request) {
         bookRepo.updateByUpdateBookRequest(request);

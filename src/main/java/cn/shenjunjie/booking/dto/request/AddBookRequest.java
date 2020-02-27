@@ -4,6 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotBlank;
+
+
 /**
  * @author Junjie.Shen
  * @version 1.0
@@ -14,8 +17,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class AddBookRequest {
 
+    @NotBlank(message = "书名不能为空！")
     private String name;
 
+    @NotBlank(message = "isbn号不能为空！")
     private String isbn;
 
     private String author;

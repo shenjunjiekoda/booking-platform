@@ -9,6 +9,7 @@ import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 /**
@@ -21,9 +22,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class LoginServiceImpl implements LoginService {
 
+    @Value("${shiro.login.expiredtime}")
+    private Long expiredTime = 3600000L;
 
     @Override
-    public RestBody login(LoginRequest request, Long expiredTime) {
+    public RestBody login(LoginRequest request) {
         Subject subject = SecurityUtils.getSubject();
         //封装用户的登录数据
         UsernamePasswordToken token = new UsernamePasswordToken(request.getUsername(), request.getPassword());
@@ -31,7 +34,7 @@ public class LoginServiceImpl implements LoginService {
             subject.login(token);
             //shiro登录态过期时间
             subject.getSession().setTimeout(expiredTime);
-            return RestBody.succeed("login success");
+            return RestBody.succeed("登陆成功");
         } catch (UnknownAccountException e) {
             return RestBody.fail("Unknown Account");
         } catch (IncorrectCredentialsException e) {

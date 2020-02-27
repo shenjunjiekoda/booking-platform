@@ -9,6 +9,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Node;
 import org.jsoup.select.Elements;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
@@ -24,8 +25,9 @@ import java.util.List;
  */
 @Slf4j
 public class JsoupUtil {
-
+    @Value("${booking.url}")
     private static final String DANG_URL = "http://search.dangdang.com/";
+
     private static final String SEARCH_PREFIX = "?key=";
     private static final String TITLE = "title";
     private static final String HREF = "href";
@@ -103,7 +105,7 @@ public class JsoupUtil {
                 }
             }
         }
-        return null;
+        return "";
     }
 
 

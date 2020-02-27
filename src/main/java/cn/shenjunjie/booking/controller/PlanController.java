@@ -1,10 +1,13 @@
 package cn.shenjunjie.booking.controller;
 
 import cn.shenjunjie.booking.common.rest.RestBody;
+import cn.shenjunjie.booking.dto.request.*;
+import cn.shenjunjie.booking.service.PlanService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.annotation.Resource;
+import javax.validation.Valid;
 
 /**
  * @author Junjie.Shen
@@ -16,14 +19,43 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/plan")
 public class PlanController {
 
-    @GetMapping("/hi")
-    public String test1() {
-        return "hi~~~";
+    @Resource
+    private PlanService planService;
+
+    @GetMapping("/list")
+    public RestBody listPlans(GetPlanRequest request) {
+        log.info("listPlans request:{}",request);
+        return RestBody.succeed(planService.getPlans(request));
     }
 
-    @GetMapping("/rest")
-    public RestBody test2() {
-        return RestBody.succeed("rest~~~");
+    @PostMapping("/add")
+    public RestBody addPlan(@RequestBody @Valid AddPlanRequest request) {
+        log.info("addPlan request:{}",request);
+        return planService.addPlan(request);
+    }
+
+    @PostMapping("/update")
+    public RestBody updatePlan(@RequestBody @Valid UpdatePlanRequest request){
+        log.info("updatePlan request:{}",request);
+        return planService.updatePlan(request);
+    }
+
+    @GetMapping("/book/list")
+    public RestBody listPlanBooks(Long classId) {
+        log.info("listPlanBooks request:{}",classId);
+        return RestBody.succeed(planService.getPlanBooks(classId));
+    }
+
+    @PostMapping("/book/add")
+    public RestBody addPlanBook(@RequestBody @Valid AddPlanBookRequest request) {
+        log.info("addPlanBook request:{}",request);
+        return planService.addPlanBook(request);
+    }
+
+    @PostMapping("/book/update")
+    public RestBody updatePlanBook(@RequestBody @Valid UpdatePlanBookRequest request){
+        log.info("updatePlanBook request:{}",request);
+        return planService.updatePlanBook(request);
     }
 
 }

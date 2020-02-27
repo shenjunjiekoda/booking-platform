@@ -1,6 +1,7 @@
 package cn.shenjunjie.booking.service.impl;
 
 import cn.shenjunjie.booking.dto.request.AddInstituteRequest;
+import cn.shenjunjie.booking.dto.request.UpdateInstituteRequest;
 import cn.shenjunjie.booking.dto.response.GetInstitutesResponse;
 import cn.shenjunjie.booking.entity.Institute;
 import cn.shenjunjie.booking.repo.InstituteRepo;
@@ -9,10 +10,12 @@ import com.google.common.collect.Lists;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author Junjie.Shen
@@ -41,9 +44,16 @@ public class InstituteServiceImpl implements InstituteService {
         return list;
     }
 
+    @Transactional
     @Override
     public void addInstitute(AddInstituteRequest request) {
         instituteRepo.insertByName(request.getName());
+    }
+
+    @Transactional
+    @Override
+    public void updateInstitute(UpdateInstituteRequest request) {
+        instituteRepo.updateByIdAndName(request.getId(),request.getName());
     }
 
 }

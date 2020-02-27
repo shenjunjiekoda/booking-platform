@@ -2,9 +2,11 @@ package cn.shenjunjie.booking.repo;
 
 import cn.shenjunjie.booking.dao.TeacherMapper;
 import cn.shenjunjie.booking.entity.Teacher;
+import cn.shenjunjie.booking.entity.TeacherExample;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * @author Junjie.Shen
@@ -17,8 +19,24 @@ public class TeacherRepo {
     @Resource
     private TeacherMapper teacherMapper;
 
+    private final static String PERCENT_SIGN = "%";
+
+    public Teacher selectById(Long id){
+        return teacherMapper.selectByPrimaryKey(id);
+    }
+
     public Teacher selectByTeacherId(String teacherId) {
         return teacherMapper.selectByTeacherId(teacherId);
     }
 
+    public Teacher selectByName(String name){
+        return teacherMapper.selectByName(name);
+    }
+
+    public List<Teacher> selectByPartName(String name){
+        TeacherExample example = new TeacherExample();
+        TeacherExample.Criteria criteria = example.createCriteria();
+        criteria.andNameLike(PERCENT_SIGN.concat(name).concat(PERCENT_SIGN));
+        return teacherMapper.selectByExample(example);
+    }
 }

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.util.Objects;
 
 /**
@@ -22,19 +23,15 @@ import java.util.Objects;
 @RestController
 public class LoginController {
 
-    @Value("${shiro.login.expiredtime}")
-    private Long expiredTime;
+
 
     @Autowired
     private LoginService loginService;
 
     @PostMapping("/login")
-    public RestBody login(@RequestBody LoginRequest request) {
-        if (Objects.isNull(request)) {
-            return RestBody.fail("Empty Account");
-        }
+    public RestBody login(@RequestBody @Valid LoginRequest request) {
         log.info("login request:{}", request);
-        return loginService.login(request, expiredTime);
+        return loginService.login(request);
     }
 
     @PostMapping("/logout")

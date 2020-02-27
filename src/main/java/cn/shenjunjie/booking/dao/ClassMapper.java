@@ -23,6 +23,8 @@ public interface ClassMapper {
 
     Class selectByPrimaryKey(Long id);
 
+    Class selectByName(@Param("name") String name);
+
     int updateByExampleSelective(@Param("record") Class record, @Param("example") ClassExample example);
 
     int updateByExample(@Param("record") Class record, @Param("example") ClassExample example);

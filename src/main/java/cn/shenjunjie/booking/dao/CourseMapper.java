@@ -20,6 +20,8 @@ public interface CourseMapper {
 
     Course selectByPrimaryKey(Long id);
 
+    Course selectByName(@Param("name") String name);
+
     int updateByExampleSelective(@Param("record") Course record, @Param("example") CourseExample example);
 
     int updateByExample(@Param("record") Course record, @Param("example") CourseExample example);

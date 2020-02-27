@@ -155,6 +155,12 @@
       from teacher
       where teacher_id = #{teacherId,jdbcType=VARCHAR}
     </select>
+    <select id="selectByName" resultMap="BaseResultMap">
+      select
+      <include refid="Base_Column_List" />
+      from teacher
+      where name = #{name,jdbcType=VARCHAR}
+    </select>
     <update id="updateByExampleSelective" parameterType="map">
     update teacher
     <set>

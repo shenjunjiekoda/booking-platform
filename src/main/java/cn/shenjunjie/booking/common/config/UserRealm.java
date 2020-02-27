@@ -52,12 +52,9 @@ public class UserRealm extends AuthorizingRealm {
         log.info("执行了=>认证doGetAuthenticationInfo token:{}", JSON.toJSONString(token));
         UsernamePasswordToken userToken = (UsernamePasswordToken) token;
         Teacher teacher = teacherRepo.selectByTeacherId(userToken.getUsername());
-        if (Objects.isNull(teacher)) {
+        if (Objects.isNull(teacher) || !userToken.getUsername().equals(teacher.getTeacherId())) {
             return null;
         }
-        if (!userToken.getUsername().equals(teacher.getTeacherId())) {
-            return null;
-        }
-        return new SimpleAuthenticationInfo(teacher, teacher.getPassword(), "");
+        return new SimpleAuthenticationInfo(teacher, teacher.getPassword(), teacher.getName());
     }
 }

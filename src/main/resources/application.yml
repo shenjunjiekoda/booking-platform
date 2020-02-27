@@ -43,3 +43,6 @@ shiro:
   login:
     #登录态过期时间：2小时
     expiredtime: 7200000
+
+booking:
+  url: http://search.dangdang.com/

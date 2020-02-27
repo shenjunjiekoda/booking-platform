@@ -10,7 +10,7 @@ import cn.shenjunjie.booking.dto.request.LoginRequest;
  */
 public interface LoginService {
 
-    RestBody login(LoginRequest request, Long expiredTime);
+    RestBody login(LoginRequest request);
 
     RestBody logout();
 

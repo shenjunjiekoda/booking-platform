@@ -35,8 +35,7 @@ public interface ClassService {
 
     /**
      * 删除一个班级信息
-     * @param request
      */
-    void deleteClass(DeleteClassRequest request);
+    void deleteClass(Long id);
 
 }

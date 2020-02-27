@@ -158,7 +158,13 @@
       <include refid="Example_Where_Clause" />
     </if>
   </select>
-  <update id="updateByExampleSelective" parameterType="map">
+    <select id="selectByPlanId" resultMap="BaseResultMap">
+      select
+      <include refid="Base_Column_List" />
+      from plan_book
+      where planId = #{planId,jdbcType=BIGINT}
+    </select>
+    <update id="updateByExampleSelective" parameterType="map">
     update plan_book
     <set>
       <if test="record.id != null">

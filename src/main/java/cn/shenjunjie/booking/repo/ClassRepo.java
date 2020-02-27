@@ -20,11 +20,21 @@ public class ClassRepo {
     @Resource
     private ClassMapper classMapper;
 
+    private final static String PERCENT_SIGN = "%";
+
+    public Class selectById(Long id){
+        return classMapper.selectByPrimaryKey(id);
+    }
+
     public List<Class> selectByInstituteId(Long instituteId) {
         ClassExample example = new ClassExample();
         ClassExample.Criteria criteria = example.createCriteria();
         criteria.andInstituteIdEqualTo(instituteId);
         return classMapper.selectByExample(example);
+    }
+
+    public Class selectByName(String name) {
+        return classMapper.selectByName(name);
     }
 
     public void insertByInstituteIdAndName(Long instituteId, String name) {

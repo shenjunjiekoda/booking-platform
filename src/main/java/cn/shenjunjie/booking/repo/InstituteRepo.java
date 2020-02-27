@@ -30,5 +30,12 @@ public class InstituteRepo {
         instituteMapper.insertSelective(record);
     }
 
+    public void updateByIdAndName(Long id, String name) {
+        Institute record = new Institute();
+        record.setId(id);
+        record.setName(name);
+        instituteMapper.updateByPrimaryKeySelective(record);
+    }
+
 
 }

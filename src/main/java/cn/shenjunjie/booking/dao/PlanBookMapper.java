@@ -23,6 +23,8 @@ public interface PlanBookMapper {
 
     PlanBook selectByPrimaryKey(Long id);
 
+    PlanBook selectByPlanId(@Param("planId") Long planId);
+
     int updateByExampleSelective(@Param("record") PlanBook record, @Param("example") PlanBookExample example);
 
     int updateByExample(@Param("record") PlanBook record, @Param("example") PlanBookExample example);

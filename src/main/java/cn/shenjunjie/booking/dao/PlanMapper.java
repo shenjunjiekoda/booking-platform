@@ -20,6 +20,8 @@ public interface PlanMapper {
 
     Plan selectByPrimaryKey(Long id);
 
+    Plan selectByClassIdAndTeacherIdAndCourseId(@Param("classId") Long classId,@Param("teacherId") Long teacherId,@Param("courseId")  Long courseId);
+
     int updateByExampleSelective(@Param("record") Plan record, @Param("example") PlanExample example);
 
     int updateByExample(@Param("record") Plan record, @Param("example") PlanExample example);

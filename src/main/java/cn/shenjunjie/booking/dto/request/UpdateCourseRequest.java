@@ -4,33 +4,23 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 /**
  * @author Junjie.Shen
  * @version 1.0
- * @date 2020/1/16 8:24
+ * @date 2020/2/27 15:06
  */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UpdateBookRequest {
+public class UpdateCourseRequest {
 
-    @NotNull(message = "书号不能为空")
+    @NotNull(message = "课程号不能为空")
     private Long id;
 
+    @NotBlank(message = "课程名不能为空")
     private String name;
-
-    private String isbn;
-
-    private String author;
-
-    private String press;
-
-    private String publishedAt;
-
-    private Long edition;
-
-    private String remark;
 
 }

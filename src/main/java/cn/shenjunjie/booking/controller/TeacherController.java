@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -28,17 +29,12 @@ import javax.servlet.http.HttpServletRequest;
 @RequestMapping("/teacher")
 public class TeacherController {
 
-    @Autowired
+    @Resource
     private TeacherService teacherService;
 
     @GetMapping("/curprofile")
     public RestBody getCurProfile() {
         return RestBody.succeed(teacherService.getCurProfile());
-    }
-
-    @GetMapping("/rest")
-    public RestBody test2() {
-        return RestBody.succeed("rest~~~");
     }
 
 }

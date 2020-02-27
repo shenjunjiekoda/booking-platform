@@ -149,6 +149,14 @@
       <include refid="Example_Where_Clause" />
     </if>
   </select>
+  <select id="selectByClassIdAndTeacherIdAndCourseId" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from plan
+    where teacher_id = #{teacherId,jdbcType=BIGINT}
+    and class_id = #{classId,jdbcType=BIGINT}
+    and course_id = #{courseId,jdbcType=BIGINT}
+  </select>
   <update id="updateByExampleSelective" parameterType="map">
     update plan
     <set>

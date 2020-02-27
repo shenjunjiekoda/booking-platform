@@ -9,6 +9,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
+import javax.validation.Valid;
+
 /**
  * @author Junjie.Shen
  * @version 1.0
@@ -19,34 +22,33 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/class")
 public class ClassController {
 
-    @Autowired
+    @Resource
     private ClassService classService;
 
     @GetMapping("/list/{id}")
     public RestBody getClasses(@PathVariable("id") Long id) {
         log.info("getClasses id:{}", id);
-        classService.getClasses(id);
-        return RestBody.succeed();
+        return RestBody.succeed(classService.getClasses(id));
     }
 
     @PostMapping("/add")
-    public RestBody addClass(@RequestBody AddClassRequest request) {
+    public RestBody addClass(@RequestBody @Valid AddClassRequest request) {
         log.info("addClass request:{}", request);
         classService.addClass(request);
         return RestBody.succeed();
     }
 
     @PostMapping("/update")
-    public RestBody updateClass(@RequestBody UpdateClassRequest request) {
+    public RestBody updateClass(@RequestBody @Valid UpdateClassRequest request) {
         log.info("addClass request:{}", request);
         classService.updateClass(request);
         return RestBody.succeed();
     }
 
-    @PostMapping("/delete")
-    public RestBody deleteClass(@RequestBody DeleteClassRequest request) {
-        log.info("deleteClass request:{}", request);
-        classService.deleteClass(request);
+    @PostMapping("/delete/{id}")
+    public RestBody deleteClass(@PathVariable("id") Long id) {
+        log.info("deleteClass request:{}", id);
+        classService.deleteClass(id);
         return RestBody.succeed();
     }
 

@@ -24,6 +24,10 @@ public class BookRepo {
     @Resource
     private BookMapper bookMapper;
 
+    public Book selectById(Long id){
+        return bookMapper.selectByPrimaryKey(id);
+    }
+
     public Page<Book> selectByGetBooksRequest(GetBooksRequest request) {
         return selectByGetBooksRequest(request, true);
     }
