@@ -10,7 +10,6 @@ import cn.shenjunjie.booking.enums.BookStatus;
 import cn.shenjunjie.booking.repo.*;
 import cn.shenjunjie.booking.service.PlanBookService;
 import cn.shenjunjie.booking.service.PlanService;
-import cn.shenjunjie.booking.utils.UserUtil;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import org.springframework.beans.BeanUtils;
@@ -19,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -49,34 +47,38 @@ public class PlanServiceImpl implements PlanService {
     public List<GetPlanResponse> getPlans(GetPlanRequest request) {
         List<GetPlanResponse> planResponseList = Lists.newArrayList();
         Long clazzId = null;
-        if(!Strings.isNullOrEmpty(request.getClassName())){
+        if (!Strings.isNullOrEmpty(request.getClassName())) {
             Class clazz = classRepo.selectByName(request.getClassName());
-            if(clazz != null){
+            if (clazz != null) {
                 clazzId = clazz.getId();
             }
         }
         List<Long> courseIds = null;
-        if(!Strings.isNullOrEmpty(request.getCourseName())){
+        if (!Strings.isNullOrEmpty(request.getCourseName())) {
             List<Course> courses = courseRepo.selectByPartName(request.getCourseName());
-            if(!CollectionUtils.isEmpty(courses)){
+            if (!CollectionUtils.isEmpty(courses)) {
                 courses.stream().map(Course::getId).forEach(courseIds::add);
             }
         }
         List<Long> teacherIds = null;
-        if(!Strings.isNullOrEmpty(request.getTeacherName())){
+        if (!Strings.isNullOrEmpty(request.getTeacherName())) {
             List<Teacher> teachers = teacherRepo.selectByPartName(request.getTeacherName());
-            if(!CollectionUtils.isEmpty(teachers)){
+            if (!CollectionUtils.isEmpty(teachers)) {
                 teachers.stream().map(Teacher::getId).forEach(teacherIds::add);
             }
         }
-        List<Plan> plans = planRepo.selectByClassIdAndTeacherIdsAndCourseIds(clazzId, teacherIds, courseIds);
-        if (CollectionUtils.isEmpty(plans)) {
+        String week = null;
+        if (request.getWeekStart() != null && request.getWeekEnd() != null) {
+            week = request.getWeekStart() + "~" + request.getWeekEnd();
+        }
+        List<Plan> plans = planRepo.selectByClassIdAndTeacherIdsAndCourseIdsAndWeekAndYearAndSemester(clazzId, teacherIds, courseIds, week, request.getYear(), request.getSemester());
+        if (!CollectionUtils.isEmpty(plans)) {
             plans.forEach(item -> {
                 GetPlanResponse response = new GetPlanResponse();
                 Class clazz = classRepo.selectById(item.getClassId());
                 Course course = courseRepo.selectById(item.getCourseId());
                 String teacherName = null;
-                if(item.getTeacherId()!=null){
+                if (item.getTeacherId() != null) {
                     Teacher teacher = teacherRepo.selectById(item.getTeacherId());
                     teacherName = teacher.getName();
                 }
@@ -94,21 +96,21 @@ public class PlanServiceImpl implements PlanService {
     @Override
     public RestBody addPlan(AddPlanRequest request) {
         Teacher teacher = teacherRepo.selectByName(request.getTeacherName());
-        if(teacher == null){
+        if (teacher == null) {
             return RestBody.fail("老师不存在！");
         }
         Long teacherId = teacher.getId();
         Course course = courseRepo.selectByName(request.getCourseName());
-        if(course == null){
+        if (course == null) {
             return RestBody.fail("课程不存在！");
         }
         Long courseId = course.getId();
         Class clazz = classRepo.selectByName(request.getClassName());
-        if(clazz == null){
+        if (clazz == null) {
             return RestBody.fail("班级不存在！");
         }
         Long classId = clazz.getId();
-        planRepo.insertByTeacherIdAndCourseIdAndClassIdAndWeek(teacherId,courseId,classId,request.getWeek());
+        planRepo.insertByTeacherIdAndCourseIdAndClassIdAndWeek(teacherId, courseId, classId, request.getWeek());
         return RestBody.succeed();
     }
 
@@ -116,21 +118,21 @@ public class PlanServiceImpl implements PlanService {
     @Override
     public RestBody updatePlan(UpdatePlanRequest request) {
         Course course = courseRepo.selectByName(request.getCourseName());
-        if(course == null){
+        if (course == null) {
             return RestBody.fail("课程不存在！");
         }
         Long courseId = course.getId();
         Class clazz = classRepo.selectByName(request.getClassName());
-        if(clazz == null){
+        if (clazz == null) {
             return RestBody.fail("班级不存在！");
         }
         Long classId = clazz.getId();
         Teacher teacher = teacherRepo.selectByName(request.getTeacherName());
-        if(teacher==null){
+        if (teacher == null) {
             return RestBody.fail("老师名不存在！");
         }
         Long teacherId = teacher.getId();
-        planRepo.updateByIdAndTeacherIdAndCourseIdAndClassIdAndWeek(request.getId(),teacherId,courseId,classId,request.getWeek());
+        planRepo.updateByIdAndTeacherIdAndCourseIdAndClassIdAndWeek(request.getId(), teacherId, courseId, classId, request.getWeek());
         return RestBody.succeed();
     }
 
@@ -140,10 +142,10 @@ public class PlanServiceImpl implements PlanService {
         List<Plan> plans = planRepo.selectByClassId(classId);
         Class clazz = classRepo.selectById(classId);
         String className = clazz.getName();
-        if(!CollectionUtils.isEmpty(plans)){
+        if (!CollectionUtils.isEmpty(plans)) {
             plans.forEach(plan -> {
                 PlanBook planBook = planBookRepo.selectByPlanId(plan.getId());
-                if(planBook!=null){
+                if (planBook != null) {
                     GetPlanBooksResponse response = new GetPlanBooksResponse();
                     Long teacherId = plan.getTeacherId();
                     Teacher teacher = teacherRepo.selectById(teacherId);
@@ -151,14 +153,14 @@ public class PlanServiceImpl implements PlanService {
                     Course course = courseRepo.selectById(courseId);
                     String week = plan.getWeek();
                     response.setId(planBook.getId());
-                    if(planBook.getBookId()!=null){
+                    if (planBook.getBookId() != null) {
                         response.setBookId(planBook.getBookId());
                         Book book = bookRepo.selectById(planBook.getBookId());
                         response.setBookName(book.getName());
                     }
                     response.setCourseId(courseId);
                     response.setCourseName(course.getName());
-                    if(teacher!=null){
+                    if (teacher != null) {
                         response.setTeacherId(teacherId);
                         response.setTeacherName(teacher.getName());
                     }
@@ -178,24 +180,28 @@ public class PlanServiceImpl implements PlanService {
     @Transactional
     @Override
     public RestBody addPlanBook(AddPlanBookRequest request) {
-        Teacher teacher = teacherRepo.selectByName(request.getTeacherName());
-        if(teacher == null){
-            return RestBody.fail("老师不存在！");
-        }
-        Long teacherId = teacher.getId();
-        Course course = courseRepo.selectByName(request.getCourseName());
-        if(course == null){
-            return RestBody.fail("课程不存在！");
-        }
-        Long courseId = course.getId();
-        Class clazz = classRepo.selectByName(request.getClassName());
-        if(clazz == null){
-            return RestBody.fail("班级不存在！");
-        }
-        Long classId = clazz.getId();
-        planRepo.insertByTeacherIdAndCourseIdAndClassIdAndWeek(teacherId,courseId,classId,request.getWeek());
-        Plan plan = planRepo.selectByClassIdAndTeacherIdAndCourseId(classId, teacherId, courseId);
-        planBookRepo.insertByPlanIdAndBookIdAndStatusAndStuNumAndTeacherNum(plan.getId(),request.getBookId(), BookStatus.NEW,request.getStuNum(),request.getTeacherNum());
+//        Teacher teacher = teacherRepo.selectByName(request.getTeacherName());
+//        if(teacher == null){
+//            return RestBody.fail("老师不存在！");
+//        }
+//        Long teacherId = teacher.getId();
+//        Course course = courseRepo.selectByName(request.getCourseName());
+//        if(course == null){
+//            return RestBody.fail("课程不存在！");
+//        }
+//        Long courseId = course.getId();
+//        Class clazz = classRepo.selectByName(request.getClassName());
+//        if(clazz == null){
+//            return RestBody.fail("班级不存在！");
+//        }
+//        Long classId = clazz.getId();
+//        planRepo.insertByTeacherIdAndCourseIdAndClassIdAndWeek(teacherId,courseId,classId,request.getWeek());
+
+//        Plan plan = planRepo.selectByClassIdAndTeacherIdAndCourseId(classId, teacherId, courseId);
+        request.getBookIds().forEach(bookId -> {
+            planBookRepo.insertByPlanIdAndBookIdAndStatusAndStuNumAndTeacherNum(request.getPlanId(), bookId, BookStatus.NEW, request.getStuNum(), request.getTeacherNum());
+
+        });
         return RestBody.succeed();
     }
 
@@ -203,33 +209,33 @@ public class PlanServiceImpl implements PlanService {
     @Override
     public RestBody updatePlanBook(UpdatePlanBookRequest request) {
         Teacher teacher = null;
-        if(request.getTeacherName()!=null){
+        if (request.getTeacherName() != null) {
             teacher = teacherRepo.selectByName(request.getTeacherName());
-            if(teacher == null){
+            if (teacher == null) {
                 return RestBody.fail("老师不存在！");
             }
         }
         Long teacherId = teacher.getId();
         Course course = null;
-        if(request.getCourseName()!=null){
+        if (request.getCourseName() != null) {
             course = courseRepo.selectByName(request.getCourseName());
-            if(course == null){
+            if (course == null) {
                 return RestBody.fail("课程不存在！");
             }
         }
         Long courseId = course.getId();
         Class clazz = null;
-        if(request.getClassName()!=null){
+        if (request.getClassName() != null) {
             clazz = classRepo.selectByName(request.getClassName());
-            if(clazz == null){
+            if (clazz == null) {
                 return RestBody.fail("班级不存在！");
             }
         }
         Long classId = clazz.getId();
-        planRepo.updateByIdAndTeacherIdAndCourseIdAndClassIdAndWeek(request.getPlanId(),teacherId,courseId,classId,request.getWeek());
-        if(request.getTeacherNum()!=null || request.getStuNum()!=null || request.getBookId()!=null){
+        planRepo.updateByIdAndTeacherIdAndCourseIdAndClassIdAndWeek(request.getPlanId(), teacherId, courseId, classId, request.getWeek());
+        if (request.getTeacherNum() != null || request.getStuNum() != null || request.getBookId() != null) {
             PlanBook planBook = planBookRepo.selectByPlanId(request.getPlanId());
-            planBookRepo.updateByIdAndBookIdAndTeacherNumAndStuNum(planBook.getId(),request.getBookId(),request.getTeacherNum(),request.getStuNum());
+            planBookRepo.updateByIdAndBookIdAndTeacherNumAndStuNum(planBook.getId(), request.getBookId(), request.getTeacherNum(), request.getStuNum());
         }
 
         return RestBody.succeed();
@@ -239,7 +245,7 @@ public class PlanServiceImpl implements PlanService {
     @Override
     public RestBody deletePlanBook(Long id) {
         PlanBook planBook = planBookRepo.selectById(id);
-        if(planBook==null){
+        if (planBook == null) {
             return RestBody.fail("计划号不存在！");
         }
         planRepo.deleteById(planBook.getPlanId());

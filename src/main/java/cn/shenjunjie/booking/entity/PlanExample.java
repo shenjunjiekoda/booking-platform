@@ -413,6 +413,126 @@ public class PlanExample {
             addCriterion("week not between", value1, value2, "week");
             return (Criteria) this;
         }
+
+        public Criteria andYearIsNull() {
+            addCriterion("year is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andYearIsNotNull() {
+            addCriterion("year is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andYearEqualTo(Integer value) {
+            addCriterion("year =", value, "year");
+            return (Criteria) this;
+        }
+
+        public Criteria andYearNotEqualTo(Integer value) {
+            addCriterion("year <>", value, "year");
+            return (Criteria) this;
+        }
+
+        public Criteria andYearGreaterThan(Integer value) {
+            addCriterion("year >", value, "year");
+            return (Criteria) this;
+        }
+
+        public Criteria andYearGreaterThanOrEqualTo(Integer value) {
+            addCriterion("year >=", value, "year");
+            return (Criteria) this;
+        }
+
+        public Criteria andYearLessThan(Integer value) {
+            addCriterion("year <", value, "year");
+            return (Criteria) this;
+        }
+
+        public Criteria andYearLessThanOrEqualTo(Integer value) {
+            addCriterion("year <=", value, "year");
+            return (Criteria) this;
+        }
+
+        public Criteria andYearIn(List<Integer> values) {
+            addCriterion("year in", values, "year");
+            return (Criteria) this;
+        }
+
+        public Criteria andYearNotIn(List<Integer> values) {
+            addCriterion("year not in", values, "year");
+            return (Criteria) this;
+        }
+
+        public Criteria andYearBetween(Integer value1, Integer value2) {
+            addCriterion("year between", value1, value2, "year");
+            return (Criteria) this;
+        }
+
+        public Criteria andYearNotBetween(Integer value1, Integer value2) {
+            addCriterion("year not between", value1, value2, "year");
+            return (Criteria) this;
+        }
+
+        public Criteria andSemesterIsNull() {
+            addCriterion("semester is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andSemesterIsNotNull() {
+            addCriterion("semester is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andSemesterEqualTo(Integer value) {
+            addCriterion("semester =", value, "semester");
+            return (Criteria) this;
+        }
+
+        public Criteria andSemesterNotEqualTo(Integer value) {
+            addCriterion("semester <>", value, "semester");
+            return (Criteria) this;
+        }
+
+        public Criteria andSemesterGreaterThan(Integer value) {
+            addCriterion("semester >", value, "semester");
+            return (Criteria) this;
+        }
+
+        public Criteria andSemesterGreaterThanOrEqualTo(Integer value) {
+            addCriterion("semester >=", value, "semester");
+            return (Criteria) this;
+        }
+
+        public Criteria andSemesterLessThan(Integer value) {
+            addCriterion("semester <", value, "semester");
+            return (Criteria) this;
+        }
+
+        public Criteria andSemesterLessThanOrEqualTo(Integer value) {
+            addCriterion("semester <=", value, "semester");
+            return (Criteria) this;
+        }
+
+        public Criteria andSemesterIn(List<Integer> values) {
+            addCriterion("semester in", values, "semester");
+            return (Criteria) this;
+        }
+
+        public Criteria andSemesterNotIn(List<Integer> values) {
+            addCriterion("semester not in", values, "semester");
+            return (Criteria) this;
+        }
+
+        public Criteria andSemesterBetween(Integer value1, Integer value2) {
+            addCriterion("semester between", value1, value2, "semester");
+            return (Criteria) this;
+        }
+
+        public Criteria andSemesterNotBetween(Integer value1, Integer value2) {
+            addCriterion("semester not between", value1, value2, "semester");
+            return (Criteria) this;
+        }
     }
 
     public static class Criteria extends GeneratedCriteria {

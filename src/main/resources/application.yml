@@ -13,7 +13,7 @@ spring:
 #    auto: true
 #    proxy-target-class: true
   application:
-    name: deployment-srv
+    name: booking-srv
   profiles:
     active: dev
   datasource:

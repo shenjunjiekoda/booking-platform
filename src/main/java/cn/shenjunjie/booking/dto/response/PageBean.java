@@ -13,14 +13,14 @@ import java.util.List;
 @Data
 public class PageBean<T> {
 
-	private Integer page;
-	private Integer limit;
+	private Integer pageNo;
+	private Integer pageSize;
 	private Long total;
 	private List<T> items;
 
 	public PageBean(BaseRequest request, List<T> items, long total) {
-		this.page = request.getPage();
-		this.limit = request.getLimit();
+		this.pageNo = request.getPageCurrent();
+		this.pageSize = request.getPageSize();
 		this.total = total;
 		this.items = items;
 	}

@@ -21,15 +21,15 @@ public class PlanBookRepo {
     @Resource
     private PlanBookMapper planBookMapper;
 
-    public PlanBook selectById(Long id){
+    public PlanBook selectById(Long id) {
         return planBookMapper.selectByPrimaryKey(id);
     }
 
-    public PlanBook selectByPlanId(Long planId){
+    public PlanBook selectByPlanId(Long planId) {
         return planBookMapper.selectByPlanId(planId);
     }
 
-    public void insertByPlanIdAndBookIdAndStatusAndStuNumAndTeacherNum(Long planId, Long bookId, BookStatus status, Long stuNum,Long teacherNum){
+    public void insertByPlanIdAndBookIdAndStatusAndStuNumAndTeacherNum(Long planId, Long bookId, BookStatus status, Long stuNum, Long teacherNum) {
         PlanBook record = new PlanBook();
         record.setPlanId(planId);
         record.setBookId(bookId);
@@ -39,7 +39,7 @@ public class PlanBookRepo {
         planBookMapper.insertSelective(record);
     }
 
-    public void updateByIdAndBookIdAndTeacherNumAndStuNum(Long id, Long bookId,Long teacherNum,Long stuNum){
+    public void updateByIdAndBookIdAndTeacherNumAndStuNum(Long id, Long bookId, Long teacherNum, Long stuNum) {
         PlanBook record = new PlanBook();
         record.setId(id);
         record.setBookId(bookId);
@@ -48,7 +48,7 @@ public class PlanBookRepo {
         planBookMapper.updateByPrimaryKeySelective(record);
     }
 
-    public void deleteById(Long id){
+    public void deleteById(Long id) {
         planBookMapper.deleteByPrimaryKey(id);
     }
 

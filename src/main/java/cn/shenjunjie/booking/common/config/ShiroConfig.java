@@ -39,9 +39,9 @@ public class ShiroConfig {
         filterMap.put("/v2/api-docs", "anon");
         filterMap.put("/swagger-ui.html", "anon");
         filterMap.put("/swagger-resources/**", "anon");
-        filterMap.put("/**", "authc");
+//        filterMap.put("/**", "authc");
         bean.setFilterChainDefinitionMap(filterMap);
-        bean.setLoginUrl("/tologin");
+        bean.setLoginUrl("/teacher/tologin");
         return bean;
     }
 

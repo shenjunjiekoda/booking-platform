@@ -20,4 +20,12 @@ public class GetPlanRequest {
 
     private String TeacherName;
 
+    private Integer year;
+
+    private Integer semester;
+
+    private Integer weekStart;
+
+    private Integer weekEnd;
+
 }

@@ -5,23 +5,23 @@ package cn.shenjunjie.booking.dto.request;
  */
 public class BaseRequest {
 
-	protected Integer page = 1;
-	protected Integer limit = 20;
+	protected Integer pageCurrent = 1;
+	protected Integer pageSize = 10;
 
-	public Integer getPage() {
-		return page;
+	public Integer getPageCurrent() {
+		return pageCurrent;
 	}
 
-	public Integer getLimit() {
-		return limit;
+	public Integer getPageSize() {
+		return pageSize;
 	}
 
-	public void setPage(Integer page) {
-		this.page = page;
+	public void setPageCurrent(Integer pageCurrent) {
+		this.pageCurrent = pageCurrent;
 	}
 
-	public void setLimit(Integer limit) {
-		this.limit = limit;
+	public void setPageSize(Integer pageSize) {
+		this.pageSize = pageSize;
 	}
 
 }

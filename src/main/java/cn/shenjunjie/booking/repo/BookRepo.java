@@ -34,7 +34,7 @@ public class BookRepo {
 
     public Page<Book> selectByGetBooksRequest(GetBooksRequest request, boolean pageAble) {
         if (pageAble) {
-            PageHelper.startPage(request.getPage(), request.getLimit());
+            PageHelper.startPage(request.getPageCurrent(), request.getPageSize());
         }
         BookExample example = new BookExample();
         BookExample.Criteria criteria = example.createCriteria();

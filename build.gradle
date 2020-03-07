@@ -30,20 +30,22 @@ mybatisGenerator {
 }
 
 repositories {
+    maven{ url 'http://maven.aliyun.com/nexus/content/groups/public/'}
     mavenCentral()
 }
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter', version: '2.2.2.RELEASE'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-actuator', version: '2.2.2.RELEASE'
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter', version: '2.2.2.RELEASE'
     compile group: 'mysql', name: 'mysql-connector-java', version: '8.0.17'
     compile group: 'org.apache.shiro', name: 'shiro-spring-boot-starter', version: '1.4.2'
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-actuator', version: '2.2.2.RELEASE'
     compile group: 'org.mybatis.spring.boot', name: 'mybatis-spring-boot-starter', version: '2.1.1'
     compile group: 'org.mybatis.generator', name: 'mybatis-generator-core', version: '1.4.0'
-    //todo 去修一下druid的bug,经测试,version1.1.21 gradle build -x test 会报错，但是1.1.20版本不报错
+    compile group: 'org.apache.poi', name: 'poi', version: '4.1.2'
+    compile group: 'org.apache.poi', name: 'poi-ooxml', version: '4.1.2'
     compile group: 'com.alibaba', name: 'druid-spring-boot-starter', version: '1.1.21'
     compile group: 'com.github.pagehelper', name: 'pagehelper-spring-boot-starter', version: '1.2.13'
     compile group: 'com.google.guava', name: 'guava', version: '28.2-jre'

@@ -8,26 +8,22 @@ import lombok.experimental.Accessors;
 /**
  * @author Junjie.Shen
  * @version 1.0
- * @date 2020/2/27 15:42
+ * @date 2020/3/3 16:15
  */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Accessors(chain = true)
-public class GetPlanResponse {
+public class LoginResponse {
 
-    private Long id;
+    private String name;
 
-    private String courseName;
+    private String uuid;
 
-    private String className;
+    private String token;
 
-    private String teacherName;
+    private String teacherId;
 
-    private Integer year;
-
-    private Integer semester;
-
-    private String week;
+    private String email;
 
 }

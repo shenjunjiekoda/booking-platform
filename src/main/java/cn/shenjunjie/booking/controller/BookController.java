@@ -27,7 +27,7 @@ public class BookController {
     @Resource
     private BookService bookService;
 
-    @PostMapping("/list")
+    @GetMapping("/list")
     public RestBody getBooks(GetBooksRequest request) {
         log.info("getBooks request:{}", request);
         return RestBody.succeed(bookService.getBooks(request));

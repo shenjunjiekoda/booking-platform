@@ -11,6 +11,10 @@ public class Plan {
 
     private String week;
 
+    private Integer year;
+
+    private Integer semester;
+
     public Long getId() {
         return id;
     }
@@ -49,5 +53,21 @@ public class Plan {
 
     public void setWeek(String week) {
         this.week = week == null ? null : week.trim();
+    }
+
+    public Integer getYear() {
+        return year;
+    }
+
+    public void setYear(Integer year) {
+        this.year = year;
+    }
+
+    public Integer getSemester() {
+        return semester;
+    }
+
+    public void setSemester(Integer semester) {
+        this.semester = semester;
     }
 }
