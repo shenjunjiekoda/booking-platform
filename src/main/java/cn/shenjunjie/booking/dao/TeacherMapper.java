@@ -1,8 +1,9 @@
 package cn.shenjunjie.booking.dao;
 
+import java.util.List;
+
 import cn.shenjunjie.booking.entity.Teacher;
 import cn.shenjunjie.booking.entity.TeacherExample;
-import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
 /**

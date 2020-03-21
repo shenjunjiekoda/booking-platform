@@ -36,10 +36,10 @@
 			<property name="enableSubPackages" value="true" />
 		</sqlMapGenerator>
 		<!--生成Dao类存放位置 -->
-		<javaClientGenerator type="XMLMAPPER"
-			targetPackage="cn.shenjunjie.booking.dao" targetProject="C:\Users\JunjieShen\Desktop\tips\myproject\booking-platform\src\main\java">
-			<property name="enableSubPackages" value="true" />
-		</javaClientGenerator>
+<!--		<javaClientGenerator type="XMLMAPPER"-->
+<!--			targetPackage="cn.shenjunjie.booking.dao" targetProject="C:\Users\JunjieShen\Desktop\tips\myproject\booking-platform\src\main\java">-->
+<!--			<property name="enableSubPackages" value="true" />-->
+<!--		</javaClientGenerator>-->
 
 		<!--生成对应表及类名 -->
 <!--		<table tableName="book" domainObjectName="Book"-->
@@ -58,17 +58,21 @@
 <!--			enableUpdateByExample="true" enableSelectByExample="true"-->
 <!--			selectByExampleQueryId="true" enableUpdateByPrimaryKey="true">-->
 <!--		</table>-->
-		<table tableName="plan" domainObjectName="Plan"
-			enableUpdateByExample="true" enableSelectByExample="true"
-			selectByExampleQueryId="true" enableUpdateByPrimaryKey="true">
-		</table>
+<!--		<table tableName="plan" domainObjectName="Plan"-->
+<!--			enableUpdateByExample="true" enableSelectByExample="true"-->
+<!--			selectByExampleQueryId="true" enableUpdateByPrimaryKey="true">-->
+<!--		</table>-->
+<!--		<table tableName="message" domainObjectName="Message"-->
+<!--			   enableUpdateByExample="true" enableSelectByExample="true"-->
+<!--			   selectByExampleQueryId="true" enableUpdateByPrimaryKey="true">-->
+<!--		</table>-->
 <!--		<table tableName="plan_book" domainObjectName="PlanBook"-->
 <!--			enableUpdateByExample="true" enableSelectByExample="true"-->
 <!--			selectByExampleQueryId="true" enableUpdateByPrimaryKey="true">-->
 <!--		</table>-->
-<!--		<table tableName="teacher" domainObjectName="Teacher"-->
-<!--			   enableUpdateByExample="true" enableSelectByExample="true"-->
-<!--			   selectByExampleQueryId="true" enableUpdateByPrimaryKey="true">-->
-<!--		</table>-->
+		<table tableName="teacher" domainObjectName="Teacher"
+			   enableUpdateByExample="true" enableSelectByExample="true"
+			   selectByExampleQueryId="true" enableUpdateByPrimaryKey="true">
+		</table>
 	</context>
 </generatorConfiguration>

@@ -1,0 +1,511 @@
+<template>
+  <div>
+    <el-form
+      :inline="true"
+      size="mini">
+      <el-button type="success" size="mini" style="margin:0.1em;margin-right:1em" icon="el-icon-plus" @click="createPlan()">新增计划</el-button>
+    </el-form>
+
+    <el-table
+      :data="currentTableData"
+      v-loading="loading"
+      size="mini"
+      stripe
+      style="width: 100%;">
+
+      <el-table-column
+        width="55">
+      </el-table-column>
+      <el-table-column type="expand">
+      <template slot-scope="props">
+        <el-form label-position="left" inline class="demo-table-expand">
+          <el-form-item label="书名">
+            <span>{{ props.row.name }}</span>
+          </el-form-item>
+          <el-form-item label="isbn">
+            <span>{{ props.row.isbn }}</span>
+          </el-form-item>
+          <el-form-item label="作者">
+            <span>{{ props.row.author }}</span>
+          </el-form-item>
+          <el-form-item label="出版社">
+            <span>{{ props.row.press }}</span>
+          </el-form-item>
+          <el-form-item label="发版时间">
+            <span>{{ props.row.publishedAt }}</span>
+          </el-form-item>
+          <el-form-item label="版次">
+            <span>{{ props.row.edition }}</span>
+          </el-form-item>
+        </el-form>
+      </template>
+    </el-table-column>
+
+      <el-table-column label="书名" align="center">
+        <template slot-scope="scope">
+          {{scope.row.name}}
+        </template>
+      </el-table-column>
+
+      <el-table-column label="isbn" align="center">
+        <template slot-scope="scope">
+          {{ scope.row.isbn }}
+        </template>
+      </el-table-column>
+
+      <el-table-column label="作者" align="center">
+        <template slot-scope="scope">
+          {{ scope.row.author }}
+        </template>
+      </el-table-column>
+
+      <el-table-column label="出版社" prop="executeAt" align="center">
+        <template slot-scope="scope">
+          {{scope.row.press}}
+        </template>
+      </el-table-column>
+
+      <el-table-column label="操作" align="center" width="300">
+        <template slot-scope="row">
+          <el-button size="mini" icon="el-icon-tickets" @click="goToPlanServicePage(row)">详情</el-button>
+          <el-button :disabled="row.row.status==='completed'" type="primary" size="mini" icon="el-icon-edit" @click="editPlan(row)">编辑</el-button>
+          <el-popconfirm
+            title="确定要删除这个目标计划吗？"
+            @onConfirm="deletePlan(row)"
+          >
+            <el-button :disabled="row.row.status==='completed'" type="danger" size="mini" slot="reference" icon="el-icon-delete">删除</el-button>
+          </el-popconfirm>
+        </template>
+      </el-table-column>
+    </el-table>
+
+    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
+      <el-form ref="dataForm" :model="temp" label-position="left" label-width="80px" style="width: 400px; margin-left:50px;">
+        <el-form-item label="计划名" prop="name" :rules="[{ required: dialogStatus === 'create', message: '计划名不能为空'}]">
+          <el-input v-model="temp.name" />
+        </el-form-item>
+        <el-form-item label="类型" prop="type" :rules="[{ required: dialogStatus === 'create', message: '类型不能为空'}]">
+          <el-radio-group v-model="temp.type">
+          <el-radio-button label="reg"></el-radio-button>
+          <el-radio-button label="dev"></el-radio-button>
+          <el-radio-button label="hot"></el-radio-button>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="负责人" prop="manager" :rules="[{ required: dialogStatus === 'create', message: '负责人不能为空'}]">
+          <el-select
+            v-model="temp.manager"
+            multiple
+            filterable
+            remote
+            reserve-keyword
+            placeholder="请输入负责人"
+            :remote-method="remoteMethod"
+            :loading="searchLoading"
+            loading-text="正在加载用户">
+            <el-option
+              v-for="item in options"
+              :key="item.id"
+              :label="item.name"
+              :value="item.name">
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="执行日期" prop="executeAt" :rules="[{ required: dialogStatus === 'create', message: '执行日期不能为空'}]">
+          <!-- <el-input :disabled="rowStatus === 'confirmed'" v-model="temp.executeAt" /> -->
+          <el-date-picker
+            :disabled="rowStatus === 'confirmed'"
+            v-model="temp.executeAt"
+            type="datetime"
+            placeholder="选择日期时间"
+            align="right"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            format="yyyy-MM-dd HH:mm:ss"
+            :picker-options="pickerOptions">
+          </el-date-picker>
+        </el-form-item>
+        <el-form-item label="描述" prop="desc">
+          <el-input v-model="temp.desc" />
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible = false">
+          Cancel
+        </el-button>
+        <el-button type="primary" @click="dialogStatus==='create'?createData():updateData()">
+          Confirm
+        </el-button>
+      </div>
+    </el-dialog>
+
+  </div>
+</template>
+
+<style>
+  .demo-table-expand {
+    font-size: 0;
+  }
+  .demo-table-expand label {
+    width: 90px;
+    color: #99a9bf;
+  }
+  .demo-table-expand .el-form-item {
+    margin-right: 0;
+    margin-bottom: 0;
+    width: 50%;
+  }
+</style>
+
+<script>
+import Vue from 'vue'
+import pluginExport from '@d2-projects/vue-table-export'
+import D2Crud from '@d2-projects/d2-crud'
+import { getUserByKeyword } from '@api/user'
+import { addPlanInfo, updatePlanInfo, deletePlan } from '@api/plan'
+
+Vue.use(D2Crud)
+
+Vue.use(pluginExport)
+
+export default {
+  props: {
+    tableData: {
+      default: () => []
+    },
+    loading: {
+      default: false
+    }
+  },
+  filters: {
+    statusFilter (status) {
+      const statusMap = {
+        completed: 'success',
+        confirmed: '',
+        new: 'info'
+      }
+      return statusMap[status]
+    }
+  },
+  data () {
+    return {
+      rowId: 0,
+      rowStatus: '',
+      searchLoading: false,
+      options: [],
+      list: [],
+      currentTableData: [],
+      multipleSelection: [],
+      textMap: {
+        update: '更新计划',
+        create: '新增计划',
+        type: ''
+      },
+      temp: {
+        name: '',
+        rowStatus: ''
+      },
+      pickerOptions: {
+        shortcuts: [{
+          text: '今天',
+          onClick (picker) {
+            picker.$emit('pick', new Date())
+          }
+        }, {
+          text: '明天',
+          onClick (picker) {
+            const date = new Date()
+            date.setTime(date.getTime() + 3600 * 1000 * 24)
+            picker.$emit('pick', date)
+          }
+        }, {
+          text: '一周后',
+          onClick (picker) {
+            const date = new Date()
+            date.setTime(date.getTime() + 3600 * 1000 * 24 * 7)
+            picker.$emit('pick', date)
+          }
+        }]
+      },
+      dialogStatus: '',
+      dialogFormVisible: false,
+      downloadColumns: [
+        { label: 'No', prop: 'id' },
+        { label: '计划名', prop: 'name' },
+        { label: '类型', prop: 'type' },
+        { label: '创建人', prop: 'createdBy' },
+        { label: '负责人', prop: 'manager' },
+        { label: '创建时间', prop: 'createdAt' },
+        { label: '执行时间', prop: 'executeAt' },
+        { label: '描述', prop: 'desc' },
+        { label: '状态', prop: 'status' },
+        { label: '用时', prop: 'timeUsed' }
+      ]
+    }
+  },
+  watch: {
+    tableData: {
+      handler (val) {
+        this.currentTableData = val
+      },
+      immediate: true
+    }
+  },
+  methods: {
+    goToPlanServicePage (row) {
+      // console.log('curId:', row.row.id)
+      // console.log('curplanName:', row.row.name)
+      this.$router.push({
+        name: 'planservice',
+        params: {
+          id: row.row.id,
+          planName: row.row.name,
+          planStatus: row.row.status
+        }
+      })
+    },
+    remoteMethod (query) {
+      var _this = this
+      if (query !== '') {
+        console.log('name query:', query)
+        this.searchLoading = true
+        getUserByKeyword(query)
+          .then(res => {
+            _this.searchLoading = false
+            _this.list = res.data
+            console.log('name res:', res.data)
+            console.log('search name res:', _this.list)
+          })
+          .catch(err => {
+            _this.searchLoading = false
+            _this.$notify({
+              title: '书库数据请求异常'
+            })
+            console.log('err', err)
+          })
+        setTimeout(() => {
+          _this.searchLoading = false
+          console.log('timeout list', _this.list)
+          _this.options = _this.list.filter(item => {
+            console.log('filter item:', item)
+            return item.name
+              .indexOf(query.toLowerCase()) > -1
+          })
+        }, 1500)
+      } else {
+        this.options = []
+      }
+    },
+    createPlan () {
+      this.resetTemp()
+      this.rowStatus = ''
+      this.dialogStatus = 'create'
+      this.dialogFormVisible = true
+      this.$nextTick(() => {
+        this.$refs['dataForm'].clearValidate()
+      })
+    },
+    editPlan (row) {
+      console.log('edit modal:', row.row)
+      this.rowId = row.row.id
+      this.rowStatus = row.row.status
+      this.temp.name = row.row.name
+      console.log('this.temp.name:', this.temp.name)
+      this.resetTemp()
+      this.dialogStatus = 'update'
+      this.dialogFormVisible = true
+      this.$nextTick(() => {
+        this.$refs['dataForm'].clearValidate()
+      })
+    },
+    deletePlan (row) {
+      console.log('deletePlan id:', row.row.id)
+      deletePlan(row.row.id)
+        .then(res => {
+          console.log('deletePlan res:', res)
+          if (res.errorCode === 0) {
+            this.$notify({
+              title: 'OK',
+              message: '删除成功',
+              type: 'success',
+              duration: 2000
+            })
+            this.$emit('reload', {})
+          } else {
+            this.$message({
+              title: '失败',
+              message: res.msg,
+              type: 'error',
+              duration: 2000
+            })
+          }
+        }).catch(err => {
+          console.log('err: ', err)
+        })
+    },
+    updateData () {
+      this.$refs['dataForm'].validate((valid) => {
+        if (valid) {
+          const managerList = this.temp.manager
+          console.log('planName:', this.temp.name)
+          console.log('type:', this.temp.type)
+          console.log(this.temp.type === '')
+          console.log('managerList', managerList)
+          console.log('planId:', this.rowId)
+          console.log('desc:', this.temp.desc)
+          var manager = ''
+          if (managerList !== undefined && managerList.length === 1) {
+            manager = managerList[0]
+          } else if (managerList !== undefined && managerList.length > 1) {
+            this.$message({
+              title: '失败',
+              message: '负责人只能有一个',
+              type: 'error',
+              duration: 2000
+            })
+            return
+          }
+          console.log('manager:', manager)
+          if (this.temp.name === undefined && this.temp.type === '' && this.temp.executeAt === undefined && manager === '' && this.temp.desc === undefined) {
+            this.dialogFormVisible = false
+            return
+          }
+          // console.log('executeat num:', Date.parse(this.temp.executeAt))
+          // console.log('now num:', new Date().valueOf())
+          if (this.temp.executeAt !== undefined && Date.parse(this.temp.executeAt) - new Date().getTime() <= 5000) {
+            console.log('wrong executeAt')
+            this.$message({
+              title: '失败',
+              message: '执行时间不能比现在早',
+              type: 'error',
+              duration: 2000
+            })
+            return
+          }
+          updatePlanInfo({
+            id: this.rowId,
+            name: this.temp.name === undefined ? null : this.temp.name,
+            type: this.temp.type === '' ? null : this.temp.type,
+            executeAt: this.temp.executeAt === undefined ? null : this.temp.executeAt,
+            manager: manager === '' ? null : manager,
+            desc: this.temp.desc === undefined ? null : this.temp.desc
+          }).then(res => {
+            console.log('updatePlan res:', res)
+            if (res.errorCode === 0) {
+              console.log('updatePlan success!')
+              this.dialogFormVisible = false
+              this.$notify({
+                title: 'OK',
+                message: '更新成功',
+                type: 'success',
+                duration: 2000
+              })
+              this.$emit('reload', {})
+              console.log('刷新')
+            } else {
+              this.$message({
+                title: '失败',
+                message: res.msg,
+                type: 'error',
+                duration: 2000
+              })
+            }
+          }).catch(err => {
+            console.log('err: ', err)
+          })
+        }
+      })
+    },
+    createData () {
+      console.log('create Data form....')
+      this.$refs['dataForm'].validate((valid) => {
+        if (valid) {
+          const managerList = this.temp.manager
+          console.log('planName:', this.temp.name)
+          console.log('type:', this.temp.type)
+          // console.log('managerList', managerList)
+          console.log('desc:', this.temp.desc)
+          console.log('executeAt:', this.temp.executeAt)
+          var manager = ''
+          if (managerList !== undefined && managerList.length === 1) {
+            manager = managerList[0]
+          } else if (managerList !== undefined && managerList.length > 1) {
+            this.$message({
+              title: '失败',
+              message: '负责人只能有一个',
+              type: 'error',
+              duration: 2000
+            })
+            return
+          }
+          console.log('createAt time:', this.temp.executeAt)
+          console.log('now time:', new Date().getTime())
+          if (Date.parse(this.temp.executeAt) - new Date().getTime() <= 5000) {
+            this.$message({
+              title: '失败',
+              message: '执行时间不能比现在早',
+              type: 'error',
+              duration: 2000
+            })
+            return
+          }
+          console.log('manager:', manager)
+          if (this.temp.name === undefined && this.temp.type === '' && this.temp.executeAt === undefined && manager === '' && this.temp.desc === undefined) {
+            this.dialogFormVisible = false
+            return
+          }
+          addPlanInfo({
+            name: this.temp.name === undefined ? null : this.temp.name,
+            type: this.temp.type === '' ? null : this.temp.type,
+            executeAt: this.temp.executeAt === undefined ? null : this.temp.executeAt,
+            manager: manager === '' ? null : manager,
+            desc: this.temp.desc === undefined ? null : this.temp.desc
+          }).then(res => {
+            console.log('addPlan res:', res)
+            if (res.errorCode === 0) {
+              console.log('addPlan success!')
+              this.dialogFormVisible = false
+              this.$notify({
+                title: 'OK',
+                message: '添加成功',
+                type: 'success',
+                duration: 2000
+              })
+              this.$emit('reload', {})
+            } else {
+              this.$message({
+                title: '失败',
+                message: res.msg,
+                type: 'error',
+                duration: 2000
+              })
+            }
+          }).catch(err => {
+            console.log('err: ', err)
+          })
+        }
+      })
+    },
+    resetTemp () {
+      this.temp = {
+        id: undefined,
+        importance: 1,
+        remark: '',
+        timestamp: new Date(),
+        title: '',
+        status: 'published',
+        type: ''
+      }
+    },
+    handleSwitchChange (val, index) {
+      const oldValue = this.currentTableData[index]
+      this.$set(this.currentTableData, index, {
+        ...oldValue,
+        type: val
+      })
+      // 注意 这里并没有把修改后的数据传递出去 如果需要的话请自行修改
+    },
+    handleSelectionChange (val) {
+      this.multipleSelection = val
+    }
+  }
+}
+</script>

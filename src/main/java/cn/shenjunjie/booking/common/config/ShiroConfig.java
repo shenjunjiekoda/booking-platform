@@ -1,15 +1,20 @@
 package cn.shenjunjie.booking.common.config;
 
+import cn.shenjunjie.booking.common.session.*;
 import com.google.common.collect.Maps;
 import org.apache.shiro.mgt.SecurityManager;
+import org.apache.shiro.session.mgt.SessionManager;
 import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.EnvironmentAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
+import org.springframework.core.env.Environment;
+import org.springframework.util.StringUtils;
 
 import java.util.Map;
 
@@ -18,8 +23,23 @@ import java.util.Map;
  * @version 1.0
  * @date 2020/1/9 14:13
  */
+
 @Configuration
-public class ShiroConfig {
+public class ShiroConfig implements EnvironmentAware {
+
+    private Environment env;
+
+    private String host;
+    private Integer port = 6379;
+    private String password;
+    private Integer timeout;
+    private Integer sessionExpire;
+    private String sessionKeyPrefix;
+    private Integer sessionInMemoryTimeout;
+    private String principalIdFieldName;
+    private Integer cacheExpire;
+    private String cacheKeyPrefix;
+
 
     @Bean("shiroFilter")
     public ShiroFilterFactoryBean getShiroFilterFactoryBean(@Qualifier("defaultWebSecurityManager") DefaultWebSecurityManager defaultWebSecurityManager) {
@@ -47,10 +67,68 @@ public class ShiroConfig {
 
 
     @Bean("defaultWebSecurityManager")
-    public DefaultWebSecurityManager getDefaultWebSecurityManager(@Qualifier("userRealm") UserRealm userRealm) {
+    public DefaultWebSecurityManager getDefaultWebSecurityManager(@Qualifier("userRealm") UserRealm userRealm, SessionManager sessionManager, RedisCacheManager redisCacheManager) {
         DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
         securityManager.setRealm(userRealm);
+        securityManager.setSessionManager(sessionManager);
+        securityManager.setCacheManager(redisCacheManager);
         return securityManager;
+    }
+
+    @Bean
+    public IRedisManager redisManager() {
+        IRedisManager redisManager;
+        RedisManager standaloneManager = new RedisManager();
+        if (!StringUtils.isEmpty(host) && port != null) {
+            standaloneManager.setHost(host.concat(":").concat(String.valueOf(port)));
+        }
+        if (timeout != null) {
+            standaloneManager.setTimeout(timeout);
+        }
+        if (!StringUtils.isEmpty(password)) {
+            standaloneManager.setPassword(password);
+        }
+        redisManager = standaloneManager;
+        return redisManager;
+    }
+
+    @Bean
+    public RedisSessionDAO redisSessionDAO(IRedisManager redisManager) {
+        RedisSessionDAO redisSessionDAO = new RedisSessionDAO();
+        redisSessionDAO.setRedisManager(redisManager);
+        if (sessionExpire != null) {
+            redisSessionDAO.setExpire(sessionExpire);
+        }
+        if (!StringUtils.isEmpty(sessionKeyPrefix)) {
+            redisSessionDAO.setKeyPrefix(sessionKeyPrefix);
+        }
+        if (sessionInMemoryTimeout != null) {
+            redisSessionDAO.setSessionInMemoryTimeout(sessionInMemoryTimeout);
+        }
+        return redisSessionDAO;
+    }
+
+    @Bean
+    public RedisCacheManager redisCacheManager(IRedisManager redisManager) {
+        RedisCacheManager cacheManager = new RedisCacheManager();
+        cacheManager.setRedisManager(redisManager);
+        if (!StringUtils.isEmpty(principalIdFieldName)) {
+            cacheManager.setPrincipalIdFieldName(principalIdFieldName);
+        }
+        if (cacheExpire != null) {
+            cacheManager.setExpire(cacheExpire);
+        }
+        if (!StringUtils.isEmpty(cacheKeyPrefix)) {
+            cacheManager.setKeyPrefix(cacheKeyPrefix);
+        }
+        return cacheManager;
+    }
+
+    @Bean
+    public SessionManager sessionManager(RedisSessionDAO redisSessionDAO) {
+        MyWebSessionManager sessionManager = new MyWebSessionManager();
+        sessionManager.setSessionDAO(redisSessionDAO);
+        return sessionManager;
     }
 
     @Bean
@@ -73,4 +151,18 @@ public class ShiroConfig {
         return advisor;
     }
 
+    @Override
+    public void setEnvironment(Environment environment) {
+        this.env = environment;
+        this.host = environment.getProperty("spring.redis.host", String.class);
+        this.port = environment.getProperty("spring.redis.port", Integer.class);
+        this.password = environment.getProperty("spring.redis.password", String.class);
+        this.timeout = environment.getProperty("spring.redis.timeout", Integer.class);
+        this.sessionExpire = environment.getProperty("session.expire", Integer.class);
+        this.sessionKeyPrefix = environment.getProperty("session.key-prefix", String.class);
+        this.sessionInMemoryTimeout = environment.getProperty("session.sessionInMemoryTimeout", Integer.class);
+        this.principalIdFieldName = environment.getProperty("session.principalIdFieldName", String.class);
+        this.cacheExpire = environment.getProperty("session.cache-expire", Integer.class);
+        this.cacheKeyPrefix = environment.getProperty("session.cache-key-prefix", String.class);
+    }
 }

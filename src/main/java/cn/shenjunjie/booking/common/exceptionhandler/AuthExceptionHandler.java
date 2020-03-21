@@ -19,13 +19,13 @@ public class AuthExceptionHandler {
 
     @ExceptionHandler
     @ResponseBody
-    public RestBody UnauthorizedExceptionHandler(UnauthorizedException e) {
+    public RestBody unauthorizedExceptionHandler(UnauthorizedException e) {
         return RestBody.fail("You are not authorized, Please Contact admin for permissions.");
     }
 
     @ExceptionHandler
     @ResponseBody
-    public RestBody JsoupExceptionHandler(JsoupException e) {
+    public RestBody jsoupExceptionHandler(JsoupException e) {
         return RestBody.fail("Search in the web cannot be used.Please contact admin!");
     }
 

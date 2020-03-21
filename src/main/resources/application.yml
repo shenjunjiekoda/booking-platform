@@ -34,7 +34,22 @@ spring:
       test-while-idle: true
       test-on-borrow: true
       test-on-return: false
+  redis:
+    host: 127.0.0.1
+    password:
+    port: 6379
 
+session:
+  #expire缓存key超时时间，-1持久化，-2和session时间一样，默认-2
+  expire: -2
+  key-prefix: booking:shiro:session
+  #本地ThreadLocal超时时间
+  sessionInMemoryTimeout: 1000
+  # user的id
+  principalIdFieldName: id
+  #redis缓存超时时间,s
+  cache-expire: 1800
+  cache-key-prefix: booking:shiro:cache
 mybatis:
   mapper-locations: classpath*:mybatis/mapper/*.xml
   config-locations: classpath*:mybatis/config.xml

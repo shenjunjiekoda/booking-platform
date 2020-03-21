@@ -1,9 +1,17 @@
 package cn.shenjunjie.booking.entity;
 
+import lombok.ToString;
+
+import java.io.Serializable;
+
 /**
  * @author JunjieShen
  */
-public class Teacher {
+@ToString
+public class Teacher implements Serializable {
+
+    private static final long serialVersionUID = -689330759819043699L;
+
     private Long id;
 
     private String name;
@@ -13,6 +21,8 @@ public class Teacher {
     private String password;
 
     private String email;
+
+    private Integer isadmin;
 
     public Long getId() {
         return id;
@@ -52,5 +62,13 @@ public class Teacher {
 
     public void setEmail(String email) {
         this.email = email == null ? null : email.trim();
+    }
+
+    public Integer getIsadmin() {
+        return isadmin;
+    }
+
+    public void setIsadmin(Integer isadmin) {
+        this.isadmin = isadmin;
     }
 }

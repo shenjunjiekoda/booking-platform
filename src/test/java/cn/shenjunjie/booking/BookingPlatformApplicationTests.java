@@ -9,6 +9,7 @@ import org.jsoup.select.Elements;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.commons.util.StringUtils;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.util.DigestUtils;
 
 import java.io.IOException;
 import java.util.List;
@@ -25,6 +26,13 @@ class BookingPlatformApplicationTests {
         }
     }
 
+
+    public static void main(String[] args) {
+        generatePwd();
+    }
+    private static void generatePwd(){
+        System.out.println(DigestUtils.md5DigestAsHex("123456".getBytes()));
+    }
 
     @Test
     void getBookNameList() {

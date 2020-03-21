@@ -2,22 +2,12 @@ package cn.shenjunjie.booking.controller;
 
 import cn.shenjunjie.booking.common.rest.RestBody;
 import cn.shenjunjie.booking.dto.request.LoginRequest;
-import cn.shenjunjie.booking.entity.Teacher;
-import cn.shenjunjie.booking.repo.TeacherRepo;
 import cn.shenjunjie.booking.service.LoginService;
 import cn.shenjunjie.booking.service.TeacherService;
-import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.authc.IncorrectCredentialsException;
-import org.apache.shiro.authc.UnknownAccountException;
-import org.apache.shiro.authc.UsernamePasswordToken;
-import org.apache.shiro.subject.Subject;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 /**

@@ -11,7 +11,7 @@ public class TeacherExample {
     protected List<Criteria> oredCriteria;
 
     public TeacherExample() {
-        oredCriteria = new ArrayList<>();
+        oredCriteria = new ArrayList<Criteria>();
     }
 
     public void setOrderByClause(String orderByClause) {
@@ -68,7 +68,7 @@ public class TeacherExample {
 
         protected GeneratedCriteria() {
             super();
-            criteria = new ArrayList<>();
+            criteria = new ArrayList<Criterion>();
         }
 
         public boolean isValid() {
@@ -443,9 +443,70 @@ public class TeacherExample {
             addCriterion("email not between", value1, value2, "email");
             return (Criteria) this;
         }
+
+        public Criteria andIsadminIsNull() {
+            addCriterion("isAdmin is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsadminIsNotNull() {
+            addCriterion("isAdmin is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsadminEqualTo(Integer value) {
+            addCriterion("isAdmin =", value, "isadmin");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsadminNotEqualTo(Integer value) {
+            addCriterion("isAdmin <>", value, "isadmin");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsadminGreaterThan(Integer value) {
+            addCriterion("isAdmin >", value, "isadmin");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsadminGreaterThanOrEqualTo(Integer value) {
+            addCriterion("isAdmin >=", value, "isadmin");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsadminLessThan(Integer value) {
+            addCriterion("isAdmin <", value, "isadmin");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsadminLessThanOrEqualTo(Integer value) {
+            addCriterion("isAdmin <=", value, "isadmin");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsadminIn(List<Integer> values) {
+            addCriterion("isAdmin in", values, "isadmin");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsadminNotIn(List<Integer> values) {
+            addCriterion("isAdmin not in", values, "isadmin");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsadminBetween(Integer value1, Integer value2) {
+            addCriterion("isAdmin between", value1, value2, "isadmin");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsadminNotBetween(Integer value1, Integer value2) {
+            addCriterion("isAdmin not between", value1, value2, "isadmin");
+            return (Criteria) this;
+        }
     }
 
     public static class Criteria extends GeneratedCriteria {
+
         protected Criteria() {
             super();
         }
