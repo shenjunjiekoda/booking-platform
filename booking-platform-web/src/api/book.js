@@ -8,39 +8,32 @@ export function getBookList (params) {
   })
 }
 
-export function getExactPlanInfo (id) {
+export function searchFromWeb (keyword) {
   return request({
-    url: '/plan/' + id,
+    url: '/book/search/' + keyword,
     method: 'get'
   })
 }
 
-export function addPlanInfo (data) {
+export function addBook (data) {
   return request({
-    url: '/plan/add',
+    url: '/book/add',
     method: 'post',
     data
   })
 }
 
-export function updatePlanInfo (data) {
+export function updateBook (data) {
   return request({
-    url: '/plan/update',
+    url: '/book/update',
     method: 'put',
     data
   })
 }
 
-export function deletePlan (id) {
+export function deleteBookById (id) {
   return request({
-    url: '/plan/delete/' + id,
-    method: 'post'
-  })
-}
-
-export function confirmPlan (id) {
-  return request({
-    url: '/plan/confirm/' + id,
+    url: '/book/delete/' + id,
     method: 'post'
   })
 }

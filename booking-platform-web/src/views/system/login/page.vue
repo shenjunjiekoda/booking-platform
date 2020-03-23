@@ -16,7 +16,6 @@
         flex="dir:top main:justify cross:stretch box:justify">
         <div class="page-login--content-header">
           <p class="page-login--content-header-motto" >
-            <!-- Oriente Deployment Center -->
           </p>
         </div>
         <div
@@ -33,6 +32,14 @@
                 :rules="rules"
                 :model="formLogin"
                 size="default">
+                <el-form-item v-if="status==='registry'" prop="teacherId">
+                  <el-input
+                    type="text"
+                    v-model="formLogin.teacherId"
+                    placeholder="工号">
+                    <i slot="prepend" class="fa fa-envelope-o"></i>
+                  </el-input>
+                </el-form-item>
                 <el-form-item prop="username">
                   <el-input
                     type="text"
@@ -64,6 +71,13 @@
                     placeholder="邮箱">
                     <i slot="prepend" class="fa fa-envelope-o"></i>
                   </el-input>
+                </el-form-item>
+                <el-form-item v-if="status==='registry'" prop="isAdmin">
+                  <span style="margin-right:1em;">教材部人员:</span>
+                  <el-radio-group v-model="radio">
+                    <el-radio :label=1>是</el-radio>
+                    <el-radio :label=2>不是</el-radio>
+                  </el-radio-group>
                 </el-form-item>
                 <el-form-item prop="code">
                   <el-input
@@ -149,6 +163,7 @@ export default {
   ],
   data () {
     return {
+      radio: 2,
       status: 'login',
       timeInterval: null,
       time: dayjs().format('HH:mm:ss'),
@@ -162,6 +177,7 @@ export default {
       ],
       // 表单
       formLogin: {
+        teacherId: 'f16011727',
         username: 'admin',
         password: '123456',
         repeat: 'admin',
@@ -240,6 +256,7 @@ export default {
             return
           }
           this.register({
+            teacherId: this.formLogin.teacherId,
             name: this.formLogin.username,
             password: md5(this.formLogin.password),
             email: this.formLogin.email

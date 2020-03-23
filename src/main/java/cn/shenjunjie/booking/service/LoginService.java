@@ -2,6 +2,7 @@ package cn.shenjunjie.booking.service;
 
 import cn.shenjunjie.booking.common.rest.RestBody;
 import cn.shenjunjie.booking.dto.request.LoginRequest;
+import cn.shenjunjie.booking.dto.request.RegisterRequest;
 
 /**
  * @author Junjie.Shen
@@ -11,6 +12,8 @@ import cn.shenjunjie.booking.dto.request.LoginRequest;
 public interface LoginService {
 
     RestBody login(LoginRequest request);
+
+    RestBody register(RegisterRequest request);
 
     RestBody logout();
 

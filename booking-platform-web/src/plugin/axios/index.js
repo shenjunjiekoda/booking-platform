@@ -36,7 +36,7 @@ function errorLog (error) {
 // 创建一个 axios 实例
 const service = axios.create({
   baseURL: process.env.VUE_APP_API,
-  timeout: 15000 // 请求超时时间
+  timeout: 30000 // 请求超时时间
 })
 
 // 请求拦截器

@@ -26,7 +26,7 @@
             <el-button @click="goSwimlane">泳道</el-button>
           </template>
           <template v-if="item.i === '3'">
-            <el-link class="d2-mb" style="font-size: 18px" href="https://git.oriente.com/backend-srv/deployment-srv" target="_blank" type="primary">教程</el-link>
+            <el-link class="d2-mb" style="font-size: 18px" href="https://github.com/shenjunjiekoda/booking-platform" target="_blank" type="primary">教程</el-link>
             <div class="d2-mb">拖拽卡片调整位置</div>
             <div class="d2-mb">拖拽卡片右下角的手柄调整卡片大小</div>
             <div class="d2-mb">在控制台打印出数据变化</div>

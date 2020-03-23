@@ -1,5 +1,6 @@
 package cn.shenjunjie.booking.service.impl;
 
+import cn.shenjunjie.booking.common.rest.RestBody;
 import cn.shenjunjie.booking.dto.request.AddBookRequest;
 import cn.shenjunjie.booking.dto.request.GetBooksRequest;
 import cn.shenjunjie.booking.dto.request.UpdateBookRequest;
@@ -12,6 +13,7 @@ import cn.shenjunjie.booking.service.BookService;
 import cn.shenjunjie.booking.utils.JsoupUtil;
 import com.github.pagehelper.Page;
 import com.google.common.collect.Lists;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,7 +38,7 @@ public class BookServiceImpl implements BookService {
     public PageBean<GetBooksResponse> getBooks(GetBooksRequest request) {
         List<GetBooksResponse> booksResponseList = Lists.newArrayList();
         Page<Book> list = bookRepo.selectByGetBooksRequest(request);
-        if(!CollectionUtils.isEmpty(list)) {
+        if (!CollectionUtils.isEmpty(list)) {
             list.forEach(book -> {
                 GetBooksResponse response = new GetBooksResponse();
                 BeanUtils.copyProperties(book, response);
@@ -49,13 +51,13 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public List<GetBooksFromWebResponse> getBooksFromWeb(String keyword) {
-        if(StringUtils.isEmpty(keyword) || StringUtils.isEmpty(keyword.trim())) {
+        if (StringUtils.isEmpty(keyword) || StringUtils.isEmpty(keyword.trim())) {
             return null;
         }
         List<GetBooksFromWebResponse> booksFromWebResponseList = Lists.newArrayList();
         List<Book> bookList = JsoupUtil.getBookList(keyword);
-        if(!CollectionUtils.isEmpty(bookList)){
-            bookList.forEach( book -> {
+        if (!CollectionUtils.isEmpty(bookList)) {
+            bookList.forEach(book -> {
                 GetBooksFromWebResponse response = new GetBooksFromWebResponse();
                 BeanUtils.copyProperties(book, response);
                 booksFromWebResponseList.add(response);
@@ -67,14 +69,36 @@ public class BookServiceImpl implements BookService {
 
     @Transactional
     @Override
-    public void addBook(AddBookRequest request) {
+    public RestBody addBook(AddBookRequest request) {
+        Book book = bookRepo.selectByName(request.getName());
+        if (book != null) {
+            return RestBody.fail("书名已存在");
+        }
+        book = bookRepo.selectByISBN(request.getIsbn());
+        if (book != null) {
+            return RestBody.fail("ISBN号已存在");
+        }
         bookRepo.insertByAddBookRequest(request);
+        return RestBody.succeed();
     }
 
     @Transactional
     @Override
-    public void updateBook(UpdateBookRequest request) {
-        bookRepo.updateByUpdateBookRequest(request);
+    public RestBody updateBook(UpdateBookRequest request) {
+        String publishedAt = null;
+        if (request.getPublishedAtMonth() != null && request.getPublishedAtMonth() != null) {
+            publishedAt = request.getPublishedAtYear() + "." + request.getPublishedAtMonth();
+            bookRepo.updateByUpdateBookRequest(request, publishedAt);
+        } else if ((request.getPublishedAtYear() == null && request.getPublishedAtYear() != null) || (request.getPublishedAtYear() != null && request.getPublishedAtYear() == null)) {
+            return RestBody.fail("出版年月必须同时不为空");
+        }
+        return RestBody.succeed();
+    }
+
+    @Transactional
+    @Override
+    public void deleteBook(Long id) {
+        bookRepo.deleteById(id);
     }
 
 }

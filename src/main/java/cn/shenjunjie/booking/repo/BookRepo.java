@@ -53,6 +53,14 @@ public class BookRepo {
         return (Page<Book>) bookMapper.selectByExample(example);
     }
 
+    public Book selectByName(String name){
+        return bookMapper.selectByName(name);
+    }
+
+    public Book selectByISBN(String name){
+        return bookMapper.selectByISBN(name);
+    }
+
     public void insertByAddBookRequest(AddBookRequest request) {
         Book record = new Book();
         record.setName(request.getName());
@@ -60,12 +68,12 @@ public class BookRepo {
         record.setAuthor(request.getAuthor());
         record.setEdition(request.getEdition());
         record.setPress(request.getPress());
-        record.setPublishedAt(request.getPublishedAt());
+        record.setPublishedAt(request.getPublishedAtYear()+"."+request.getPublishedAtMonth());
         record.setRemark(request.getRemark());
         bookMapper.insertSelective(record);
     }
 
-    public void updateByUpdateBookRequest(UpdateBookRequest request) {
+    public void updateByUpdateBookRequest(UpdateBookRequest request,String publishedAt) {
         Book record = new Book();
         record.setId(request.getId());
         record.setName(request.getName());
@@ -73,9 +81,12 @@ public class BookRepo {
         record.setAuthor(request.getAuthor());
         record.setEdition(request.getEdition());
         record.setPress(request.getPress());
-        record.setPublishedAt(request.getPublishedAt());
+        record.setPublishedAt(publishedAt);
         record.setRemark(request.getRemark());
         bookMapper.updateByPrimaryKeySelective(record);
     }
 
+    public void deleteById(Long id){
+        bookMapper.deleteByPrimaryKey(id);
+    }
 }

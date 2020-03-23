@@ -1,6 +1,7 @@
 package cn.shenjunjie.booking.repo;
 
 import cn.shenjunjie.booking.dao.TeacherMapper;
+import cn.shenjunjie.booking.dto.request.RegisterRequest;
 import cn.shenjunjie.booking.entity.Teacher;
 import cn.shenjunjie.booking.entity.TeacherExample;
 import org.springframework.stereotype.Repository;
@@ -29,6 +30,10 @@ public class TeacherRepo {
         return teacherMapper.selectByTeacherId(teacherId);
     }
 
+    public Teacher selectByEmail(String email) {
+        return teacherMapper.selectByEmail(email);
+    }
+
     public Teacher selectByName(String name){
         return teacherMapper.selectByName(name);
     }
@@ -39,4 +44,14 @@ public class TeacherRepo {
         criteria.andNameLike(PERCENT_SIGN.concat(name).concat(PERCENT_SIGN));
         return teacherMapper.selectByExample(example);
     }
+
+    public void insertByRequest(RegisterRequest request){
+        Teacher record = new Teacher();
+        record.setEmail(request.getEmail());
+        record.setName(request.getName());
+        record.setIsadmin(request.getIsAdmin());
+        record.setPassword(request.getPassword());
+        record.setTeacherId(request.getTeacherId());
+    }
+
 }

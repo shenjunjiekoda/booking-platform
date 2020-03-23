@@ -3,15 +3,7 @@ server:
   servlet:
     context-path: /booking
 
-#shiro:
-#  enabled: false
-#  annotations:
-#    enabled: false
-
 spring:
-#  aop:
-#    auto: true
-#    proxy-target-class: true
   application:
     name: booking-srv
   profiles:
@@ -56,8 +48,8 @@ mybatis:
 
 shiro:
   login:
-    #登录态过期时间：2小时
-    expiredtime: 7200000
+    #登录态过期时间：1天
+    expiredtime: 86400000
 
 booking:
   url: http://search.dangdang.com/

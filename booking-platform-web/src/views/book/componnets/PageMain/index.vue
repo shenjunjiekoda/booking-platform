@@ -3,7 +3,7 @@
     <el-form
       :inline="true"
       size="mini">
-      <el-button type="success" size="mini" style="margin:0.1em;margin-right:1em" icon="el-icon-plus" @click="createPlan()">新增计划</el-button>
+      <el-button type="success" size="mini" style="margin:0.1em;margin-right:1em" icon="el-icon-plus" @click="createPlan()">新增书</el-button>
     </el-form>
 
     <el-table
@@ -67,11 +67,11 @@
 
       <el-table-column label="操作" align="center" width="300">
         <template slot-scope="row">
-          <el-button size="mini" icon="el-icon-tickets" @click="goToPlanServicePage(row)">详情</el-button>
-          <el-button :disabled="row.row.status==='completed'" type="primary" size="mini" icon="el-icon-edit" @click="editPlan(row)">编辑</el-button>
+          <!-- <el-button size="mini" icon="el-icon-tickets" @click="goToPlanServicePage(row)">详情</el-button> -->
+          <el-button :disabled="row.row.status==='completed'" type="primary" size="mini" icon="el-icon-edit" @click="editBook(row)">编辑</el-button>
           <el-popconfirm
-            title="确定要删除这个目标计划吗？"
-            @onConfirm="deletePlan(row)"
+            title="确定要删除这个书吗？"
+            @onConfirm="deleteBook(row)"
           >
             <el-button :disabled="row.row.status==='completed'" type="danger" size="mini" slot="reference" icon="el-icon-delete">删除</el-button>
           </el-popconfirm>
@@ -81,51 +81,42 @@
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form ref="dataForm" :model="temp" label-position="left" label-width="80px" style="width: 400px; margin-left:50px;">
-        <el-form-item label="计划名" prop="name" :rules="[{ required: dialogStatus === 'create', message: '计划名不能为空'}]">
-          <el-input v-model="temp.name" />
-        </el-form-item>
-        <el-form-item label="类型" prop="type" :rules="[{ required: dialogStatus === 'create', message: '类型不能为空'}]">
-          <el-radio-group v-model="temp.type">
-          <el-radio-button label="reg"></el-radio-button>
-          <el-radio-button label="dev"></el-radio-button>
-          <el-radio-button label="hot"></el-radio-button>
+        <div style="margin-left:12em;margin-bottom:1em">
+          <el-radio-group v-model="radio">
+            <el-radio-button label="手动"></el-radio-button>
+            <el-radio-button label="搜索"></el-radio-button>
           </el-radio-group>
+        </div>
+        <div v-if="radio==='搜索'" style="margin:1em;">
+          <div style="margin-left:5.5em;">
+            <el-input v-model="temp.keyword" placeholder="请输入书名" @input="change($event)" />
+          </div>
+          <div style="margin:1em;margin-left:12.5em;margin-bottom:2em">
+            <el-button type="primary" :loading="searchLoading" icon="el-icon-search" @click=search()>搜索</el-button>
+          </div>
+        </div>
+        <el-form-item label="书名" prop="name" :rules="[{ required: dialogStatus === 'create', message: '书名不能为空'}]">
+          <el-input :disabled="radio==='搜索'" v-model="temp.name" @input="change($event)" />
         </el-form-item>
-        <el-form-item label="负责人" prop="manager" :rules="[{ required: dialogStatus === 'create', message: '负责人不能为空'}]">
-          <el-select
-            v-model="temp.manager"
-            multiple
-            filterable
-            remote
-            reserve-keyword
-            placeholder="请输入负责人"
-            :remote-method="remoteMethod"
-            :loading="searchLoading"
-            loading-text="正在加载用户">
-            <el-option
-              v-for="item in options"
-              :key="item.id"
-              :label="item.name"
-              :value="item.name">
-            </el-option>
-          </el-select>
+        <el-form-item label="ISBN号" prop="isbn" :rules="[{ required: dialogStatus === 'create', message: 'ISBN号不能为空'}]">
+          <el-input :disabled="radio==='搜索'" v-model="temp.isbn" @input="change($event)" />
         </el-form-item>
-        <el-form-item label="执行日期" prop="executeAt" :rules="[{ required: dialogStatus === 'create', message: '执行日期不能为空'}]">
-          <!-- <el-input :disabled="rowStatus === 'confirmed'" v-model="temp.executeAt" /> -->
-          <el-date-picker
-            :disabled="rowStatus === 'confirmed'"
-            v-model="temp.executeAt"
-            type="datetime"
-            placeholder="选择日期时间"
-            align="right"
-            value-format="yyyy-MM-dd HH:mm:ss"
-            format="yyyy-MM-dd HH:mm:ss"
-            :picker-options="pickerOptions">
-          </el-date-picker>
+        <el-form-item label="作者" prop="author" :rules="[{ required: dialogStatus === 'create', message: '作者不能为空'}]">
+          <el-input :disabled="radio==='搜索'" v-model="temp.author" @input="change($event)" />
         </el-form-item>
-        <el-form-item label="描述" prop="desc">
-          <el-input v-model="temp.desc" />
+        <el-form-item label="出版社" prop="press" :rules="[{ required: dialogStatus === 'create', message: '出版社不能为空'}]">
+          <el-input :disabled="radio==='搜索'" v-model="temp.press" @input="change($event)" />
         </el-form-item>
+        <el-form-item label="出版年月" prop="press" :rules="[{ required: dialogStatus === 'create', message: '出版年份不能为空'}]">
+            <el-input :disabled="radio==='搜索'" placeholder="填数字" @input="change($event)"  v-model="temp.publishedAtYear" style="width: 8em;float:left;"/><span style="margin-left:1em;">年</span>
+        </el-form-item>
+        <el-form-item label="" prop="press" :rules="[{ required: dialogStatus === 'create', message: '出版月份不能为空'}]">
+            <el-input :disabled="radio==='搜索'" placeholder="填数字" @input="change($event)"  v-model="temp.publishedAtMonth" style="width: 8em;float:left;"/><span style="margin-left:1em;">月</span>
+        </el-form-item>
+        <el-form-item label="版次" prop="edition" placeholder="填数字" :rules="[{ required: dialogStatus === 'create', message: '版次不能为空'}]">
+          <el-input :disabled="radio==='搜索'" v-model="temp.edition" @input="change($event)" />
+        </el-form-item>
+        </div>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">
@@ -160,7 +151,7 @@ import Vue from 'vue'
 import pluginExport from '@d2-projects/vue-table-export'
 import D2Crud from '@d2-projects/d2-crud'
 import { getUserByKeyword } from '@api/user'
-import { addPlanInfo, updatePlanInfo, deletePlan } from '@api/plan'
+import { addBook, updateBook, deleteBookById, searchFromWeb } from '@api/book'
 
 Vue.use(D2Crud)
 
@@ -187,6 +178,8 @@ export default {
   },
   data () {
     return {
+      choosed: false,
+      radio: '手动',
       rowId: 0,
       rowStatus: '',
       searchLoading: false,
@@ -195,13 +188,18 @@ export default {
       currentTableData: [],
       multipleSelection: [],
       textMap: {
-        update: '更新计划',
-        create: '新增计划',
+        update: '更新书',
+        create: '新增书',
         type: ''
       },
       temp: {
         name: '',
-        rowStatus: ''
+        isbn: '',
+        author: '',
+        press: '',
+        edition: 0,
+        publishedAtYear: 2020,
+        publishedAtMonth: 0
       },
       pickerOptions: {
         shortcuts: [{
@@ -250,6 +248,30 @@ export default {
     }
   },
   methods: {
+    search () {
+      console.log('now keyword:', this.temp.keyword)
+      const keyword = this.temp.keyword
+      if (keyword !== undefined) {
+        this.searchLoading = true
+        searchFromWeb(keyword)
+          .then(res => {
+            this.searchLoading = false
+            this.list = res.data
+            console.log('name res:', res.data)
+            console.log('search name res:', this.list)
+          })
+          .catch(err => {
+            this.searchLoading = false
+            this.$notify({
+              title: '数据请求异常'
+            })
+            console.log('err', err)
+          })
+      }
+    },
+    change (e) {
+      this.$forceUpdate()
+    },
     goToPlanServicePage (row) {
       // console.log('curId:', row.row.id)
       // console.log('curplanName:', row.row.name)
@@ -303,24 +325,30 @@ export default {
         this.$refs['dataForm'].clearValidate()
       })
     },
-    editPlan (row) {
-      console.log('edit modal:', row.row)
-      this.rowId = row.row.id
-      this.rowStatus = row.row.status
-      this.temp.name = row.row.name
-      console.log('this.temp.name:', this.temp.name)
+    editBook (row) {
       this.resetTemp()
       this.dialogStatus = 'update'
       this.dialogFormVisible = true
       this.$nextTick(() => {
         this.$refs['dataForm'].clearValidate()
       })
+      console.log('edit modal:', row.row)
+      this.rowId = row.row.id
+      this.rowStatus = row.row.status
+      this.temp.name = row.row.name
+      this.temp.isbn = row.row.isbn
+      this.temp.author = row.row.author
+      this.temp.press = row.row.press
+      this.temp.edition = row.row.edition
+      const publishedAt = row.row.publishedAt.split('.')
+      this.temp.publishedAtYear = publishedAt[0]
+      this.temp.publishedAtMonth = publishedAt[1]
     },
-    deletePlan (row) {
-      console.log('deletePlan id:', row.row.id)
-      deletePlan(row.row.id)
+    deleteBook (row) {
+      console.log('deleteBook id:', row.row.id)
+      deleteBookById(row.row.id)
         .then(res => {
-          console.log('deletePlan res:', res)
+          console.log('deleteBook res:', res)
           if (res.errorCode === 0) {
             this.$notify({
               title: 'OK',
@@ -344,53 +372,26 @@ export default {
     updateData () {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          const managerList = this.temp.manager
-          console.log('planName:', this.temp.name)
-          console.log('type:', this.temp.type)
-          console.log(this.temp.type === '')
-          console.log('managerList', managerList)
-          console.log('planId:', this.rowId)
-          console.log('desc:', this.temp.desc)
-          var manager = ''
-          if (managerList !== undefined && managerList.length === 1) {
-            manager = managerList[0]
-          } else if (managerList !== undefined && managerList.length > 1) {
-            this.$message({
-              title: '失败',
-              message: '负责人只能有一个',
-              type: 'error',
-              duration: 2000
-            })
-            return
-          }
-          console.log('manager:', manager)
-          if (this.temp.name === undefined && this.temp.type === '' && this.temp.executeAt === undefined && manager === '' && this.temp.desc === undefined) {
-            this.dialogFormVisible = false
-            return
-          }
-          // console.log('executeat num:', Date.parse(this.temp.executeAt))
-          // console.log('now num:', new Date().valueOf())
-          if (this.temp.executeAt !== undefined && Date.parse(this.temp.executeAt) - new Date().getTime() <= 5000) {
-            console.log('wrong executeAt')
-            this.$message({
-              title: '失败',
-              message: '执行时间不能比现在早',
-              type: 'error',
-              duration: 2000
-            })
-            return
-          }
-          updatePlanInfo({
+          console.log('bookName:', this.temp.name)
+          console.log('isbn:', this.temp.isbn)
+          console.log('author:', this.temp.author)
+          console.log('press:', this.temp.press)
+          console.log('publishedAtYear:', this.temp.publishedAtYear)
+          console.log('publishedAtMonth:', this.temp.publishedAtMonth)
+          console.log('edition:', this.temp.edition)
+          updateBook({
             id: this.rowId,
             name: this.temp.name === undefined ? null : this.temp.name,
-            type: this.temp.type === '' ? null : this.temp.type,
-            executeAt: this.temp.executeAt === undefined ? null : this.temp.executeAt,
-            manager: manager === '' ? null : manager,
-            desc: this.temp.desc === undefined ? null : this.temp.desc
+            isbn: this.temp.isbn === undefined ? null : this.temp.isbn,
+            author: this.temp.author === undefined ? null : this.temp.author,
+            press: this.temp.press === undefined ? null : this.temp.press,
+            publishedAtYear: this.temp.publishedAtYear === undefined ? null : this.temp.publishedAtYear,
+            publishedAtMonth: this.temp.publishedAtMonth === undefined ? null : this.temp.publishedAtMonth,
+            edition: this.temp.edition === undefined ? null : this.temp.edition
           }).then(res => {
-            console.log('updatePlan res:', res)
+            console.log('updateBook res:', res)
             if (res.errorCode === 0) {
-              console.log('updatePlan success!')
+              console.log('updateBook success!')
               this.dialogFormVisible = false
               this.$notify({
                 title: 'OK',
@@ -418,50 +419,25 @@ export default {
       console.log('create Data form....')
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          const managerList = this.temp.manager
-          console.log('planName:', this.temp.name)
-          console.log('type:', this.temp.type)
-          // console.log('managerList', managerList)
-          console.log('desc:', this.temp.desc)
-          console.log('executeAt:', this.temp.executeAt)
-          var manager = ''
-          if (managerList !== undefined && managerList.length === 1) {
-            manager = managerList[0]
-          } else if (managerList !== undefined && managerList.length > 1) {
-            this.$message({
-              title: '失败',
-              message: '负责人只能有一个',
-              type: 'error',
-              duration: 2000
-            })
-            return
-          }
-          console.log('createAt time:', this.temp.executeAt)
-          console.log('now time:', new Date().getTime())
-          if (Date.parse(this.temp.executeAt) - new Date().getTime() <= 5000) {
-            this.$message({
-              title: '失败',
-              message: '执行时间不能比现在早',
-              type: 'error',
-              duration: 2000
-            })
-            return
-          }
-          console.log('manager:', manager)
-          if (this.temp.name === undefined && this.temp.type === '' && this.temp.executeAt === undefined && manager === '' && this.temp.desc === undefined) {
-            this.dialogFormVisible = false
-            return
-          }
-          addPlanInfo({
+          console.log('bookName:', this.temp.name)
+          console.log('isbn:', this.temp.isbn)
+          console.log('author:', this.temp.author)
+          console.log('press:', this.temp.press)
+          console.log('publishedAtYear:', this.temp.publishedAtYear)
+          console.log('publishedAtMonth:', this.temp.publishedAtMonth)
+          console.log('edition:', this.temp.edition)
+          addBook({
             name: this.temp.name === undefined ? null : this.temp.name,
-            type: this.temp.type === '' ? null : this.temp.type,
-            executeAt: this.temp.executeAt === undefined ? null : this.temp.executeAt,
-            manager: manager === '' ? null : manager,
-            desc: this.temp.desc === undefined ? null : this.temp.desc
+            isbn: this.temp.isbn === undefined ? null : this.temp.isbn,
+            author: this.temp.author === undefined ? null : this.temp.author,
+            press: this.temp.press === undefined ? null : this.temp.press,
+            publishedAtYear: this.temp.publishedAtYear === undefined ? null : this.temp.publishedAtYear,
+            publishedAtMonth: this.temp.publishedAtMonth === undefined ? null : this.temp.publishedAtMonth,
+            edition: this.temp.edition === undefined ? null : this.temp.edition
           }).then(res => {
-            console.log('addPlan res:', res)
+            console.log('addBook res:', res)
             if (res.errorCode === 0) {
-              console.log('addPlan success!')
+              console.log('addBook success!')
               this.dialogFormVisible = false
               this.$notify({
                 title: 'OK',

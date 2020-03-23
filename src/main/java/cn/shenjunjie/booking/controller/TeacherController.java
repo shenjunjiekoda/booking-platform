@@ -2,6 +2,7 @@ package cn.shenjunjie.booking.controller;
 
 import cn.shenjunjie.booking.common.rest.RestBody;
 import cn.shenjunjie.booking.dto.request.LoginRequest;
+import cn.shenjunjie.booking.dto.request.RegisterRequest;
 import cn.shenjunjie.booking.service.LoginService;
 import cn.shenjunjie.booking.service.TeacherService;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +30,12 @@ public class TeacherController {
     public RestBody login(@RequestBody @Valid LoginRequest request) {
         log.info("login request:{}", request);
         return loginService.login(request);
+    }
+
+    @PostMapping("/register")
+    public RestBody register(@RequestBody @Valid RegisterRequest request) {
+        log.info("register request:{}", request);
+        return loginService.register(request);
     }
 
     @PostMapping("/logout")

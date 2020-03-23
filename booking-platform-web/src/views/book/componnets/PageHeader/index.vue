@@ -6,63 +6,32 @@
     ref="form"
     size="mini"
     style="margin-bottom: -18px;">
-    <el-form-item label="计划名" prop="name">
+    <el-form-item label="书名" prop="name">
       <el-input
         v-model="form.name"
         placeholder=""
         style="width: 140px;"/>
     </el-form-item>
-    <el-form-item label="状态" prop="status">
-      <el-radio-group v-model="form.status">
-      <el-radio-button label="all"></el-radio-button>
-      <el-radio-button label="new"></el-radio-button>
-      <el-radio-button label="confirmed"></el-radio-button>
-      <el-radio-button label="completed"></el-radio-button>
-      </el-radio-group>
-    </el-form-item>
-    <!-- <el-form-item label="类型" prop="type">
-      <el-radio-group v-model="form.type">
-      <el-radio-button label="all"></el-radio-button>
-      <el-radio-button label="reg"></el-radio-button>
-      <el-radio-button label="dev"></el-radio-button>
-      <el-radio-button label="hot"></el-radio-button>
-      </el-radio-group>
-    </el-form-item> -->
     <template v-if="advanced">
-      <el-form-item label="类型" prop="type">
-        <el-radio-group v-model="form.type">
-        <el-radio-button label="all"></el-radio-button>
-        <el-radio-button label="reg"></el-radio-button>
-        <el-radio-button label="dev"></el-radio-button>
-        <el-radio-button label="hot"></el-radio-button>
-        </el-radio-group>
-      </el-form-item>
-      <el-form-item label="创建人" prop="createdBy">
+      <el-form-item label="ISBN号" prop="isbn">
         <el-input
-          v-model="form.createdBy"
-          placeholder=""
-          style="width: 80px;"/>
-      </el-form-item>
-
-      <el-form-item label="负责人" prop="manager">
-        <el-input
-          v-model="form.manager"
+          v-model="form.isbn"
           placeholder=""
           style="width: 100px;"/>
       </el-form-item>
 
-      <el-form-item label="执行时间" prop="courseName">
-        <el-date-picker
-          v-model="form.createdAt"
-          type="datetimerange"
-          value-format="yyyy-MM-dd HH:mm:ss"
-          format="yyyy-MM-dd HH:mm:ss"
-          :picker-options="pickerOptions"
-          range-separator="至"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-          align="right">
-        </el-date-picker>
+      <el-form-item label="作者" prop="author">
+        <el-input
+          v-model="form.author"
+          placeholder=""
+          style="width: 100px;"/>
+      </el-form-item>
+
+      <el-form-item label="出版社" prop="press">
+        <el-input
+          v-model="form.press"
+          placeholder=""
+          style="width: 100px;"/>
       </el-form-item>
 
     </template>

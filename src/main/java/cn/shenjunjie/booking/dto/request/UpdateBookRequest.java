@@ -27,7 +27,9 @@ public class UpdateBookRequest {
 
     private String press;
 
-    private String publishedAt;
+    private Integer publishedAtYear;
+
+    private Integer publishedAtMonth;
 
     private Long edition;
 

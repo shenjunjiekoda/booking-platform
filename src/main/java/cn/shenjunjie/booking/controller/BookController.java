@@ -42,14 +42,20 @@ public class BookController {
     @PostMapping("/add")
     public RestBody addBook(@RequestBody @Valid AddBookRequest request) {
         log.info("addBook request:{}", request);
-        bookService.addBook(request);
-        return RestBody.succeed();
+        return bookService.addBook(request);
     }
 
-    @PostMapping("/update")
+    @PutMapping("/update")
     public RestBody updateBook(@RequestBody @Valid UpdateBookRequest request) {
         log.info("updateBook request:{}", request);
         bookService.updateBook(request);
+        return RestBody.succeed();
+    }
+
+    @PostMapping("/delete/{id}")
+    public RestBody deleteBook(@PathVariable("id") Long id) {
+        log.info("deleteBook request:{}", id);
+        bookService.deleteBook(id);
         return RestBody.succeed();
     }
 }

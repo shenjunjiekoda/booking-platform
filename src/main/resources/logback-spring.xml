@@ -4,7 +4,7 @@
 
     <!-- dev logback config -->
     <include resource="org/springframework/boot/logging/logback/console-appender.xml" />
-    <logger name="org.springframework.web" level="INFO"/>
+    <logger name="org.springframework.web" level="DEBUG"/>
     <logger name="cn.shenjunjie" level="DEBUG" />
     <root level="INFO">
         <appender-ref ref="CONSOLE" />

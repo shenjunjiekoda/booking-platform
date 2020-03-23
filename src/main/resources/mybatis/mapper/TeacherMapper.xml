@@ -162,15 +162,21 @@
     select
     <include refid="Base_Column_List" />
     from teacher
-    where name = #{name,jdbcType=BIGINT}
+    where name = #{name,jdbcType=VARCHAR}
   </select>
   <select id="selectByTeacherId" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from teacher
-    where teacher_id = #{teacherId,jdbcType=BIGINT}
+    where teacher_id = #{teacherId,jdbcType=VARCHAR}
   </select>
-  <update id="updateByExampleSelective" parameterType="map">
+    <select id="selectByEmail" resultMap="BaseResultMap">
+      select
+      <include refid="Base_Column_List" />
+      from teacher
+      where email = #{email,jdbcType=VARCHAR}
+    </select>
+    <update id="updateByExampleSelective" parameterType="map">
     update teacher
     <set>
       <if test="record.id != null">

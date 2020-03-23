@@ -172,7 +172,19 @@
       <include refid="Example_Where_Clause" />
     </if>
   </select>
-  <update id="updateByExampleSelective" parameterType="map">
+    <select id="selectByName" resultMap="BaseResultMap">
+      select
+      <include refid="Base_Column_List" />
+      from book
+      where name = #{name,jdbcType=VARCHAR}
+    </select>
+  <select id="selectByISBN" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from book
+    where isbn = #{isbn,jdbcType=VARCHAR}
+  </select>
+    <update id="updateByExampleSelective" parameterType="map">
     update book
     <set>
       <if test="record.id != null">

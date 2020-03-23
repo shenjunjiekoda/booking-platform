@@ -23,6 +23,10 @@ public interface BookMapper {
 
     Book selectByPrimaryKey(Long id);
 
+    Book selectByName(@Param("name")String name);
+
+    Book selectByISBN(@Param("isbn")String isbn);
+
     int updateByExampleSelective(@Param("record") Book record, @Param("example") BookExample example);
 
     int updateByExample(@Param("record") Book record, @Param("example") BookExample example);

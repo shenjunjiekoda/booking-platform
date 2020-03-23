@@ -11,7 +11,6 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
  * @author JunjieShen
  */
 @ComponentScan("cn.shenjunjie")
-@ImportResource(locations = { "classpath:mybatis/config.xml" })
 @MapperScan("cn.shenjunjie.booking.dao")
 @EnableAsync
 @EnableWebMvc

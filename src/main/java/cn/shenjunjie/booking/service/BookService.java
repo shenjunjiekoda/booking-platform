@@ -1,5 +1,6 @@
 package cn.shenjunjie.booking.service;
 
+import cn.shenjunjie.booking.common.rest.RestBody;
 import cn.shenjunjie.booking.dto.request.AddBookRequest;
 import cn.shenjunjie.booking.dto.request.GetBooksRequest;
 import cn.shenjunjie.booking.dto.request.UpdateBookRequest;
@@ -34,12 +35,17 @@ public interface BookService {
      * 添加一本书籍
      * @param request
      */
-    void addBook(AddBookRequest request);
+    RestBody addBook(AddBookRequest request);
 
     /**
      * 更新一本书籍
      * @param request
      */
-    void updateBook(UpdateBookRequest request);
+    RestBody updateBook(UpdateBookRequest request);
 
+    /**
+     * 删除一本书籍
+     * @param id
+     */
+    void deleteBook(Long id);
 }

@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 
 /**
@@ -23,14 +24,22 @@ public class AddBookRequest {
     @NotBlank(message = "isbn号不能为空！")
     private String isbn;
 
+    @NotBlank(message = "作者不能为空!")
     private String author;
 
+    @NotBlank(message = "出版社不能为空!")
     private String press;
 
-    private String publishedAt;
+    @NotNull(message = "出版年份不能为空!")
+    private Integer publishedAtYear;
 
+    @NotNull(message = "出版月份不能为空!")
+    private Integer publishedAtMonth;
+
+    @NotNull(message = "版次不能为空！")
     private Long edition;
 
+    //add
     private String remark;
 
 }
