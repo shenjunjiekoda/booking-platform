@@ -3,7 +3,7 @@
     <el-form
       :inline="true"
       size="mini">
-      <el-button type="success" size="mini" style="margin:0.1em;margin-right:1em" icon="el-icon-plus" @click="createPlan()">新增书</el-button>
+      <el-button type="success" size="mini" style="margin:0.1em;margin-right:1em" icon="el-icon-plus" @click="createBook()">新增书</el-button>
     </el-form>
 
     <el-table
@@ -82,39 +82,70 @@
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form ref="dataForm" :model="temp" label-position="left" label-width="80px" style="width: 400px; margin-left:50px;">
         <div style="margin-left:12em;margin-bottom:1em">
-          <el-radio-group v-model="radio">
+          <el-radio-group v-model="radio" v-if="dialogStatus==='create'">
             <el-radio-button label="手动"></el-radio-button>
             <el-radio-button label="搜索"></el-radio-button>
           </el-radio-group>
         </div>
         <div v-if="radio==='搜索'" style="margin:1em;">
-          <div style="margin-left:5.5em;">
+          <div style="margin-left:5.5em;" v-if="!showResult">
             <el-input v-model="temp.keyword" placeholder="请输入书名" @input="change($event)" />
           </div>
-          <div style="margin:1em;margin-left:12.5em;margin-bottom:2em">
+          <div v-if="!showResult" style="margin:1em;margin-left:12.5em;margin-bottom:2em">
             <el-button type="primary" :loading="searchLoading" icon="el-icon-search" @click=search()>搜索</el-button>
           </div>
+            <el-button type="primary" v-if="showResult" @click=returnSearch()>返回搜索</el-button>
+          <div>
+            <el-table
+            v-if="showResult"
+            :data="results"
+            border
+            style="width: 100%">
+            <el-table-column
+              fixed
+              prop="name"
+              label="书名"
+              :show-overflow-tooltip="true">
+            </el-table-column>
+            <el-table-column
+              fixed
+              prop="author"
+              label="作者">
+            </el-table-column>
+            <el-table-column
+              fixed="right"
+              label="操作"
+              width="100">
+              <template slot-scope="scope">
+                <el-tooltip class="item" effect="dark" content="添加至书库" placement="top">
+                  <el-button @click="handleChoose(scope.row)" type="text" size="small">选择</el-button>
+                </el-tooltip>
+              </template>
+            </el-table-column>
+          </el-table>
+          </div>
         </div>
+        <div v-if="radio!=='搜索'">
         <el-form-item label="书名" prop="name" :rules="[{ required: dialogStatus === 'create', message: '书名不能为空'}]">
-          <el-input :disabled="radio==='搜索'" v-model="temp.name" @input="change($event)" />
+          <el-input v-model="temp.name" @input="change($event)" />
         </el-form-item>
         <el-form-item label="ISBN号" prop="isbn" :rules="[{ required: dialogStatus === 'create', message: 'ISBN号不能为空'}]">
-          <el-input :disabled="radio==='搜索'" v-model="temp.isbn" @input="change($event)" />
+          <el-input v-model="temp.isbn" @input="change($event)" />
         </el-form-item>
         <el-form-item label="作者" prop="author" :rules="[{ required: dialogStatus === 'create', message: '作者不能为空'}]">
-          <el-input :disabled="radio==='搜索'" v-model="temp.author" @input="change($event)" />
+          <el-input v-model="temp.author" @input="change($event)" />
         </el-form-item>
         <el-form-item label="出版社" prop="press" :rules="[{ required: dialogStatus === 'create', message: '出版社不能为空'}]">
-          <el-input :disabled="radio==='搜索'" v-model="temp.press" @input="change($event)" />
+          <el-input v-model="temp.press" @input="change($event)" />
         </el-form-item>
         <el-form-item label="出版年月" prop="press" :rules="[{ required: dialogStatus === 'create', message: '出版年份不能为空'}]">
-            <el-input :disabled="radio==='搜索'" placeholder="填数字" @input="change($event)"  v-model="temp.publishedAtYear" style="width: 8em;float:left;"/><span style="margin-left:1em;">年</span>
+            <el-input placeholder="填数字" @input="change($event)"  v-model="temp.publishedAtYear" style="width: 8em;float:left;"/><span style="margin-left:1em;">年</span>
         </el-form-item>
         <el-form-item label="" prop="press" :rules="[{ required: dialogStatus === 'create', message: '出版月份不能为空'}]">
-            <el-input :disabled="radio==='搜索'" placeholder="填数字" @input="change($event)"  v-model="temp.publishedAtMonth" style="width: 8em;float:left;"/><span style="margin-left:1em;">月</span>
+            <el-input placeholder="填数字" @input="change($event)"  v-model="temp.publishedAtMonth" style="width: 8em;float:left;"/><span style="margin-left:1em;">月</span>
         </el-form-item>
-        <el-form-item label="版次" prop="edition" placeholder="填数字" :rules="[{ required: dialogStatus === 'create', message: '版次不能为空'}]">
-          <el-input :disabled="radio==='搜索'" v-model="temp.edition" @input="change($event)" />
+        <el-form-item label="版次" prop="edition" placeholder="填数字">
+          <el-input v-model="temp.edition" @input="change($event)" />
         </el-form-item>
         </div>
       </el-form>
@@ -122,7 +153,7 @@
         <el-button @click="dialogFormVisible = false">
           Cancel
         </el-button>
-        <el-button type="primary" @click="dialogStatus==='create'?createData():updateData()">
+        <el-button v-if="radio!=='搜索'" type="primary" @click="dialogStatus==='create'?createData():updateData()">
           Confirm
         </el-button>
       </div>
@@ -178,6 +209,7 @@ export default {
   },
   data () {
     return {
+      showResult: false,
       choosed: false,
       radio: '手动',
       rowId: 0,
@@ -185,6 +217,7 @@ export default {
       searchLoading: false,
       options: [],
       list: [],
+      results: [],
       currentTableData: [],
       multipleSelection: [],
       textMap: {
@@ -248,6 +281,45 @@ export default {
     }
   },
   methods: {
+    returnSearch () {
+      this.showResult = false
+    },
+    handleChoose (row) {
+      console.log('choose row:', row)
+      const publishedAt = row.publishedAt.split('.')
+      const publishedAtYear = publishedAt[0]
+      const publishedAtMonth = publishedAt[1]
+      addBook({
+        name: row.name === undefined ? null : row.name,
+        isbn: row.isbn === undefined ? null : row.isbn,
+        author: row.author === undefined ? null : row.author,
+        press: row.press === undefined ? null : row.press,
+        publishedAtYear: publishedAtYear === undefined ? null : publishedAtYear,
+        publishedAtMonth: publishedAtMonth === undefined ? null : publishedAtMonth
+      }).then(res => {
+        console.log('addBook res:', res)
+        if (res.errorCode === 0) {
+          console.log('addBook success!')
+          this.dialogFormVisible = false
+          this.$notify({
+            title: 'OK',
+            message: '从网络搜索添加新书至书库成功',
+            type: 'success',
+            duration: 2000
+          })
+          this.$emit('reload', {})
+        } else {
+          this.$message({
+            title: '添加书库失败',
+            message: res.msg,
+            type: 'error',
+            duration: 2000
+          })
+        }
+      }).catch(err => {
+        console.log('err: ', err)
+      })
+    },
     search () {
       console.log('now keyword:', this.temp.keyword)
       const keyword = this.temp.keyword
@@ -256,9 +328,15 @@ export default {
         searchFromWeb(keyword)
           .then(res => {
             this.searchLoading = false
-            this.list = res.data
-            console.log('name res:', res.data)
-            console.log('search name res:', this.list)
+            this.results = res.data
+            // console.log('name res:', res.data)
+            console.log('search from web res:', this.results)
+            if (this.results.length === 0) {
+              this.$notify({
+                title: '无结果！'
+              })
+            }
+            this.showResult = true
           })
           .catch(err => {
             this.searchLoading = false
@@ -316,9 +394,11 @@ export default {
         this.options = []
       }
     },
-    createPlan () {
+    createBook () {
       this.resetTemp()
       this.rowStatus = ''
+      this.showResult = false
+      this.results = []
       this.dialogStatus = 'create'
       this.dialogFormVisible = true
       this.$nextTick(() => {
@@ -327,6 +407,7 @@ export default {
     },
     editBook (row) {
       this.resetTemp()
+      this.radio = '手动'
       this.dialogStatus = 'update'
       this.dialogFormVisible = true
       this.$nextTick(() => {

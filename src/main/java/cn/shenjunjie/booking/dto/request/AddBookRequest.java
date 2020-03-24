@@ -36,7 +36,6 @@ public class AddBookRequest {
     @NotNull(message = "出版月份不能为空!")
     private Integer publishedAtMonth;
 
-    @NotNull(message = "版次不能为空！")
     private Long edition;
 
     //add

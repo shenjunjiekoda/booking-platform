@@ -17,6 +17,6 @@ export default [
   {
     path: '/book',
     title: '书库',
-    icon: 'diamond'
+    icon: 'book'
   }
 ]

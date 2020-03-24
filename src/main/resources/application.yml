@@ -53,3 +53,4 @@ shiro:
 
 booking:
   url: http://search.dangdang.com/
+  result-limit: 5

@@ -4,6 +4,7 @@ import cn.shenjunjie.booking.common.exception.JsoupException;
 import cn.shenjunjie.booking.entity.Book;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.util.Strings;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -27,6 +28,8 @@ import java.util.List;
 public class JsoupUtil {
     @Value("${booking.url}")
     private static final String DANG_URL = "http://search.dangdang.com/";
+    @Value("${booking.result-limit}")
+    private static final Integer SEARCH_RESULTS = 5;
 
     private static final String SEARCH_PREFIX = "?key=";
     private static final String TITLE = "title";
@@ -57,10 +60,14 @@ public class JsoupUtil {
         Elements names = document.select(NAME_SELECTOR);
         Elements detail = document.select(DETAIL_SELECTOR);
         int length = names.size();
+        length = length > SEARCH_RESULTS ? SEARCH_RESULTS : length;
         for (int i = 0; i < length; i++) {
             Book record = new Book();
             Element nameElement = names.get(i);
-            String name = nameElement.children().attr(TITLE);
+            String name = nameElement.children().attr(TITLE).trim();
+            if(name.indexOf(" ")!=-1){
+                name = name.substring(0,name.indexOf(" "));
+            }
             String bookUrl = nameElement.children().attr(HREF);
             if (!StringUtils.isEmpty(bookUrl)) {
                 String isbn = getISBN(bookUrl);
@@ -68,10 +75,22 @@ public class JsoupUtil {
             }
             Element detailElement = detail.get(i);
             if (detailElement.hasText()) {
-                String author = detailElement.childNode(0).childNode(0).attr(TITLE);
+                String author = "";
+                try {
+                    author = detailElement.childNode(0).childNode(0).attr(TITLE).trim();
+                }catch (Exception e){
+                    continue;
+                }
                 if (detailElement.childNode(1).childNodes().size() > 0 && detailElement.childNode(1).childNode(0).toString().length() > 2) {
                     String publishedAt = detailElement.childNode(1).childNode(0).toString().substring(2);
-                    record.setPublishedAt(publishedAt);
+                    if (Strings.isNotBlank(publishedAt)) {
+                        try {
+                            String[] ss = publishedAt.split("-");
+                            publishedAt = ss[0] + "." + ss[1].substring(1);
+                        } catch (Exception e) {
+                        }
+                        record.setPublishedAt(publishedAt);
+                    }
                 }
                 String press = detailElement.childNode(2).childNode(1).attr(TITLE);
                 record.setName(name);
@@ -79,9 +98,19 @@ public class JsoupUtil {
                 record.setPress(press);
             }
             log.info("book:{}", record);
-            books.add(record);
+            if (recordIsRational(record)) {
+                books.add(record);
+            }
         }
         return books;
+    }
+
+    private static boolean recordIsRational(Book record) {
+        if (StringUtils.isEmpty(record.getAuthor()) || StringUtils.isEmpty(record.getIsbn()) ||
+                StringUtils.isEmpty(record.getName()) || StringUtils.isEmpty(record.getPress()) || record.getPublishedAt() == null) {
+            return false;
+        }
+        return true;
     }
 
     private static String getISBN(String bookUrl) {
