@@ -61,12 +61,14 @@ public class PlanRepo {
 //        return planMapper.selectByClassIdAndTeacherIdAndCourseId(classId,teacherId,courseId);
 //    }
 
-    public void insertByTeacherIdAndCourseIdAndClassIdAndWeek(Long teacherId, Long courseId, Long classId, String week) {
+    public void insertByTeacherIdAndCourseIdAndClassIdAndYearAndSemesterAndWeek(Long teacherId, Long courseId, Long classId, Integer year, Integer semester, String week) {
         Plan record = new Plan();
         record.setTeacherId(teacherId);
         record.setClassId(classId);
         record.setCourseId(courseId);
         record.setWeek(week);
+        record.setYear(year);
+        record.setSemester(semester);
         planMapper.insertSelective(record);
     }
 

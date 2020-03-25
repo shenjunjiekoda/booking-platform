@@ -21,6 +21,8 @@ public interface ClassService {
      */
     List<GetClassesResponse> getClasses(Long instituteId);
 
+
+    List<String> getClassesByKeyword(String keyword);
     /**
      * 增加一个班级信息
      * @param request

@@ -58,61 +58,43 @@
       <el-table-column type="expand">
       <template slot-scope="props">
         <el-form label-position="left" inline class="demo-table-expand">
-          <el-form-item label="No">
-            <span>{{ props.row.id }}</span>
+          <el-form-item label="课程">
+            <span>{{ props.row.courseName }}</span>
           </el-form-item>
-          <el-form-item label="发布计划">
-            <span>{{ props.row.name }}</span>
+          <el-form-item label="班级">
+            <span>{{ props.row.className }}</span>
           </el-form-item>
-          <el-form-item label="类型">
-            <span>{{ props.row.type }}</span>
+          <el-form-item label="老师">
+            <span>{{ props.row.teacherName }}</span>
           </el-form-item>
-          <el-form-item label="创建人">
-            <span>{{ props.row.createdBy }}</span>
+          <el-form-item label="学年">
+            <span>{{ props.row.year }}</span>
           </el-form-item>
-          <el-form-item label="负责人">
-            <span>{{ props.row.manager }}</span>
+          <el-form-item label="学期">
+            <span>{{ props.row.semester }}</span>
           </el-form-item>
-          <el-form-item label="创建时间">
-            <span>{{ props.row.createdAt }}</span>
-          </el-form-item>
-          <el-form-item label="执行时间">
-            <span>{{ props.row.executeAt }}</span>
-          </el-form-item>
-          <el-form-item label="描述">
-            <span>{{ props.row.desc }}</span>
-          </el-form-item>
-          <el-form-item label="状态">
-            <span>{{ props.row.status }}</span>
-          </el-form-item>
-          <el-form-item label="用时">
-            <span>{{ props.row.timeUsed == null? '未开始': props.row.timeUsed}}</span>
+          <el-form-item label="周次">
+            <span>{{ props.row.week }}</span>
           </el-form-item>
         </el-form>
       </template>
     </el-table-column>
 
-      <el-table-column label="发布计划" align="center">
+      <el-table-column label="课程" align="center">
         <template slot-scope="scope">
-          {{scope.row.name}}
+          {{scope.row.courseName}}
         </template>
       </el-table-column>
 
-      <el-table-column label="类型" align="center" width="50">
+      <el-table-column label="班级" align="center">
         <template slot-scope="scope">
-          {{ scope.row.type }}
+          {{ scope.row.className }}
         </template>
       </el-table-column>
 
-      <el-table-column label="状态" align="center">
+      <el-table-column label="老师" align="center">
         <template slot-scope="scope">
-          <el-tag :type="scope.row.status | statusFilter">{{ scope.row.status }}</el-tag>
-        </template>
-      </el-table-column>
-
-      <el-table-column label="执行时间" prop="executeAt" align="center" sortable>
-        <template slot-scope="scope">
-          {{scope.row.executeAt}}
+          {{scope.row.teacherName}}
         </template>
       </el-table-column>
 
@@ -132,50 +114,58 @@
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form ref="dataForm" :model="temp" label-position="left" label-width="80px" style="width: 400px; margin-left:50px;">
-        <el-form-item label="计划名" prop="name" :rules="[{ required: dialogStatus === 'create', message: '计划名不能为空'}]">
-          <el-input v-model="temp.name" />
+        <el-form-item label="课程" prop="courseName" :rules="[{ required: dialogStatus === 'create', message: '课程不能为空'}]">
+          <el-input v-model="temp.courseName" />
         </el-form-item>
-        <el-form-item label="类型" prop="type" :rules="[{ required: dialogStatus === 'create', message: '类型不能为空'}]">
-          <el-radio-group v-model="temp.type">
-          <el-radio-button label="reg"></el-radio-button>
-          <el-radio-button label="dev"></el-radio-button>
-          <el-radio-button label="hot"></el-radio-button>
-          </el-radio-group>
-        </el-form-item>
-        <el-form-item label="负责人" prop="manager" :rules="[{ required: dialogStatus === 'create', message: '负责人不能为空'}]">
+        <el-form-item label="班级" prop="className" :rules="[{ required: dialogStatus === 'create', message: '班级不能为空'}]">
           <el-select
-            v-model="temp.manager"
+            v-model="temp.className"
             multiple
             filterable
             remote
             reserve-keyword
-            placeholder="请输入负责人"
+            placeholder="请输入班级"
             :remote-method="remoteMethod"
             :loading="searchLoading"
-            loading-text="正在加载用户">
+            loading-text="正在加载班级">
             <el-option
-              v-for="item in options"
-              :key="item.id"
-              :label="item.name"
-              :value="item.name">
+              v-for="item in classes"
+              :key="item"
+              :label="item"
+              :value="item">
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="执行日期" prop="executeAt" :rules="[{ required: dialogStatus === 'create', message: '执行日期不能为空'}]">
-          <!-- <el-input :disabled="rowStatus === 'confirmed'" v-model="temp.executeAt" /> -->
-          <el-date-picker
-            :disabled="rowStatus === 'confirmed'"
-            v-model="temp.executeAt"
-            type="datetime"
-            placeholder="选择日期时间"
-            align="right"
-            value-format="yyyy-MM-dd HH:mm:ss"
-            format="yyyy-MM-dd HH:mm:ss"
-            :picker-options="pickerOptions">
-          </el-date-picker>
+        <el-form-item label="老师" prop="className" :rules="[{ required: dialogStatus === 'create', message: '老师不能为空'}]">
+          <el-select
+            v-model="temp.teacherName"
+            multiple
+            filterable
+            remote
+            reserve-keyword
+            placeholder="请输入老师"
+            :remote-method="remoteMethod2"
+            :loading="searchLoading"
+            loading-text="正在加载老师">
+            <el-option
+              v-for="item in teachers"
+              :key="item"
+              :label="item"
+              :value="item">
+            </el-option>
+          </el-select>
         </el-form-item>
-        <el-form-item label="描述" prop="desc">
-          <el-input v-model="temp.desc" />
+        <el-form-item label="学年" prop="year" :rules="[{ required: dialogStatus === 'create', message: '学年不能为空'}]">
+          <el-input v-model="temp.year" placeholder="如:2020"/>
+        </el-form-item>
+        <el-form-item label="学期" prop="semester" :rules="[{ required: dialogStatus === 'create', message: '学期不能为空'}]">
+          <el-select v-model="temp.semester" placeholder="请选择">
+            <el-option label="第一学期" value=1></el-option>
+            <el-option label="第二学期" value=2></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="周次" prop="week">
+          <el-input v-model="temp.week" placeholder="如:1~16"/>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -210,8 +200,10 @@
 import Vue from 'vue'
 import pluginExport from '@d2-projects/vue-table-export'
 import D2Crud from '@d2-projects/d2-crud'
-import { getUserByKeyword } from '@api/user'
+// import { getUserByKeyword } from '@api/user'
 import { addPlanInfo, updatePlanInfo, deletePlan } from '@api/plan'
+import { getClassByKeyword } from '@api/class'
+import { getTeacherByKeyword } from '@api/teacher'
 
 Vue.use(D2Crud)
 
@@ -241,13 +233,14 @@ export default {
       rowId: 0,
       rowStatus: '',
       searchLoading: false,
-      options: [],
+      teachers: [],
+      classes: [],
       list: [],
       currentTableData: [],
       multipleSelection: [],
       textMap: {
-        update: '更新计划',
-        create: '新增计划',
+        update: '更新上课计划',
+        create: '新增上课计划',
         type: ''
       },
       temp: {
@@ -318,11 +311,11 @@ export default {
       if (query !== '') {
         console.log('name query:', query)
         this.searchLoading = true
-        getUserByKeyword(query)
+        getClassByKeyword(query)
           .then(res => {
             _this.searchLoading = false
             _this.list = res.data
-            console.log('name res:', res.data)
+            console.log('class name res:', res.data)
             console.log('search name res:', _this.list)
           })
           .catch(err => {
@@ -335,14 +328,45 @@ export default {
         setTimeout(() => {
           _this.searchLoading = false
           console.log('timeout list', _this.list)
-          _this.options = _this.list.filter(item => {
+          _this.classes = _this.list.filter(item => {
             console.log('filter item:', item)
-            return item.name
+            return item
               .indexOf(query.toLowerCase()) > -1
           })
         }, 1500)
       } else {
-        this.options = []
+        this.classes = []
+      }
+    },
+    remoteMethod2 (query) {
+      var _this = this
+      if (query !== '') {
+        console.log('name query:', query)
+        this.searchLoading = true
+        getTeacherByKeyword(query)
+          .then(res => {
+            _this.searchLoading = false
+            _this.list = res.data
+            console.log('teacher name res:', res.data)
+          })
+          .catch(err => {
+            _this.searchLoading = false
+            _this.$notify({
+              title: '书库数据请求异常'
+            })
+            console.log('err', err)
+          })
+        setTimeout(() => {
+          _this.searchLoading = false
+          console.log('timeout list', _this.list)
+          _this.teachers = _this.list.filter(item => {
+            console.log('filter item:', item)
+            return item
+              .indexOf(query.toLowerCase()) > -1
+          })
+        }, 1500)
+      } else {
+        this.teachers = []
       }
     },
     createPlan () {
@@ -469,46 +493,45 @@ export default {
       console.log('create Data form....')
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          const managerList = this.temp.manager
-          console.log('planName:', this.temp.name)
-          console.log('type:', this.temp.type)
-          // console.log('managerList', managerList)
-          console.log('desc:', this.temp.desc)
-          console.log('executeAt:', this.temp.executeAt)
-          var manager = ''
-          if (managerList !== undefined && managerList.length === 1) {
-            manager = managerList[0]
-          } else if (managerList !== undefined && managerList.length > 1) {
+          const teacherList = this.temp.teacherName
+          const classList = this.temp.className
+          console.log('courseName:', this.temp.courseName)
+          console.log('year:', this.temp.year)
+          console.log('semester:', this.temp.semester)
+          console.log('week:', this.temp.week)
+          var teacherName = ''
+          if (teacherList !== undefined && teacherList.length === 1) {
+            teacherName = teacherList[0]
+          } else if (teacherList !== undefined && teacherList.length > 1) {
             this.$message({
               title: '失败',
-              message: '负责人只能有一个',
+              message: '只能选择一位老师',
               type: 'error',
               duration: 2000
             })
             return
           }
-          console.log('createAt time:', this.temp.executeAt)
-          console.log('now time:', new Date().getTime())
-          if (Date.parse(this.temp.executeAt) - new Date().getTime() <= 5000) {
+          var className = ''
+          if (classList !== undefined && classList.length === 1) {
+            className = classList[0]
+          } else if (classList !== undefined && classList.length > 1) {
             this.$message({
               title: '失败',
-              message: '执行时间不能比现在早',
+              message: '只能选择一个班级',
               type: 'error',
               duration: 2000
             })
             return
           }
-          console.log('manager:', manager)
-          if (this.temp.name === undefined && this.temp.type === '' && this.temp.executeAt === undefined && manager === '' && this.temp.desc === undefined) {
-            this.dialogFormVisible = false
-            return
-          }
+          console.log('teacherName:', teacherName)
+          console.log('className:', className)
           addPlanInfo({
-            name: this.temp.name === undefined ? null : this.temp.name,
-            type: this.temp.type === '' ? null : this.temp.type,
-            executeAt: this.temp.executeAt === undefined ? null : this.temp.executeAt,
-            manager: manager === '' ? null : manager,
-            desc: this.temp.desc === undefined ? null : this.temp.desc
+            courseName: this.temp.courseName === undefined ? null : this.temp.courseName,
+            year: this.temp.year === '' ? null : this.temp.year,
+            semester: this.temp.semester === undefined ? null : this.temp.semester,
+            className: className === '' ? null : className,
+            teacherName: teacherName === '' ? null : teacherName,
+            week: this.temp.week === undefined ? null : this.temp.week
           }).then(res => {
             console.log('addPlan res:', res)
             if (res.errorCode === 0) {

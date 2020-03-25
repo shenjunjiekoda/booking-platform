@@ -31,6 +31,12 @@ public class ClassController {
         return RestBody.succeed(classService.getClasses(id));
     }
 
+    @GetMapping("/list/name/{keyword}")
+    public RestBody getClassNameByKeyword(@PathVariable("keyword")String keyword){
+        log.debug("getClassNameByKeyword keyword:{}",keyword);
+        return RestBody.succeed(classService.getClassesByKeyword(keyword));
+    }
+
     @PostMapping("/add")
     public RestBody addClass(@RequestBody @Valid AddClassRequest request) {
         log.info("addClass request:{}", request);

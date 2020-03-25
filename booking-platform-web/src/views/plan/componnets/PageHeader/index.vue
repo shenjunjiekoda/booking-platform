@@ -6,65 +6,52 @@
     ref="form"
     size="mini"
     style="margin-bottom: -18px;">
-    <el-form-item label="计划名" prop="name">
-      <el-input
-        v-model="form.name"
-        placeholder=""
-        style="width: 140px;"/>
-    </el-form-item>
-    <el-form-item label="状态" prop="status">
-      <el-radio-group v-model="form.status">
-      <el-radio-button label="all"></el-radio-button>
-      <el-radio-button label="new"></el-radio-button>
-      <el-radio-button label="confirmed"></el-radio-button>
-      <el-radio-button label="completed"></el-radio-button>
-      </el-radio-group>
-    </el-form-item>
-    <!-- <el-form-item label="类型" prop="type">
-      <el-radio-group v-model="form.type">
-      <el-radio-button label="all"></el-radio-button>
-      <el-radio-button label="reg"></el-radio-button>
-      <el-radio-button label="dev"></el-radio-button>
-      <el-radio-button label="hot"></el-radio-button>
-      </el-radio-group>
-    </el-form-item> -->
-    <template v-if="advanced">
-      <el-form-item label="类型" prop="type">
-        <el-radio-group v-model="form.type">
-        <el-radio-button label="all"></el-radio-button>
-        <el-radio-button label="reg"></el-radio-button>
-        <el-radio-button label="dev"></el-radio-button>
-        <el-radio-button label="hot"></el-radio-button>
-        </el-radio-group>
-      </el-form-item>
-      <el-form-item label="创建人" prop="createdBy">
-        <el-input
-          v-model="form.createdBy"
-          placeholder=""
-          style="width: 80px;"/>
-      </el-form-item>
 
-      <el-form-item label="负责人" prop="manager">
+    <template v-if="advanced">
+      <el-form-item label="课程:" prop="courseName">
         <el-input
-          v-model="form.manager"
+          v-model="form.courseName"
+          placeholder="如:数据结构"
+          style="width: 140px;"/>
+      </el-form-item>
+      <el-form-item label="班级:" prop="className">
+        <el-input
+          v-model="form.className"
+          placeholder="如:f160117"
+          style="width: 100px;"/>
+      </el-form-item>
+      <el-form-item label="老师:" prop="teacherName">
+        <el-input
+          v-model="form.teacherName"
           placeholder=""
           style="width: 100px;"/>
       </el-form-item>
-
-      <el-form-item label="执行时间" prop="courseName">
-        <el-date-picker
-          v-model="form.createdAt"
-          type="datetimerange"
-          value-format="yyyy-MM-dd HH:mm:ss"
-          format="yyyy-MM-dd HH:mm:ss"
-          :picker-options="pickerOptions"
-          range-separator="至"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-          align="right">
-        </el-date-picker>
+      <el-form-item label="学年:" prop="year">
+         <el-input
+          v-model="form.year"
+          placeholder="如:2020(数字)"
+          style="width: 100px;"/>
+      </el-form-item>
+      <el-form-item label="学期:" prop="semester">
+        <el-select v-model="form.semester" clearable placeholder="请选择">
+          <el-option label="第一学期" value=1></el-option>
+          <el-option label="第二学期" value=2></el-option>
+        </el-select>
       </el-form-item>
 
+      <el-form-item label="周次:" prop="weekStart">
+        <el-input
+          v-model="form.weekStart"
+          placeholder=""
+          style="width: 50px;"/>
+      </el-form-item>
+
+      <el-form-item label="~" prop="weekEnd">
+        <el-input
+          v-model="form.weekEnd"
+          placeholder=""
+          style="width: 50px;"/>
+      </el-form-item>
     </template>
     <el-form-item>
       <el-button

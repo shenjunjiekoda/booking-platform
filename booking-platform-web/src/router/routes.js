@@ -45,7 +45,7 @@ const frameIn = [
         path: 'plan',
         name: 'plan',
         meta: {
-          title: '发布计划',
+          title: '上课计划',
           cache: true,
           auth: true
         },

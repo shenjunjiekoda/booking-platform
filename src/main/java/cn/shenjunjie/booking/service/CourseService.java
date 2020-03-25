@@ -16,6 +16,8 @@ public interface CourseService {
 
     List<GetCourseResponse> getCourses(GetCourseRequest request);
 
+    List<String> getCourseByKeyword(String keyword);
+
     void addCourse(String name);
 
     void updateCourse(UpdateCourseRequest request);

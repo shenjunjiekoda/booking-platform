@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 /**
  * @author Junjie.Shen
@@ -24,6 +25,12 @@ public class AddPlanRequest {
 
     @NotBlank(message = "班级不能为空")
     private String className;
+
+    @NotNull(message = "学年不能为空")
+    private Integer year;
+
+    @NotNull(message = "学期不能为空")
+    private Integer semester;
 
     private String week;
 

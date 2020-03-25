@@ -13,7 +13,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Junjie.Shen
@@ -38,6 +40,16 @@ public class CourseServiceImpl implements CourseService {
             });
         }
         return courseResponseList;
+    }
+
+    @Override
+    public List<String> getCourseByKeyword(String keyword) {
+        List<String> names = Lists.newArrayList();
+        List<Course> list = courseRepo.selectByPartName(keyword);
+        if(!CollectionUtils.isEmpty(list)){
+            names = list.stream().map(Course::getName).collect(Collectors.toList());
+        }
+        return names;
     }
 
     @Transactional

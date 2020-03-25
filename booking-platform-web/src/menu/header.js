@@ -3,7 +3,7 @@ export default [
   { path: '/index', title: '首页', icon: 'home' },
   {
     path: '/plan',
-    title: '发布计划',
+    title: '上课计划',
     icon: 'paper-plane-o'
   },
   {

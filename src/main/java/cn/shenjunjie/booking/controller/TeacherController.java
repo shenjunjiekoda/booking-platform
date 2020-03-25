@@ -38,6 +38,12 @@ public class TeacherController {
         return loginService.register(request);
     }
 
+    @GetMapping("/list/{keyword}")
+    public RestBody getTeacherNameByKeyword(@PathVariable("keyword")String keyword){
+        log.debug("getTeacherNameByKeyword keyword:{}",keyword);
+        return RestBody.succeed(teacherService.getTeacherNameByKeyword(keyword));
+    }
+
     @PostMapping("/logout")
     public RestBody logOut() {
         return loginService.logout();

@@ -83,7 +83,7 @@ export default {
         .then(res => {
           console.log('getplan res:', res.data)
           this.loading = false
-          this.table = res.data.items
+          this.table = res.data
           this.page.pageTotal = res.data.total
           this.page.pageCurrent = res.data.pageCurrent
           this.page.pageSize = res.data.pageSize

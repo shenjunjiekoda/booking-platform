@@ -24,20 +24,26 @@ public class CourseController {
 
     @GetMapping("/list")
     public RestBody listCourses(GetCourseRequest request) {
-        log.info("listCourses request:{}",request);
+        log.info("listCourses request:{}", request);
         return RestBody.succeed(courseService.getCourses(request));
+    }
+
+    @GetMapping("/list/{keyword}")
+    public RestBody getCourseByKeyword(@PathVariable("keyword") String keyword) {
+        log.debug("getCourseByKeyword keyword:{}", keyword);
+        return RestBody.succeed(courseService.getCourseByKeyword(keyword));
     }
 
     @PostMapping("/add/{name}")
     public RestBody addCourse(@PathVariable("name") String name) {
-        log.info("addCourse request:{}",name);
+        log.info("addCourse request:{}", name);
         courseService.addCourse(name);
         return RestBody.succeed();
     }
 
     @PostMapping("/update")
     public RestBody updateCourse(UpdateCourseRequest request) {
-        log.info("updateCourse request:{}",request);
+        log.info("updateCourse request:{}", request);
         courseService.updateCourse(request);
         return RestBody.succeed();
     }

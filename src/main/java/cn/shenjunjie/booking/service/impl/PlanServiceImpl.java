@@ -12,6 +12,7 @@ import cn.shenjunjie.booking.service.PlanBookService;
 import cn.shenjunjie.booking.service.PlanService;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -53,14 +54,14 @@ public class PlanServiceImpl implements PlanService {
                 clazzId = clazz.getId();
             }
         }
-        List<Long> courseIds = null;
+        List<Long> courseIds = Lists.newArrayList();
         if (!Strings.isNullOrEmpty(request.getCourseName())) {
             List<Course> courses = courseRepo.selectByPartName(request.getCourseName());
             if (!CollectionUtils.isEmpty(courses)) {
                 courses.stream().map(Course::getId).forEach(courseIds::add);
             }
         }
-        List<Long> teacherIds = null;
+        List<Long> teacherIds = Lists.newArrayList();
         if (!Strings.isNullOrEmpty(request.getTeacherName())) {
             List<Teacher> teachers = teacherRepo.selectByPartName(request.getTeacherName());
             if (!CollectionUtils.isEmpty(teachers)) {
@@ -102,15 +103,22 @@ public class PlanServiceImpl implements PlanService {
         Long teacherId = teacher.getId();
         Course course = courseRepo.selectByName(request.getCourseName());
         if (course == null) {
-            return RestBody.fail("课程不存在！");
+            courseRepo.insertByName(request.getCourseName());
+            course = courseRepo.selectByName(request.getCourseName());
         }
         Long courseId = course.getId();
         Class clazz = classRepo.selectByName(request.getClassName());
         if (clazz == null) {
             return RestBody.fail("班级不存在！");
         }
+        if (request.getYear() < 2000 && request.getYear() > 3000) {
+            return RestBody.fail("输入的学年不合法！");
+        }
+        if (StringUtils.isNotBlank(request.getWeek()) && (!request.getWeek().contains("~") || request.getWeek().trim().length() > 5)) {
+            return RestBody.fail("输入的周次不合法！");
+        }
         Long classId = clazz.getId();
-        planRepo.insertByTeacherIdAndCourseIdAndClassIdAndWeek(teacherId, courseId, classId, request.getWeek());
+        planRepo.insertByTeacherIdAndCourseIdAndClassIdAndYearAndSemesterAndWeek(teacherId, courseId, classId, request.getYear(), request.getSemester(), request.getWeek().trim());
         return RestBody.succeed();
     }
 

@@ -37,6 +37,13 @@ public class ClassRepo {
         return classMapper.selectByName(name);
     }
 
+    public List<Class> selectByPartName(String name){
+        ClassExample example = new ClassExample();
+        ClassExample.Criteria criteria = example.createCriteria();
+        criteria.andNameLike(PERCENT_SIGN.concat(name).concat(PERCENT_SIGN));
+        return classMapper.selectByExample(example);
+    }
+
     public void insertByInstituteIdAndName(Long instituteId, String name) {
         Class record = new Class();
         record.setName(name);

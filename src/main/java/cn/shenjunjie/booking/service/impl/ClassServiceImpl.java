@@ -7,6 +7,7 @@ import cn.shenjunjie.booking.entity.Class;
 import cn.shenjunjie.booking.repo.ClassRepo;
 import cn.shenjunjie.booking.service.ClassService;
 import com.google.common.collect.Lists;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,6 +15,7 @@ import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Junjie.Shen
@@ -38,6 +40,18 @@ public class ClassServiceImpl implements ClassService {
             });
         }
         return classesResponseList;
+    }
+
+    @Override
+    public List<String> getClassesByKeyword(String keyword) {
+        List<String> names = Lists.newArrayList();
+        if(StringUtils.isNotBlank(keyword)){
+            List<Class> list = classRepo.selectByPartName(keyword);
+            if(!CollectionUtils.isEmpty(list)){
+                names = list.stream().map(Class::getName).collect(Collectors.toList());
+            }
+        }
+        return names;
     }
 
     @Transactional
