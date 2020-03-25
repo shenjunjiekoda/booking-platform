@@ -18,12 +18,12 @@ public enum BookStatus {
     /**
      * 有货
      */
-    IN_STOCK("in stock"),
+    IN_STOCK("instock"),
 
     /**
      * 无货
      */
-    NOT_IN_STOCK("not in stock");
+    NOT_IN_STOCK("notinstock");
 
     private String status;
 

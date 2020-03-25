@@ -4,6 +4,7 @@ import cn.shenjunjie.booking.dto.request.AddClassRequest;
 import cn.shenjunjie.booking.dto.request.DeleteClassRequest;
 import cn.shenjunjie.booking.dto.request.UpdateClassRequest;
 import cn.shenjunjie.booking.dto.response.GetClassesResponse;
+import cn.shenjunjie.booking.entity.Class;
 
 import java.util.List;
 
@@ -22,7 +23,7 @@ public interface ClassService {
     List<GetClassesResponse> getClasses(Long instituteId);
 
 
-    List<String> getClassesByKeyword(String keyword);
+    List<Class> getClassesByKeyword(String keyword);
     /**
      * 增加一个班级信息
      * @param request

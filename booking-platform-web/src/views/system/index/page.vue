@@ -16,14 +16,14 @@
           <template v-if="item.i === '0'">
             <div class="d2-mb" style="padding:2px">
               <span class="welcome">
-                {{info.name ? `${hello}, ${info.name}, 要不要发布一把` : '未登录'}}
+                {{info.name ? `${hello}, ${info.name}, 要不要定本书` : '未登录'}}
               </span>
             </div>
           </template>
           <template v-if="item.i === '1'">
-            <el-button @click="goPlan">发布计划</el-button>
-            <el-button @click="goOperationLog">操作日志</el-button>
-            <el-button @click="goSwimlane">泳道</el-button>
+            <el-button @click="routerTo('plan')">上课计划</el-button>
+            <el-button @click="routerTo('book')">书库</el-button>
+            <el-button @click="routerTo('planbook')">订书</el-button>
           </template>
           <template v-if="item.i === '3'">
             <el-link class="d2-mb" style="font-size: 18px" href="https://github.com/shenjunjiekoda/booking-platform" target="_blank" type="primary">教程</el-link>
@@ -81,14 +81,9 @@ export default {
     ...mapActions('d2admin/account', [
       'logout'
     ]),
-    goPlan () {
+    routerTo (name) {
       this.$router.push({
-        name: 'plan'
-      })
-    },
-    goOperationLog () {
-      this.$router.push({
-        name: 'operationlog'
+        name: name
       })
     },
     log (arg1 = 'log', ...logs) {

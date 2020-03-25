@@ -1,15 +1,14 @@
 <template>
   <d2-container>
-    <el-page-header @back="goBack" content="计划详情" style="margin-bottom:3em">
-    </el-page-header>
-    <!-- <div style="margin-top:0.5em;margin-bottom:0.5em;font-size:2em;color:#99a9bf;">
-      {{ planName }}
-    </div> -->
-    <el-divider content-position="left"><span style="font-size:1.2em"><i class="el-icon-date"></i> {{planName}}</span></el-divider>
+    <demo-page-header
+      slot="header"
+      @submit="handleSubmit"
+      ref="header"/>
     <demo-page-main
       :table-data="table"
       :planStatus="planStatus"
       @reload="refresh"
+      :classId="classId"
       :planId="planId"
       :loading="loading"/>
     <demo-page-footer
@@ -22,34 +21,34 @@
 </template>
 
 <script>
-import { getPlanServiceList } from '@api/planservice'
+import { getPlanBookList } from '@api/planbook'
 import { getExactPlanInfo } from '@api/plan'
 export default {
   // name 值和本页的 $route.name 一致才可以缓存页面
-  name: 'planservice',
+  name: 'planbook',
   components: {
-    // 'DemoPageHeader': () => import('./componnets/PageHeader'),
+    'DemoPageHeader': () => import('./componnets/PageHeader'),
     'DemoPageMain': () => import('./componnets/PageMain'),
     'DemoPageFooter': () => import('./componnets/PageFooter')
   },
   beforeRouteEnter (to, from, next) {
     const id = to.params.id
     console.log('id:', id)
-    if (id) {
-      next(async instance => {
-        if (from.name === 'plan') {
-          // await instance.getFormData(id)
-          instance.loadDataFromDb(id)
-        } else {
-          console.log('not from plan...')
-          // instance.loadDataFromDb(to)
-          instance.loadDataFromDb(id)
-        }
-      })
-    }
+    next(async instance => {
+      if (from.name === 'plan') {
+        console.log('from plan')
+        // await instance.getFormData(id)
+        instance.loadDataFromDb()
+      } else {
+        console.log('not from plan...')
+        // instance.loadDataFromDb(to)
+        instance.loadDataFromDb()
+      }
+    })
   },
   data () {
     return {
+      classId: 0,
       planName: '',
       planId: 0,
       planStatus: '',
@@ -73,35 +72,35 @@ export default {
     },
     refresh () {
       console.log('refresh')
-      this.loading = true
-      this.loadDataFromDb(this.planId)
+      // this.loading = true
+      // this.loadDataFromDb(this.planId)
     },
-    loadDataFromDb (id) {
+    loadDataFromDb () {
       // console.log('load id:', id)
       // console.log('load name:', planName)\
-      this.getPlanInfo(id)
-      getPlanServiceList({
-        planId: id,
-        ...this.page
-      })
-        .then(res => {
-          console.log('getplanservice res:', res.data.items)
-          this.loading = false
-          // this.$notify({
-          //   title: '表格数据请求完毕'
-          // })
-          this.table = res.data.items
-          this.page.pageTotal = res.data.total
-          if (res.errorCode !== 0) {
-            this.$notify({
-              title: '异常信息: ' + res.msg
-            })
-          }
-        })
-        .catch(err => {
-          this.loading = false
-          console.log('err', err)
-        })
+      // this.getPlanInfo(id)
+      // getPlanServiceList({
+      //   planId: id,
+      //   ...this.page
+      // })
+      //   .then(res => {
+      //     console.log('getplanservice res:', res.data.items)
+      //     this.loading = false
+      //     // this.$notify({
+      //     //   title: '表格数据请求完毕'
+      //     // })
+      //     this.table = res.data.items
+      //     this.page.pageTotal = res.data.total
+      //     if (res.errorCode !== 0) {
+      //       this.$notify({
+      //         title: '异常信息: ' + res.msg
+      //       })
+      //     }
+      //   })
+      //   .catch(err => {
+      //     this.loading = false
+      //     console.log('err', err)
+      //   })
     },
     getPlanInfo (id) {
       getExactPlanInfo(id)
@@ -139,30 +138,37 @@ export default {
     },
     handleSubmit (form) {
       console.log('request form:', form)
+      if (form.classId === null || form.classId === undefined || form.classId === '' || form.classId.length === 0) {
+        this.$notify.warning({
+          title: '错误',
+          message: '请选择班级！'
+        })
+        return
+      }
+      var classId = 0
+      if (form.classId.length === 1) {
+        classId = form.classId[0]
+      } else {
+        this.$notify.warning({
+          title: '错误',
+          message: '请选择一个班级！'
+        })
+        return
+      }
+      this.classId = classId
+      console.log('request classId:', classId)
       this.loading = true
-      if (form.type === 'all') {
-        form.type = null
-      }
-      if (form.createdAt != null) {
-        form.createdAtFrom = form.createdAt[0]
-        form.createdAtTo = form.createdAt[1]
-        form.createdAt = null
-      }
-      // this.$notify({
-      //   title: '开始请求表格数据'
-      // })
-      getPlanServiceList({
-        ...form,
-        ...this.page
+      getPlanBookList({
+        classId: classId
       })
         .then(res => {
-          console.log('getplanservice res:', res.data)
+          console.log('getPlanBookList res:', res.data)
           this.loading = false
           // this.$notify({
           //   title: '表格数据请求完毕'
           // })
-          this.table = res.data.items
-          this.page.pageTotal = res.data.total
+          this.table = res.data
+          // this.page.pageTotal = res.data.total
           if (res.errorCode !== 0) {
             this.$notify({
               title: '异常信息: ' + res.msg

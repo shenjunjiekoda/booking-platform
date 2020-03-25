@@ -126,6 +126,13 @@
       <include refid="Example_Where_Clause" />
     </if>
   </select>
+  <select id="selectNameByClassId" resultType="java.lang.String">
+    SELECT  i.`name`
+    FROM `class` c
+    join `institute` i
+    on i.id = c.institute_id
+    where c.id = #{classId,jdbcType=BIGINT}
+  </select>
   <update id="updateByExampleSelective" parameterType="map">
     update institute
     <set>

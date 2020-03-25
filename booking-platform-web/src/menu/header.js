@@ -7,12 +7,9 @@ export default [
     icon: 'paper-plane-o'
   },
   {
-    title: '统计',
-    icon: 'signal',
-    children: [
-      { path: '/operationlog', icon: 'pencil-square-o', title: '操作日志' },
-      { path: '/report', title: '发布报表' }
-    ]
+    path: '/planbook',
+    title: '订书',
+    icon: 'paper-plane-o'
   },
   {
     path: '/book',

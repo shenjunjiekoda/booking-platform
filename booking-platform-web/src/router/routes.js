@@ -22,25 +22,6 @@ const frameIn = [
         },
         component: _import('system/index')
       },
-      // 演示页面
-      {
-        path: 'operationlog',
-        name: 'operationlog',
-        meta: {
-          title: '操作日志',
-          auth: true
-        },
-        component: _import('analysis/operationlog')
-      },
-      {
-        path: 'report',
-        name: 'report',
-        meta: {
-          title: '发布报表',
-          auth: true
-        },
-        component: _import('analysis/report')
-      },
       {
         path: 'plan',
         name: 'plan',
@@ -52,14 +33,14 @@ const frameIn = [
         component: () => import('@/views/plan')
       },
       {
-        path: 'planservice/:id',
-        name: 'planservice',
-        component: () => import('@/views/planservice'),
+        path: 'planbook',
+        name: 'planbook',
+        component: () => import('@/views/planbook'),
         props: true,
         meta: {
           auth: true,
           cache: true,
-          title: '计划详情'
+          title: '订书'
         }
       },
       // 系统 前端日志

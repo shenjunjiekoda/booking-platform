@@ -15,6 +15,8 @@ public interface InstituteService {
 
     List<GetInstitutesResponse> getInstitutes();
 
+    String getInstituteByClassId(Long classId);
+
     void addInstitute(AddInstituteRequest request);
 
     void updateInstitute(UpdateInstituteRequest request);

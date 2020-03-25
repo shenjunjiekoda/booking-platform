@@ -6,21 +6,34 @@
     ref="form"
     size="mini"
     style="margin-bottom: -18px;">
-    <el-form-item label="计划名" prop="name">
-      <el-input
-        v-model="form.name"
-        placeholder=""
-        style="width: 140px;"/>
+    <el-form-item label="班级" prop="classId">
+      <el-select
+        v-model="form.classId"
+        multiple
+        filterable
+        remote
+        reserve-keyword
+        placeholder="请输入班级"
+        :remote-method="remoteMethod"
+        :loading="searchLoading"
+        loading-text="正在加载班级">
+        <el-option
+          v-for="item in options"
+          :key="item.id"
+          :label="item.name"
+          :value="item.id">
+        </el-option>
+      </el-select>
     </el-form-item>
     <el-form-item label="类型" prop="type">
       <el-radio-group v-model="form.type">
-      <el-radio-button label="all"></el-radio-button>
-      <el-radio-button label="reg"></el-radio-button>
-      <el-radio-button label="dev"></el-radio-button>
-      <el-radio-button label="hot"></el-radio-button>
+      <el-radio-button label="全部"></el-radio-button>
+      <el-radio-button label="待提交"></el-radio-button>
+      <el-radio-button label="到货"></el-radio-button>
+      <el-radio-button label="无货"></el-radio-button>
     </el-radio-group>
     </el-form-item>
-    <template v-if="advanced">
+    <!-- <template v-if="advanced">
       <el-form-item label="创建人" prop="createdBy">
         <el-input
           v-model="form.createdBy"
@@ -49,7 +62,7 @@
         </el-date-picker>
       </el-form-item>
 
-    </template>
+    </template> -->
     <el-form-item>
       <el-button
         type="primary"
@@ -66,22 +79,25 @@
         重置
       </el-button>
     </el-form-item>
-    <el-form-item>
+    <!-- <el-form-item>
       <a @click="toggleAdvanced" style="margin-left: 8px">
         {{ advanced ? '收起' : '展开' }}
         <i v-if="advanced" class="el-icon-caret-top"></i>
-        <i v-else class="el-icon-caret-bottom"></i>
+        <i v-else class="el-icon-caret-bottom"></i> -->
         <!-- <el-icon :type="advanced ? 'up' : 'down'"/> -->
-      </a>
-    </el-form-item>
+      <!-- </a>
+    </el-form-item> -->
 
   </el-form>
 </template>
 
 <script>
+import { getClassByKeyword } from '@api/class'
 export default {
   data () {
     return {
+      searchLoading: false,
+      options: [],
       // 高级搜索 展开/关闭
       advanced: false,
       form: {
@@ -122,6 +138,38 @@ export default {
     }
   },
   methods: {
+    remoteMethod (query) {
+      var _this = this
+      if (query !== '') {
+        console.log('name query:', query)
+        this.searchLoading = true
+        getClassByKeyword(query)
+          .then(res => {
+            _this.searchLoading = false
+            _this.list = res.data
+            console.log('name res:', res.data)
+            console.log('search name res:', _this.list)
+          })
+          .catch(err => {
+            _this.searchLoading = false
+            _this.$notify({
+              title: '服务数据请求异常'
+            })
+            console.log('err', err)
+          })
+        setTimeout(() => {
+          _this.searchLoading = false
+          console.log('timeout list', _this.list)
+          _this.options = _this.list.filter(item => {
+            console.log('filter item:', item)
+            return item.name
+              .indexOf(query.toLowerCase()) > -1
+          })
+        }, 1500)
+      } else {
+        this.options = []
+      }
+    },
     handleFormSubmit () {
       this.$refs.form.validate((valid) => {
         if (valid) {

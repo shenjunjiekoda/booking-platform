@@ -44,6 +44,11 @@ public class InstituteServiceImpl implements InstituteService {
         return list;
     }
 
+    @Override
+    public String getInstituteByClassId(Long classId) {
+        return instituteRepo.selectNameByClassId(classId);
+    }
+
     @Transactional
     @Override
     public void addInstitute(AddInstituteRequest request) {

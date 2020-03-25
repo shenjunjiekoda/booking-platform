@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 /**
  * @author Junjie.Shen
@@ -16,7 +16,7 @@ import javax.validation.constraints.NotBlank;
 @AllArgsConstructor
 public class UpdatePlanRequest {
 
-    @NotBlank(message = "计划号不能为空")
+    @NotNull(message = "计划号不能为空")
     private Long id;
 
     private String className;

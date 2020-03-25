@@ -1,6 +1,47 @@
 <template>
   <div>
-    <el-row style="margin-top:2.5em;margin-bottom:1.2em">
+    <el-form
+      :inline="true"
+      size="mini">
+      <!-- <el-button type="success" size="mini" style="margin:0.1em;margin-right:1em" icon="el-icon-plus" @click="createPlan()">新增计划</el-button> -->
+      <el-form-item :label="`已选数据下载 [ ${currentTableData.length} ]`">
+        <el-button-group>
+          <el-button
+            type="primary"
+            size="mini"
+            :disabled="currentTableData.length === 0"
+            @click="handleDownloadXlsx(currentTableData)">
+            xlsx
+          </el-button>
+          <el-button
+            type="primary"
+            size="mini"
+            :disabled="currentTableData.length === 0"
+            @click="handleDownloadCsv(currentTableData)">
+            csv
+          </el-button>
+        </el-button-group>
+      </el-form-item>
+      <el-form-item :label="`已选数据下载 [ ${multipleSelection.length} ]`">
+        <el-button-group>
+          <el-button
+            type="primary"
+            size="mini"
+            :disabled="multipleSelection.length === 0"
+            @click="handleDownloadXlsx(multipleSelection)">
+            xlsx
+          </el-button>
+          <el-button
+            type="primary"
+            size="mini"
+            :disabled="multipleSelection.length === 0"
+            @click="handleDownloadCsv(multipleSelection)">
+            csv
+          </el-button>
+        </el-button-group>
+      </el-form-item>
+    </el-form>
+    <el-row>
       <el-button size="mini" icon="el-icon-refresh" @click="flush()">刷新页面</el-button>
       <el-tooltip class="item" effect="dark" content="在该计划中添加一个新的服务项" placement="top">
         <el-button v-if="planStatus==='new'" size="mini" icon="el-icon-document-add" @click="createPlanService()">新增服务项</el-button>
@@ -25,90 +66,92 @@
       size="mini"
       stripe
       style="width: 100%;"
-      :default-sort = "{prop: 'order'}">
+      :default-sort = "{prop: 'className'}"
+      @selection-change="handleSelectionChange">
 
-      <!-- <el-table-column
+      <el-table-column
+        type="selection"
         width="55">
-      </el-table-column> -->
+      </el-table-column>
       <el-table-column type="expand">
       <template slot-scope="props">
         <el-form label-position="left" inline class="demo-table-expand">
-          <el-form-item label="服务名:">
-            <span>{{ props.row.serviceName }}</span>
+          <el-form-item label="班级:">
+            <span>{{ props.row.className }}</span>
           </el-form-item>
-          <el-form-item label="发布顺序:">
-            <span>{{ props.row.order }}</span>
+          <el-form-item label="课程:">
+            <span>{{ props.row.courseName }}</span>
           </el-form-item>
-          <el-form-item label="标签:">
-            <span>{{ props.row.tag }}</span>
+          <el-form-item label="老师:">
+            <span>{{ props.row.teacherName }}</span>
           </el-form-item>
-          <el-form-item label="泳道:">
-            <span>{{ props.row.unit }}</span>
+          <el-form-item label="书名:">
+            <span>{{ props.row.bookName }}</span>
           </el-form-item>
-          <el-form-item label="个数:">
-            <span>{{ props.row.count }}</span>
+          <el-form-item label="书名:">
+            <span>{{ props.row.bookName }}</span>
           </el-form-item>
-          <el-form-item label="创建人:">
-            <span>{{ props.row.createdBy }}</span>
+          <el-form-item label="ISBN号:">
+            <span>{{ props.row.isbn }}</span>
           </el-form-item>
-          <el-form-item label="创建时间:">
-            <span>{{ props.row.createdAt }}</span>
+          <el-form-item label="作者:">
+            <span>{{ props.row.author }}</span>
           </el-form-item>
-          <el-form-item label="执行时间:">
-            <span>{{ props.row.executedAt }}</span>
+          <el-form-item label="出版社:">
+            <span>{{ props.row.press }}</span>
           </el-form-item>
-          <el-form-item label="描述:">
-            <span>{{ props.row.desc }}</span>
+          <el-form-item label="出版年月:">
+            <span>{{ props.row.publishedAt }}</span>
+          </el-form-item>
+          <el-form-item label="版次:">
+            <span>{{ props.row.edition === null ? '未知' : '第' + props.row.edition + '版' }}</span>
+          </el-form-item>
+          <el-form-item label="学生订书数:">
+            <span>{{ props.row.stuNum + '本' }}</span>
+          </el-form-item>
+          <el-form-item label="老师订书数:">
+            <span>{{ props.row.teacherNum + '本' }}</span>
+          </el-form-item>
+          <el-form-item label="周次:">
+            <span>{{ props.row.week }}</span>
           </el-form-item>
           <el-form-item label="状态:">
             <span>{{ decorateStatus(props.row.status) }}</span>
           </el-form-item>
-          <el-form-item label="用时:">
-            <span>{{ props.row.timeUsed == null? '未执行': props.row.timeUsed}}</span>
+          <el-form-item v-if="props.row.status === 'notinstock' ||props.row.status === 'instock'" label="实际到货:">
+            <span>{{ props.row.actualNum }}</span>
           </el-form-item>
         </el-form>
       </template>
     </el-table-column>
 
-      <el-table-column label="排序" prop="order" sortable align="center" width="70" :show-overflow-tooltip="true">
+      <el-table-column label="班级" align="center">
         <template slot-scope="scope">
-          {{scope.row.order}}
+          {{scope.row.className}}
         </template>
       </el-table-column>
 
-      <el-table-column label="服务名" align="center">
+      <el-table-column label="课程" align="center">
         <template slot-scope="scope">
-          {{scope.row.serviceName}}
+          {{ scope.row.courseName }}
         </template>
       </el-table-column>
 
-      <el-table-column label="标签" align="center">
+      <el-table-column label="老师" align="center">
         <template slot-scope="scope">
-          {{ scope.row.tag }}
+          {{ scope.row.teacherName }}
         </template>
       </el-table-column>
 
-      <el-table-column label="泳道" align="center">
+      <el-table-column label="书名" align="center" :show-overflow-tooltip="true">
         <template slot-scope="scope">
-          {{ scope.row.unit }}
-        </template>
-      </el-table-column>
-
-      <el-table-column label="个数" align="center" width="50">
-        <template slot-scope="scope">
-          {{ scope.row.count }}
+          {{ scope.row.bookName }}
         </template>
       </el-table-column>
 
       <el-table-column label="状态" align="center">
         <template slot-scope="scope">
           <el-tag :type="scope.row.status | statusFilter">{{ decorateStatus(scope.row.status) }}</el-tag>
-        </template>
-      </el-table-column>
-
-      <el-table-column label="执行时间" prop="executeAt" align="center" >
-        <template slot-scope="scope">
-          {{scope.row.executedAt}}
         </template>
       </el-table-column>
 
@@ -242,9 +285,10 @@
 import Vue from 'vue'
 import pluginExport from '@d2-projects/vue-table-export'
 import D2Crud from '@d2-projects/d2-crud'
-import { deployPlanService, addPlanService, updatePlanService, deletePlanService, autoSorting, resumePlanService, terminatePlanService, getCurWaitingServiceIds } from '@api/planservice'
+import { deployPlanService, addPlanService, updatePlanService, deletePlanService, autoSorting, resumePlanService, terminatePlanService, getCurWaitingServiceIds } from '@api/planbook'
 import { confirmPlan } from '@api/plan'
 import { getServiceByKeyword } from '@api/service'
+import { getNameByClassId } from '@api/institute'
 
 Vue.use(D2Crud)
 Vue.use(pluginExport)
@@ -252,6 +296,9 @@ export default {
   props: {
     tableData: {
       default: () => []
+    },
+    classId: {
+      default: 0
     },
     loading: {
       default: false
@@ -266,14 +313,10 @@ export default {
   filters: {
     statusFilter (status) {
       const statusMap = {
-        completed: 'success',
-        waiting: '',
-        new: 'info',
-        terminated: 'warning',
-        executing: '',
-        failed: 'danger',
-        rollingback: '',
-        rollbacked: 'success'
+        new: 'success',
+        submitted: '',
+        instock: 'info',
+        notinstock: 'warning'
       }
       return statusMap[status]
     }
@@ -330,16 +373,19 @@ export default {
       dialogStatus: '',
       dialogFormVisible: false,
       downloadColumns: [
-        { label: 'No', prop: 'id' },
-        { label: '计划名', prop: 'name' },
-        { label: '类型', prop: 'type' },
-        { label: '创建人', prop: 'createdBy' },
-        { label: '负责人', prop: 'manager' },
-        { label: '创建时间', prop: 'createdAt' },
-        { label: '执行时间', prop: 'executeAt' },
-        { label: '描述', prop: 'desc' },
-        { label: '状态', prop: 'status' },
-        { label: '用时', prop: 'timeUsed' }
+        // { label: 'No', prop: 'id' },
+        { label: '课程名称', prop: 'courseName' },
+        { label: '教材名称', prop: 'bookName' },
+        { label: 'ISBN', prop: 'isbn' },
+        { label: '作者', prop: 'author' },
+        { label: '出版社', prop: 'press' },
+        { label: '出版年月', prop: 'publishedAt' },
+        { label: '版次', prop: 'edition' },
+        { label: '使用班级', prop: 'className' },
+        { label: '周次', prop: 'week' },
+        { label: '老师订购数', prop: 'teacherNum' },
+        { label: '学生订购数', prop: 'stuNum' },
+        { label: '任课老师签名' }
       ]
     }
   },
@@ -591,23 +637,13 @@ export default {
     decorateStatus (status) {
       switch (status) {
         case 'new':
-          return '待确认'
-        case 'waiting':
-          return '待发布'
-        case 'terminated':
-          return '发布中止'
-        case 'executing':
-          return '执行中'
-        case 'blocked':
-          return '阻塞中'
-        case 'completed':
-          return '执行成功'
-        case 'failed':
-          return '发布失败'
-        case 'rollingback':
-          return '回滚中'
-        case 'rollbacked':
-          return '回滚成功'
+          return '未提交'
+        case 'submitted':
+          return '已提交'
+        case 'instock':
+          return '有货'
+        case 'notinstock':
+          return '无货'
         default:
           return '未知'
       }
@@ -885,6 +921,66 @@ export default {
         status: 'published',
         type: ''
       }
+    },
+    handleSelectionChange (val) {
+      this.multipleSelection = val
+    },
+    downloadDataTranslate (data) {
+      return data.map(row => ({
+        ...row,
+        type: row.type ? '禁用' : '正常',
+        used: row.used ? '已使用' : '未使用'
+      }))
+    },
+    handleDownloadXlsx (data) {
+      console.log('xlsx data:', data)
+      const year = data[0].year + '~' + (data[0].year + 1) + '学年'
+      const semester = data[0].semester === 1 ? '第一' : '第二' + '学期'
+      const title = year + semester + '教材申报表_' + data[0].className
+      console.log('title:', title)
+      console.log('classId', this.classId)
+      if (this.classId !== undefined && this.classId !== null && this.classId !== 0) {
+        getNameByClassId(this.classId)
+          .then(res => {
+            console.log('getNameByClassId res:', res.data)
+            if (res.errorCode === 0) {
+              const date = new Date()
+              const header = '学院:' + res.data + '   班级:' + data[0].className + '   ' + year + ' ' + semester +
+              '    日期:' + date.getMonth() + '月' + date.getDate() + '日'
+              console.log('header:', header)
+              if (res.data !== null && res.data !== '') {
+                this.$export.excel({
+                  header: header,
+                  title: title,
+                  columns: this.downloadColumns,
+                  data: this.downloadDataTranslate(data)
+                })
+                  .then(() => {
+                    this.$message.success('导出表格成功')
+                  })
+              }
+            } else {
+              this.$message({
+                title: '失败',
+                message: res.msg,
+                type: 'error',
+                duration: 2000
+              })
+            }
+          }).catch(err => {
+            console.log('err: ', err)
+          })
+      }
+    },
+    handleDownloadCsv (data) {
+      this.$export.csv({
+        title: '发布计划',
+        columns: this.downloadColumns,
+        data: this.downloadDataTranslate(data)
+      })
+        .then(() => {
+          this.$message.success('导出CSV成功')
+        })
     }
   }
 }

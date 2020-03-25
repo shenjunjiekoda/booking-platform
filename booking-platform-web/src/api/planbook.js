@@ -1,8 +1,8 @@
 import request from '@/plugin/axios'
 
-export function getPlanServiceList (params) {
+export function getPlanBookList (params) {
   return request({
-    url: '/planservice/list',
+    url: '/plan/book/list',
     method: 'get',
     params
   })

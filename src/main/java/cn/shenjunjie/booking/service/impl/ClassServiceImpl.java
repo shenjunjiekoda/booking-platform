@@ -43,15 +43,8 @@ public class ClassServiceImpl implements ClassService {
     }
 
     @Override
-    public List<String> getClassesByKeyword(String keyword) {
-        List<String> names = Lists.newArrayList();
-        if(StringUtils.isNotBlank(keyword)){
-            List<Class> list = classRepo.selectByPartName(keyword);
-            if(!CollectionUtils.isEmpty(list)){
-                names = list.stream().map(Class::getName).collect(Collectors.toList());
-            }
-        }
-        return names;
+    public List<Class> getClassesByKeyword(String keyword) {
+        return classRepo.selectByPartName(keyword);
     }
 
     @Transactional

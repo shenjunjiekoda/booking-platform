@@ -33,6 +33,16 @@ public class GetPlanBooksResponse {
 
     private String bookName;
 
+    private String isbn;
+
+    private String author;
+
+    private String press;
+
+    private String publishedAt;
+
+    private Long edition;
+
     private Long stuNum;
 
     private Long teacherNum;
@@ -40,5 +50,11 @@ public class GetPlanBooksResponse {
     private String status;
 
     private String week;
+
+    private Integer year;
+
+    private Integer semester;
+
+    private Integer actualNum;
 
 }

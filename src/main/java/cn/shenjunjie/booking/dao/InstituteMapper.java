@@ -20,6 +20,8 @@ public interface InstituteMapper {
 
     Institute selectByPrimaryKey(Long id);
 
+    String selectNameByClassId(@Param("classId") Long classId);
+
     int updateByExampleSelective(@Param("record") Institute record, @Param("example") InstituteExample example);
 
     int updateByExample(@Param("record") Institute record, @Param("example") InstituteExample example);

@@ -155,6 +155,8 @@ public class PlanServiceImpl implements PlanService {
                 PlanBook planBook = planBookRepo.selectByPlanId(plan.getId());
                 if (planBook != null) {
                     GetPlanBooksResponse response = new GetPlanBooksResponse();
+                    response.setYear(plan.getYear());
+                    response.setSemester(plan.getSemester());
                     Long teacherId = plan.getTeacherId();
                     Teacher teacher = teacherRepo.selectById(teacherId);
                     Long courseId = plan.getCourseId();
@@ -165,6 +167,11 @@ public class PlanServiceImpl implements PlanService {
                         response.setBookId(planBook.getBookId());
                         Book book = bookRepo.selectById(planBook.getBookId());
                         response.setBookName(book.getName());
+                        response.setIsbn(book.getIsbn());
+                        response.setEdition(book.getEdition());
+                        response.setPress(book.getPress());
+                        response.setPublishedAt(book.getPublishedAt());
+                        response.setAuthor(book.getAuthor());
                     }
                     response.setCourseId(courseId);
                     response.setCourseName(course.getName());
@@ -174,6 +181,7 @@ public class PlanServiceImpl implements PlanService {
                     }
                     response.setStuNum(planBook.getStuNum());
                     response.setTeacherNum(planBook.getTeacherNum());
+                    response.setActualNum(planBook.getActualNum());
                     response.setClassId(classId);
                     response.setClassName(className);
                     response.setStatus(planBook.getStatus());

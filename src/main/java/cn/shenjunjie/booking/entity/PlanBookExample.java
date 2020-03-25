@@ -1,6 +1,7 @@
 package cn.shenjunjie.booking.entity;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class PlanBookExample {
@@ -11,7 +12,7 @@ public class PlanBookExample {
     protected List<Criteria> oredCriteria;
 
     public PlanBookExample() {
-        oredCriteria = new ArrayList<>();
+        oredCriteria = new ArrayList<Criteria>();
     }
 
     public void setOrderByClause(String orderByClause) {
@@ -68,7 +69,7 @@ public class PlanBookExample {
 
         protected GeneratedCriteria() {
             super();
-            criteria = new ArrayList<>();
+            criteria = new ArrayList<Criterion>();
         }
 
         public boolean isValid() {
@@ -473,9 +474,200 @@ public class PlanBookExample {
             addCriterion("teacher_num not between", value1, value2, "teacherNum");
             return (Criteria) this;
         }
+
+        public Criteria andActualNumIsNull() {
+            addCriterion("actual_num is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andActualNumIsNotNull() {
+            addCriterion("actual_num is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andActualNumEqualTo(Integer value) {
+            addCriterion("actual_num =", value, "actualNum");
+            return (Criteria) this;
+        }
+
+        public Criteria andActualNumNotEqualTo(Integer value) {
+            addCriterion("actual_num <>", value, "actualNum");
+            return (Criteria) this;
+        }
+
+        public Criteria andActualNumGreaterThan(Integer value) {
+            addCriterion("actual_num >", value, "actualNum");
+            return (Criteria) this;
+        }
+
+        public Criteria andActualNumGreaterThanOrEqualTo(Integer value) {
+            addCriterion("actual_num >=", value, "actualNum");
+            return (Criteria) this;
+        }
+
+        public Criteria andActualNumLessThan(Integer value) {
+            addCriterion("actual_num <", value, "actualNum");
+            return (Criteria) this;
+        }
+
+        public Criteria andActualNumLessThanOrEqualTo(Integer value) {
+            addCriterion("actual_num <=", value, "actualNum");
+            return (Criteria) this;
+        }
+
+        public Criteria andActualNumIn(List<Integer> values) {
+            addCriterion("actual_num in", values, "actualNum");
+            return (Criteria) this;
+        }
+
+        public Criteria andActualNumNotIn(List<Integer> values) {
+            addCriterion("actual_num not in", values, "actualNum");
+            return (Criteria) this;
+        }
+
+        public Criteria andActualNumBetween(Integer value1, Integer value2) {
+            addCriterion("actual_num between", value1, value2, "actualNum");
+            return (Criteria) this;
+        }
+
+        public Criteria andActualNumNotBetween(Integer value1, Integer value2) {
+            addCriterion("actual_num not between", value1, value2, "actualNum");
+            return (Criteria) this;
+        }
+
+        public Criteria andUpdateAtIsNull() {
+            addCriterion("update_at is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andUpdateAtIsNotNull() {
+            addCriterion("update_at is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andUpdateAtEqualTo(Date value) {
+            addCriterion("update_at =", value, "updateAt");
+            return (Criteria) this;
+        }
+
+        public Criteria andUpdateAtNotEqualTo(Date value) {
+            addCriterion("update_at <>", value, "updateAt");
+            return (Criteria) this;
+        }
+
+        public Criteria andUpdateAtGreaterThan(Date value) {
+            addCriterion("update_at >", value, "updateAt");
+            return (Criteria) this;
+        }
+
+        public Criteria andUpdateAtGreaterThanOrEqualTo(Date value) {
+            addCriterion("update_at >=", value, "updateAt");
+            return (Criteria) this;
+        }
+
+        public Criteria andUpdateAtLessThan(Date value) {
+            addCriterion("update_at <", value, "updateAt");
+            return (Criteria) this;
+        }
+
+        public Criteria andUpdateAtLessThanOrEqualTo(Date value) {
+            addCriterion("update_at <=", value, "updateAt");
+            return (Criteria) this;
+        }
+
+        public Criteria andUpdateAtIn(List<Date> values) {
+            addCriterion("update_at in", values, "updateAt");
+            return (Criteria) this;
+        }
+
+        public Criteria andUpdateAtNotIn(List<Date> values) {
+            addCriterion("update_at not in", values, "updateAt");
+            return (Criteria) this;
+        }
+
+        public Criteria andUpdateAtBetween(Date value1, Date value2) {
+            addCriterion("update_at between", value1, value2, "updateAt");
+            return (Criteria) this;
+        }
+
+        public Criteria andUpdateAtNotBetween(Date value1, Date value2) {
+            addCriterion("update_at not between", value1, value2, "updateAt");
+            return (Criteria) this;
+        }
+
+        public Criteria andUpdateByIsNull() {
+            addCriterion("update_by is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andUpdateByIsNotNull() {
+            addCriterion("update_by is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andUpdateByEqualTo(String value) {
+            addCriterion("update_by =", value, "updateBy");
+            return (Criteria) this;
+        }
+
+        public Criteria andUpdateByNotEqualTo(String value) {
+            addCriterion("update_by <>", value, "updateBy");
+            return (Criteria) this;
+        }
+
+        public Criteria andUpdateByGreaterThan(String value) {
+            addCriterion("update_by >", value, "updateBy");
+            return (Criteria) this;
+        }
+
+        public Criteria andUpdateByGreaterThanOrEqualTo(String value) {
+            addCriterion("update_by >=", value, "updateBy");
+            return (Criteria) this;
+        }
+
+        public Criteria andUpdateByLessThan(String value) {
+            addCriterion("update_by <", value, "updateBy");
+            return (Criteria) this;
+        }
+
+        public Criteria andUpdateByLessThanOrEqualTo(String value) {
+            addCriterion("update_by <=", value, "updateBy");
+            return (Criteria) this;
+        }
+
+        public Criteria andUpdateByLike(String value) {
+            addCriterion("update_by like", value, "updateBy");
+            return (Criteria) this;
+        }
+
+        public Criteria andUpdateByNotLike(String value) {
+            addCriterion("update_by not like", value, "updateBy");
+            return (Criteria) this;
+        }
+
+        public Criteria andUpdateByIn(List<String> values) {
+            addCriterion("update_by in", values, "updateBy");
+            return (Criteria) this;
+        }
+
+        public Criteria andUpdateByNotIn(List<String> values) {
+            addCriterion("update_by not in", values, "updateBy");
+            return (Criteria) this;
+        }
+
+        public Criteria andUpdateByBetween(String value1, String value2) {
+            addCriterion("update_by between", value1, value2, "updateBy");
+            return (Criteria) this;
+        }
+
+        public Criteria andUpdateByNotBetween(String value1, String value2) {
+            addCriterion("update_by not between", value1, value2, "updateBy");
+            return (Criteria) this;
+        }
     }
 
     public static class Criteria extends GeneratedCriteria {
+
         protected Criteria() {
             super();
         }

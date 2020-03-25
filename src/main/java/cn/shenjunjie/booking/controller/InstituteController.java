@@ -29,6 +29,12 @@ public class InstituteController {
         return RestBody.succeed(instituteService.getInstitutes());
     }
 
+    @GetMapping("list/class/{classId}")
+    public RestBody getInstituteByClassId(@PathVariable("classId") Long classId) {
+        log.info("getInstituteByClassId classId:{}", classId);
+        return RestBody.succeed(instituteService.getInstituteByClassId(classId));
+    }
+
     @PostMapping("/add")
     public RestBody addInstitute(@RequestBody @Valid AddInstituteRequest request) {
         log.info("addInstitute request:{}", request);

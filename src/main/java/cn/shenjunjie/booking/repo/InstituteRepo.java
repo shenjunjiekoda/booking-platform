@@ -24,6 +24,10 @@ public class InstituteRepo {
         return instituteMapper.selectByExample(example);
     }
 
+    public String selectNameByClassId(Long classId) {
+        return instituteMapper.selectNameByClassId(classId);
+    }
+
     public void insertByName(String name) {
         Institute record = new Institute();
         record.setName(name);

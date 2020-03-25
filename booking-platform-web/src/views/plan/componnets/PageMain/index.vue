@@ -321,7 +321,7 @@ export default {
           .catch(err => {
             _this.searchLoading = false
             _this.$notify({
-              title: '书库数据请求异常'
+              title: '数据请求异常'
             })
             console.log('err', err)
           })
@@ -352,7 +352,7 @@ export default {
           .catch(err => {
             _this.searchLoading = false
             _this.$notify({
-              title: '书库数据请求异常'
+              title: '数据请求异常'
             })
             console.log('err', err)
           })
@@ -379,17 +379,21 @@ export default {
       })
     },
     editPlan (row) {
-      console.log('edit modal:', row.row)
-      this.rowId = row.row.id
-      this.rowStatus = row.row.status
-      this.temp.name = row.row.name
-      console.log('this.temp.name:', this.temp.name)
       this.resetTemp()
       this.dialogStatus = 'update'
       this.dialogFormVisible = true
       this.$nextTick(() => {
         this.$refs['dataForm'].clearValidate()
       })
+      console.log('edit modal:', row.row)
+      this.rowId = row.row.id
+      this.rowStatus = row.row.status
+      this.temp.courseName = row.row.courseName
+      this.temp.year = row.row.year
+      this.temp.semester = row.row.semester
+      this.temp.week = row.row.week
+      this.temp.teacherName = [row.row.teacherName]
+      this.temp.className = [row.row.className]
     },
     deletePlan (row) {
       console.log('deletePlan id:', row.row.id)
@@ -419,49 +423,46 @@ export default {
     updateData () {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          const managerList = this.temp.manager
-          console.log('planName:', this.temp.name)
-          console.log('type:', this.temp.type)
-          console.log(this.temp.type === '')
-          console.log('managerList', managerList)
-          console.log('planId:', this.rowId)
-          console.log('desc:', this.temp.desc)
-          var manager = ''
-          if (managerList !== undefined && managerList.length === 1) {
-            manager = managerList[0]
-          } else if (managerList !== undefined && managerList.length > 1) {
+          const teacherList = this.temp.teacherName
+          const classList = this.temp.className
+          console.log('courseName:', this.temp.courseName)
+          console.log('year:', this.temp.year)
+          console.log('semester:', this.temp.semester)
+          console.log('week:', this.temp.week)
+          var teacherName = ''
+          if (teacherList !== undefined && teacherList.length === 1) {
+            teacherName = teacherList[0]
+          } else if (teacherList !== undefined && teacherList.length > 1) {
             this.$message({
               title: '失败',
-              message: '负责人只能有一个',
+              message: '只能选择一位老师',
               type: 'error',
               duration: 2000
             })
             return
           }
-          console.log('manager:', manager)
-          if (this.temp.name === undefined && this.temp.type === '' && this.temp.executeAt === undefined && manager === '' && this.temp.desc === undefined) {
-            this.dialogFormVisible = false
-            return
-          }
-          // console.log('executeat num:', Date.parse(this.temp.executeAt))
-          // console.log('now num:', new Date().valueOf())
-          if (this.temp.executeAt !== undefined && Date.parse(this.temp.executeAt) - new Date().getTime() <= 5000) {
-            console.log('wrong executeAt')
+          var className = ''
+          if (classList !== undefined && classList.length === 1) {
+            className = classList[0]
+          } else if (classList !== undefined && classList.length > 1) {
             this.$message({
               title: '失败',
-              message: '执行时间不能比现在早',
+              message: '只能选择一个班级',
               type: 'error',
               duration: 2000
             })
             return
           }
+          console.log('teacherName:', teacherName)
+          console.log('className:', className)
           updatePlanInfo({
             id: this.rowId,
-            name: this.temp.name === undefined ? null : this.temp.name,
-            type: this.temp.type === '' ? null : this.temp.type,
-            executeAt: this.temp.executeAt === undefined ? null : this.temp.executeAt,
-            manager: manager === '' ? null : manager,
-            desc: this.temp.desc === undefined ? null : this.temp.desc
+            year: this.temp.year === '' ? null : this.temp.year,
+            semester: this.temp.semester === undefined ? null : this.temp.semester,
+            className: className === '' ? null : className,
+            teacherName: teacherName === '' ? null : teacherName,
+            week: this.temp.week === undefined ? null : this.temp.week,
+            courseName: this.temp.courseName === undefined ? null : this.temp.courseName
           }).then(res => {
             console.log('updatePlan res:', res)
             if (res.errorCode === 0) {

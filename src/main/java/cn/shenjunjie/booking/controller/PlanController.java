@@ -34,7 +34,7 @@ public class PlanController {
         return planService.addPlan(request);
     }
 
-    @PostMapping("/update")
+    @PutMapping("/update")
     public RestBody updatePlan(@RequestBody @Valid UpdatePlanRequest request){
         log.info("updatePlan request:{}",request);
         return planService.updatePlan(request);
@@ -52,7 +52,7 @@ public class PlanController {
         return planService.addPlanBook(request);
     }
 
-    @PostMapping("/book/update")
+    @PutMapping("/book/update")
     public RestBody updatePlanBook(@RequestBody @Valid UpdatePlanBookRequest request){
         log.info("updatePlanBook request:{}",request);
         return planService.updatePlanBook(request);

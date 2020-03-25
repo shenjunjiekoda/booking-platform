@@ -1,11 +1,11 @@
 <template>
+<div>
   <el-form
     :inline="true"
     :model="form"
     :rules="rules"
     ref="form"
-    size="mini"
-    style="margin-bottom: -18px;">
+    size="mini">
 
     <template v-if="advanced">
       <el-form-item label="课程:" prop="courseName">
@@ -79,6 +79,7 @@
     </el-form-item>
 
   </el-form>
+</div>
 </template>
 
 <script>

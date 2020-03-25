@@ -66,13 +66,13 @@
 <!--			   enableUpdateByExample="true" enableSelectByExample="true"-->
 <!--			   selectByExampleQueryId="true" enableUpdateByPrimaryKey="true">-->
 <!--		</table>-->
-<!--		<table tableName="plan_book" domainObjectName="PlanBook"-->
-<!--			enableUpdateByExample="true" enableSelectByExample="true"-->
-<!--			selectByExampleQueryId="true" enableUpdateByPrimaryKey="true">-->
-<!--		</table>-->
-		<table tableName="teacher" domainObjectName="Teacher"
-			   enableUpdateByExample="true" enableSelectByExample="true"
-			   selectByExampleQueryId="true" enableUpdateByPrimaryKey="true">
+		<table tableName="plan_book" domainObjectName="PlanBook"
+			enableUpdateByExample="true" enableSelectByExample="true"
+			selectByExampleQueryId="true" enableUpdateByPrimaryKey="true">
 		</table>
+<!--		<table tableName="teacher" domainObjectName="Teacher"-->
+<!--			   enableUpdateByExample="true" enableSelectByExample="true"-->
+<!--			   selectByExampleQueryId="true" enableUpdateByPrimaryKey="true">-->
+<!--		</table>-->
 	</context>
 </generatorConfiguration>
