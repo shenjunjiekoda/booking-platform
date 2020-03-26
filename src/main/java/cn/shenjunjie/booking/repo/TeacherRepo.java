@@ -45,6 +45,13 @@ public class TeacherRepo {
         return teacherMapper.selectByExample(example);
     }
 
+    public List<Teacher> selectAdmins(){
+        TeacherExample example = new TeacherExample();
+        TeacherExample.Criteria criteria = example.createCriteria();
+        criteria.andIsadminEqualTo(1);
+        return teacherMapper.selectByExample(example);
+    }
+
     public void insertByRequest(RegisterRequest request){
         Teacher record = new Teacher();
         record.setEmail(request.getEmail());

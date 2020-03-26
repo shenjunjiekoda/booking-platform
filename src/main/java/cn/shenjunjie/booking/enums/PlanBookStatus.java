@@ -5,7 +5,7 @@ package cn.shenjunjie.booking.enums;
  * @version 1.0
  * @date 2020/2/27 18:58
  */
-public enum BookStatus {
+public enum PlanBookStatus {
     /**
      * 创建，还未提交
      */
@@ -31,7 +31,7 @@ public enum BookStatus {
         return status;
     }
 
-    BookStatus(String status){
+    PlanBookStatus(String status){
         this.status = status;
     }
 }

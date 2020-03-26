@@ -1,6 +1,7 @@
 package cn.shenjunjie.booking.entity;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class MessageExample {
@@ -234,62 +235,52 @@ public class MessageExample {
             return (Criteria) this;
         }
 
-        public Criteria andToEqualTo(String value) {
+        public Criteria andToEqualTo(Long value) {
             addCriterion("to =", value, "to");
             return (Criteria) this;
         }
 
-        public Criteria andToNotEqualTo(String value) {
+        public Criteria andToNotEqualTo(Long value) {
             addCriterion("to <>", value, "to");
             return (Criteria) this;
         }
 
-        public Criteria andToGreaterThan(String value) {
+        public Criteria andToGreaterThan(Long value) {
             addCriterion("to >", value, "to");
             return (Criteria) this;
         }
 
-        public Criteria andToGreaterThanOrEqualTo(String value) {
+        public Criteria andToGreaterThanOrEqualTo(Long value) {
             addCriterion("to >=", value, "to");
             return (Criteria) this;
         }
 
-        public Criteria andToLessThan(String value) {
+        public Criteria andToLessThan(Long value) {
             addCriterion("to <", value, "to");
             return (Criteria) this;
         }
 
-        public Criteria andToLessThanOrEqualTo(String value) {
+        public Criteria andToLessThanOrEqualTo(Long value) {
             addCriterion("to <=", value, "to");
             return (Criteria) this;
         }
 
-        public Criteria andToLike(String value) {
-            addCriterion("to like", value, "to");
-            return (Criteria) this;
-        }
-
-        public Criteria andToNotLike(String value) {
-            addCriterion("to not like", value, "to");
-            return (Criteria) this;
-        }
-
-        public Criteria andToIn(List<String> values) {
+        public Criteria andToIn(List<Long> values) {
             addCriterion("to in", values, "to");
             return (Criteria) this;
         }
 
-        public Criteria andToNotIn(List<String> values) {
+        public Criteria andToNotIn(List<Long> values) {
             addCriterion("to not in", values, "to");
             return (Criteria) this;
         }
 
-        public Criteria andToBetween(String value1, String value2) {
+        public Criteria andToBetween(Long value1, Long value2) {
             addCriterion("to between", value1, value2, "to");
             return (Criteria) this;
         }
 
-        public Criteria andToNotBetween(String value1, String value2) {
+        public Criteria andToNotBetween(Long value1, Long value2) {
             addCriterion("to not between", value1, value2, "to");
             return (Criteria) this;
         }
@@ -351,6 +342,66 @@ public class MessageExample {
 
         public Criteria andReadedNotBetween(Integer value1, Integer value2) {
             addCriterion("readed not between", value1, value2, "readed");
+            return (Criteria) this;
+        }
+
+        public Criteria andCreatedatIsNull() {
+            addCriterion("createdAt is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andCreatedatIsNotNull() {
+            addCriterion("createdAt is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andCreatedatEqualTo(Date value) {
+            addCriterion("createdAt =", value, "createdat");
+            return (Criteria) this;
+        }
+
+        public Criteria andCreatedatNotEqualTo(Date value) {
+            addCriterion("createdAt <>", value, "createdat");
+            return (Criteria) this;
+        }
+
+        public Criteria andCreatedatGreaterThan(Date value) {
+            addCriterion("createdAt >", value, "createdat");
+            return (Criteria) this;
+        }
+
+        public Criteria andCreatedatGreaterThanOrEqualTo(Date value) {
+            addCriterion("createdAt >=", value, "createdat");
+            return (Criteria) this;
+        }
+
+        public Criteria andCreatedatLessThan(Date value) {
+            addCriterion("createdAt <", value, "createdat");
+            return (Criteria) this;
+        }
+
+        public Criteria andCreatedatLessThanOrEqualTo(Date value) {
+            addCriterion("createdAt <=", value, "createdat");
+            return (Criteria) this;
+        }
+
+        public Criteria andCreatedatIn(List<Date> values) {
+            addCriterion("createdAt in", values, "createdat");
+            return (Criteria) this;
+        }
+
+        public Criteria andCreatedatNotIn(List<Date> values) {
+            addCriterion("createdAt not in", values, "createdat");
+            return (Criteria) this;
+        }
+
+        public Criteria andCreatedatBetween(Date value1, Date value2) {
+            addCriterion("createdAt between", value1, value2, "createdat");
+            return (Criteria) this;
+        }
+
+        public Criteria andCreatedatNotBetween(Date value1, Date value2) {
+            addCriterion("createdAt not between", value1, value2, "createdat");
             return (Criteria) this;
         }
     }

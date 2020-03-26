@@ -24,17 +24,24 @@ export function addPlanService (data) {
   })
 }
 
-export function updatePlanService (data) {
+export function updatePlanBookInfo (data) {
   return request({
-    url: '/planservice/update',
+    url: '/plan/book/update',
     method: 'put',
     data
   })
 }
 
-export function deletePlanService (id) {
+export function deletePlanBookInfo (id) {
   return request({
-    url: '/planservice/delete/' + id,
+    url: '/plan/book/delete/' + id,
+    method: 'post'
+  })
+}
+
+export function submitPlanBookInfo (id) {
+  return request({
+    url: '/plan/book/submit/' + id,
     method: 'post'
   })
 }

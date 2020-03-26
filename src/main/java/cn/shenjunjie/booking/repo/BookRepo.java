@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * @author Junjie.Shen
@@ -55,6 +56,13 @@ public class BookRepo {
 
     public Book selectByName(String name){
         return bookMapper.selectByName(name);
+    }
+
+    public List<Book> selectByPartName(String partName){
+        BookExample example = new BookExample();
+        BookExample.Criteria criteria = example.createCriteria();
+        criteria.andNameLike("%".concat(partName).concat("%"));
+        return bookMapper.selectByExample(example);
     }
 
     public Book selectByISBN(String name){

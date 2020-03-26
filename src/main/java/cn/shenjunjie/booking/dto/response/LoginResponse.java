@@ -28,4 +28,6 @@ public class LoginResponse {
 
     private Long expireTime;
 
+    private Integer isAdmin;
+
 }

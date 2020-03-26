@@ -190,6 +190,26 @@
         from plan_book
         where plan_id = #{planId,jdbcType=BIGINT}
     </select>
+    <select id="selectByPlanIdAndStatus" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from plan_book
+        where plan_id = #{planId,jdbcType=BIGINT}
+        and status = #{status,jdbcType=VARCHAR}
+    </select>
+    <select id="selectByClassIdAndStatus" resultMap="BaseResultMap">
+        SELECT pb.* FROM `plan_book` pb
+        join plan p
+        on p.id = pb.plan_id
+        where pb.status = #{status,jdbcType=VARCHAR}
+        and p.class_id = #{classId,jdbcType=BIGINT}
+    </select>
+    <select id="selectByClassId" resultMap="BaseResultMap">
+        SELECT pb.* FROM `plan_book` pb
+        join plan p
+        on p.id = pb.plan_id
+        where p.class_id = #{classId,jdbcType=BIGINT}
+    </select>
     <update id="updateByExampleSelective" parameterType="map">
         update plan_book
         <set>

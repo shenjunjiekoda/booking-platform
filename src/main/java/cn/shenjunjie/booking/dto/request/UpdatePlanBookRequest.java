@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 /**
  * @author Junjie.Shen
@@ -16,21 +17,19 @@ import javax.validation.constraints.NotBlank;
 @AllArgsConstructor
 public class UpdatePlanBookRequest {
 
-    @NotBlank(message = "计划号不能为空")
-    private Long planId;
+    @NotNull(message = "计划号不能为空")
+    private Long planBookId;
 
-    private String className;
+    @NotBlank(message = "书名不能为空")
+    private String bookName;
 
-    private String teacherName;
-
-    private String courseName;
-
-    private String week;
-
+    @NotNull(message = "老师订书数不能为空")
     private Long teacherNum;
 
+    @NotNull(message = "学生订书数不能为空")
     private Long stuNum;
 
-    private Long bookId;
+    @NotNull(message = "实际数量不能为空")
+    private Integer actualNum;
 
 }

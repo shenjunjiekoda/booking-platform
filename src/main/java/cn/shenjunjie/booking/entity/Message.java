@@ -1,13 +1,17 @@
 package cn.shenjunjie.booking.entity;
 
+import java.util.Date;
+
 public class Message {
     private Long id;
 
     private Long from;
 
-    private String to;
+    private Long to;
 
     private Integer readed;
+
+    private Date createdat;
 
     private String data;
 
@@ -27,12 +31,12 @@ public class Message {
         this.from = from;
     }
 
-    public String getTo() {
+    public Long getTo() {
         return to;
     }
 
-    public void setTo(String to) {
-        this.to = to == null ? null : to.trim();
+    public void setTo(Long to) {
+        this.to = to;
     }
 
     public Integer getReaded() {
@@ -41,6 +45,14 @@ public class Message {
 
     public void setReaded(Integer readed) {
         this.readed = readed;
+    }
+
+    public Date getCreatedat() {
+        return createdat;
+    }
+
+    public void setCreatedat(Date createdat) {
+        this.createdat = createdat;
     }
 
     public String getData() {

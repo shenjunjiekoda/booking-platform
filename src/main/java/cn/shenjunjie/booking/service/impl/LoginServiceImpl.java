@@ -52,6 +52,7 @@ public class LoginServiceImpl implements LoginService {
                     .setEmail(principal.getEmail())
                     .setUuid(principal.getTeacherId())
                     .setTeacherId(principal.getTeacherId())
+                    .setIsAdmin(principal.getIsadmin())
                     .setExpireTime(expiredTime / 24 / 60 / 60);
             return RestBody.succeed(response);
         } catch (UnknownAccountException e) {
@@ -65,15 +66,15 @@ public class LoginServiceImpl implements LoginService {
     public RestBody register(RegisterRequest request) {
         Teacher teacher = teacherRepo.selectByName(request.getName());
         if (teacher != null) {
-            return RestBody.fail("名字已存在");
+            return RestBody.fail("名字已存在！");
         }
         teacher = teacherRepo.selectByTeacherId(request.getTeacherId());
         if (teacher != null) {
-            return RestBody.fail("工号已存在");
+            return RestBody.fail("工号已存在！");
         }
         teacher = teacherRepo.selectByEmail(request.getEmail());
         if (teacher != null) {
-            return RestBody.fail("邮箱已存在");
+            return RestBody.fail("邮箱已存在！");
         }
         teacherRepo.insertByRequest(request);
         return RestBody.succeed();

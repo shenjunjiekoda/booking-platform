@@ -41,9 +41,9 @@ public class PlanController {
     }
 
     @GetMapping("/book/list")
-    public RestBody listPlanBooks(Long classId) {
-        log.info("listPlanBooks request:{}",classId);
-        return RestBody.succeed(planService.getPlanBooks(classId));
+    public RestBody listPlanBooks(@Valid GetPlanBookRequest request) {
+        log.info("listPlanBooks request:{}",request);
+        return RestBody.succeed(planService.getPlanBooks(request));
     }
 
     @PostMapping("/book/add")
@@ -56,6 +56,18 @@ public class PlanController {
     public RestBody updatePlanBook(@RequestBody @Valid UpdatePlanBookRequest request){
         log.info("updatePlanBook request:{}",request);
         return planService.updatePlanBook(request);
+    }
+
+    @PostMapping("book/delete/{id}")
+    public RestBody deletePlanBook(@PathVariable("id") Long id) {
+        log.info("deletePlanBook request:{}",id);
+        return planService.deletePlanBook(id);
+    }
+
+    @PostMapping("book/submit/{id}")
+    public RestBody submitPlanBook(@PathVariable("id") Long id) {
+        log.info("submitPlanBook request:{}",id);
+        return planService.submitPlanBook(id);
     }
 
 }

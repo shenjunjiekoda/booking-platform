@@ -115,7 +115,7 @@
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form ref="dataForm" :model="temp" label-position="left" label-width="80px" style="width: 400px; margin-left:50px;">
         <el-form-item label="课程" prop="courseName" :rules="[{ required: dialogStatus === 'create', message: '课程不能为空'}]">
-          <el-input v-model="temp.courseName" />
+          <el-input v-model="temp.courseName" @input="change($event)" />
         </el-form-item>
         <el-form-item label="班级" prop="className" :rules="[{ required: dialogStatus === 'create', message: '班级不能为空'}]">
           <el-select
@@ -124,15 +124,16 @@
             filterable
             remote
             reserve-keyword
+            @input="change($event)"
             placeholder="请输入班级"
             :remote-method="remoteMethod"
             :loading="searchLoading"
             loading-text="正在加载班级">
             <el-option
               v-for="item in classes"
-              :key="item"
-              :label="item"
-              :value="item">
+              :key="item.name"
+              :label="item.name"
+              :value="item.name">
             </el-option>
           </el-select>
         </el-form-item>
@@ -156,16 +157,16 @@
           </el-select>
         </el-form-item>
         <el-form-item label="学年" prop="year" :rules="[{ required: dialogStatus === 'create', message: '学年不能为空'}]">
-          <el-input v-model="temp.year" placeholder="如:2020"/>
+          <el-input v-model="temp.year" @input="change($event)" placeholder="如:2020"/>
         </el-form-item>
-        <el-form-item label="学期" prop="semester" :rules="[{ required: dialogStatus === 'create', message: '学期不能为空'}]">
+        <el-form-item label="学期" prop="semester" @input="change($event)" :rules="[{ required: dialogStatus === 'create', message: '学期不能为空'}]">
           <el-select v-model="temp.semester" placeholder="请选择">
             <el-option label="第一学期" value=1></el-option>
             <el-option label="第二学期" value=2></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="周次" prop="week">
-          <el-input v-model="temp.week" placeholder="如:1~16"/>
+          <el-input v-model="temp.week" @input="change($event)" placeholder="如:1~16"/>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -294,6 +295,9 @@ export default {
     }
   },
   methods: {
+    change (e) {
+      this.$forceUpdate()
+    },
     goToPlanServicePage (row) {
       // console.log('curId:', row.row.id)
       // console.log('curplanName:', row.row.name)
@@ -330,7 +334,7 @@ export default {
           console.log('timeout list', _this.list)
           _this.classes = _this.list.filter(item => {
             console.log('filter item:', item)
-            return item
+            return item.name
               .indexOf(query.toLowerCase()) > -1
           })
         }, 1500)

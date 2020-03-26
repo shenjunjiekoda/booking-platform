@@ -37,6 +37,8 @@ export default {
               util.cookies.set('uuid', res.data.id)
               util.cookies.set('token', res.data.token, currentCookieSetting)
               util.cookies.set('roleId', res.data.roleId)
+              util.cookies.set('isAdmin', res.data.isAdmin)
+              console.log('login check is admin:', util.cookies.get('isAdmin'))
               // 设置 vuex 用户信息
               await dispatch('d2admin/user/set', {
                 name: res.data.name

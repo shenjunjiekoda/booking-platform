@@ -39,6 +39,12 @@ public class BookController {
         return RestBody.succeed(bookService.getBooksFromWeb(keyword));
     }
 
+    @GetMapping("/list/{keyword}")
+    public RestBody getSpecificBookByKeyword(@PathVariable("keyword") String keyword) {
+        log.debug("getSpecificBookByKeyword keyword:{}", keyword);
+        return RestBody.succeed(bookService.getSpecificBookByKeyword(keyword));
+    }
+
     @PostMapping("/add")
     public RestBody addBook(@RequestBody @Valid AddBookRequest request) {
         log.info("addBook request:{}", request);

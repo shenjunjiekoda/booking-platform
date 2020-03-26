@@ -25,44 +25,24 @@
         </el-option>
       </el-select>
     </el-form-item>
-    <el-form-item label="类型" prop="type">
-      <el-radio-group v-model="form.type">
+    <el-form-item label="状态" prop="status">
+      <el-radio-group v-model="form.status">
       <el-radio-button label="全部"></el-radio-button>
       <el-radio-button label="待提交"></el-radio-button>
-      <el-radio-button label="到货"></el-radio-button>
-      <el-radio-button label="无货"></el-radio-button>
+      <el-radio-button label="已提交"></el-radio-button>
+      <el-radio-button label="已到货"></el-radio-button>
+      <el-radio-button label="货不足"></el-radio-button>
     </el-radio-group>
+    <el-form-item label="学年">
+      <el-input v-model="form.year" placeholder="请输入学年"></el-input>
     </el-form-item>
-    <!-- <template v-if="advanced">
-      <el-form-item label="创建人" prop="createdBy">
-        <el-input
-          v-model="form.createdBy"
-          placeholder=""
-          style="width: 80px;"/>
-      </el-form-item>
-
-      <el-form-item label="负责人" prop="manager">
-        <el-input
-          v-model="form.manager"
-          placeholder=""
-          style="width: 100px;"/>
-      </el-form-item>
-
-      <el-form-item label="执行时间" prop="courseName">
-        <el-date-picker
-          v-model="form.createdAt"
-          type="datetimerange"
-          value-format="yyyy-MM-dd HH:mm:ss"
-          format="yyyy-MM-dd HH:mm:ss"
-          :picker-options="pickerOptions"
-          range-separator="至"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-          align="right">
-        </el-date-picker>
-      </el-form-item>
-
-    </template> -->
+    <el-form-item label="学期" prop="semester">
+      <el-select v-model="form.semester" placeholder="请选择">
+        <el-option label="第一学期" value="第一学期"></el-option>
+        <el-option label="第二学期" value="第二学期"></el-option>
+      </el-select>
+    </el-form-item>
+    </el-form-item>
     <el-form-item>
       <el-button
         type="primary"
@@ -101,7 +81,8 @@ export default {
       // 高级搜索 展开/关闭
       advanced: false,
       form: {
-        type: 'all'
+        status: '全部',
+        semester: '第一学期'
         // user: ''
       },
       rules: {

@@ -50,10 +50,12 @@ public class PlanRepo {
         return planMapper.selectByExample(example);
     }
 
-    public List<Plan> selectByClassId(Long classId) {
+    public List<Plan> selectByClassIdAndYearAndSemester(Long classId,Integer year,Integer semester) {
         PlanExample example = new PlanExample();
         PlanExample.Criteria criteria = example.createCriteria();
         criteria.andClassIdEqualTo(classId);
+        criteria.andYearEqualTo(year);
+        criteria.andSemesterEqualTo(semester);
         return planMapper.selectByExample(example);
     }
 
@@ -86,4 +88,19 @@ public class PlanRepo {
         planMapper.deleteByPrimaryKey(id);
     }
 
+    public Plan selectByTeacherIdAndCourseIdAndClassIdAndYearAndSemesterAndWeek(Long teacherId, Long courseId, Long classId, Integer year, Integer semester, String week) {
+        PlanExample example = new PlanExample();
+        PlanExample.Criteria criteria = example.createCriteria();
+        criteria.andTeacherIdEqualTo(teacherId);
+        criteria.andCourseIdEqualTo(courseId);
+        criteria.andClassIdEqualTo(classId);
+        criteria.andYearEqualTo(year);
+        criteria.andSemesterEqualTo(semester);
+        criteria.andWeekEqualTo(week);
+        List<Plan> plans = planMapper.selectByExample(example);
+        if(!CollectionUtils.isEmpty(plans) && plans.size() == 1){
+            return plans.get(0);
+        }
+        return null;
+    }
 }

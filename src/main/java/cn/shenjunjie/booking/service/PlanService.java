@@ -4,6 +4,8 @@ import cn.shenjunjie.booking.common.rest.RestBody;
 import cn.shenjunjie.booking.dto.request.*;
 import cn.shenjunjie.booking.dto.response.GetPlanBooksResponse;
 import cn.shenjunjie.booking.dto.response.GetPlanResponse;
+import cn.shenjunjie.booking.dto.response.PageBean;
+import com.github.pagehelper.Page;
 
 import java.util.List;
 
@@ -20,7 +22,7 @@ public interface PlanService {
 
     RestBody updatePlan(UpdatePlanRequest request);
 
-    List<GetPlanBooksResponse> getPlanBooks(Long classId);
+    PageBean<GetPlanBooksResponse> getPlanBooks(GetPlanBookRequest request);
 
     RestBody addPlanBook(AddPlanBookRequest request);
 
@@ -28,4 +30,5 @@ public interface PlanService {
 
     RestBody deletePlanBook(Long id);
 
+    RestBody submitPlanBook(Long id);
 }

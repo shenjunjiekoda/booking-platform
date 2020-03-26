@@ -7,6 +7,7 @@ import cn.shenjunjie.booking.dto.request.UpdateBookRequest;
 import cn.shenjunjie.booking.dto.response.GetBooksFromWebResponse;
 import cn.shenjunjie.booking.dto.response.GetBooksResponse;
 import cn.shenjunjie.booking.dto.response.PageBean;
+import cn.shenjunjie.booking.entity.Book;
 
 import java.util.List;
 
@@ -30,6 +31,13 @@ public interface BookService {
      * @return
      */
     List<GetBooksFromWebResponse> getBooksFromWeb(String keyword);
+
+    /**
+     * 通过关键词找到书名
+     * @param keyword
+     * @return
+     */
+    List<Book> getSpecificBookByKeyword(String keyword);
 
     /**
      * 添加一本书籍

@@ -8,6 +8,13 @@ export function getBookList (params) {
   })
 }
 
+export function getSpecificBookByKeyword (keyword) {
+  return request({
+    url: '/book/list/' + keyword,
+    method: 'get'
+  })
+}
+
 export function searchFromWeb (keyword) {
   return request({
     url: '/book/search/' + keyword,

@@ -4,8 +4,9 @@
   <resultMap id="BaseResultMap" type="cn.shenjunjie.booking.entity.Message">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="from" jdbcType="BIGINT" property="from" />
-    <result column="to" jdbcType="VARCHAR" property="to" />
+    <result column="to" jdbcType="BIGINT" property="to" />
     <result column="readed" jdbcType="INTEGER" property="readed" />
+    <result column="createdAt" jdbcType="TIMESTAMP" property="createdat" />
   </resultMap>
   <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="cn.shenjunjie.booking.entity.Message">
     <result column="data" jdbcType="LONGVARCHAR" property="data" />
@@ -69,10 +70,10 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, from, to, readed
+    id, `from`, `to`, readed, createdAt
   </sql>
   <sql id="Blob_Column_List">
-    data
+    `data`
   </sql>
   <select id="selectByExampleWithBLOBs" parameterType="cn.shenjunjie.booking.entity.MessageExample" resultMap="ResultMapWithBLOBs">
     select
@@ -125,10 +126,10 @@
     </if>
   </delete>
   <insert id="insert" parameterType="cn.shenjunjie.booking.entity.Message">
-    insert into message (id, from, to, readed, 
-      data)
-    values (#{id,jdbcType=BIGINT}, #{from,jdbcType=BIGINT}, #{to,jdbcType=VARCHAR}, #{readed,jdbcType=INTEGER}, 
-      #{data,jdbcType=LONGVARCHAR})
+    insert into message (id, `from`, `to`, readed,
+      createdAt, `data`)
+    values (#{id,jdbcType=BIGINT}, #{from,jdbcType=BIGINT}, #{to,jdbcType=BIGINT}, #{readed,jdbcType=INTEGER}, 
+      #{createdat,jdbcType=TIMESTAMP}, #{data,jdbcType=LONGVARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="cn.shenjunjie.booking.entity.Message">
     insert into message
@@ -137,16 +138,19 @@
         id,
       </if>
       <if test="from != null">
-        from,
+        `from`,
       </if>
       <if test="to != null">
-        to,
+        `to`,
       </if>
       <if test="readed != null">
         readed,
       </if>
+      <if test="createdat != null">
+        createdAt,
+      </if>
       <if test="data != null">
-        data,
+        `data`,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -157,10 +161,13 @@
         #{from,jdbcType=BIGINT},
       </if>
       <if test="to != null">
-        #{to,jdbcType=VARCHAR},
+        #{to,jdbcType=BIGINT},
       </if>
       <if test="readed != null">
         #{readed,jdbcType=INTEGER},
+      </if>
+      <if test="createdat != null">
+        #{createdat,jdbcType=TIMESTAMP},
       </if>
       <if test="data != null">
         #{data,jdbcType=LONGVARCHAR},
@@ -180,16 +187,19 @@
         id = #{record.id,jdbcType=BIGINT},
       </if>
       <if test="record.from != null">
-        from = #{record.from,jdbcType=BIGINT},
+        `from` = #{record.from,jdbcType=BIGINT},
       </if>
       <if test="record.to != null">
-        to = #{record.to,jdbcType=VARCHAR},
+        `to` = #{record.to,jdbcType=BIGINT},
       </if>
       <if test="record.readed != null">
         readed = #{record.readed,jdbcType=INTEGER},
       </if>
+      <if test="record.createdat != null">
+        createdAt = #{record.createdat,jdbcType=TIMESTAMP},
+      </if>
       <if test="record.data != null">
-        data = #{record.data,jdbcType=LONGVARCHAR},
+        `data` = #{record.data,jdbcType=LONGVARCHAR},
       </if>
     </set>
     <if test="_parameter != null">
@@ -199,10 +209,11 @@
   <update id="updateByExampleWithBLOBs" parameterType="map">
     update message
     set id = #{record.id,jdbcType=BIGINT},
-      from = #{record.from,jdbcType=BIGINT},
-      to = #{record.to,jdbcType=VARCHAR},
+      `from` = #{record.from,jdbcType=BIGINT},
+      `to` = #{record.to,jdbcType=BIGINT},
       readed = #{record.readed,jdbcType=INTEGER},
-      data = #{record.data,jdbcType=LONGVARCHAR}
+      createdAt = #{record.createdat,jdbcType=TIMESTAMP},
+      `data` = #{record.data,jdbcType=LONGVARCHAR}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -210,9 +221,10 @@
   <update id="updateByExample" parameterType="map">
     update message
     set id = #{record.id,jdbcType=BIGINT},
-      from = #{record.from,jdbcType=BIGINT},
-      to = #{record.to,jdbcType=VARCHAR},
-      readed = #{record.readed,jdbcType=INTEGER}
+      `from` = #{record.from,jdbcType=BIGINT},
+      `to` = #{record.to,jdbcType=BIGINT},
+      readed = #{record.readed,jdbcType=INTEGER},
+      createdAt = #{record.createdat,jdbcType=TIMESTAMP}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -221,16 +233,19 @@
     update message
     <set>
       <if test="from != null">
-        from = #{from,jdbcType=BIGINT},
+        `from` = #{from,jdbcType=BIGINT},
       </if>
       <if test="to != null">
-        to = #{to,jdbcType=VARCHAR},
+        `to` = #{to,jdbcType=BIGINT},
       </if>
       <if test="readed != null">
         readed = #{readed,jdbcType=INTEGER},
       </if>
+      <if test="createdat != null">
+        createdAt = #{createdat,jdbcType=TIMESTAMP},
+      </if>
       <if test="data != null">
-        data = #{data,jdbcType=LONGVARCHAR},
+        `data` = #{data,jdbcType=LONGVARCHAR},
       </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
@@ -238,16 +253,18 @@
   <update id="updateByPrimaryKeyWithBLOBs" parameterType="cn.shenjunjie.booking.entity.Message">
     update message
     set from = #{from,jdbcType=BIGINT},
-      to = #{to,jdbcType=VARCHAR},
+      to = #{to,jdbcType=BIGINT},
       readed = #{readed,jdbcType=INTEGER},
-      data = #{data,jdbcType=LONGVARCHAR}
+      createdAt = #{createdat,jdbcType=TIMESTAMP},
+      `data` = #{data,jdbcType=LONGVARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="cn.shenjunjie.booking.entity.Message">
     update message
     set from = #{from,jdbcType=BIGINT},
-      to = #{to,jdbcType=VARCHAR},
-      readed = #{readed,jdbcType=INTEGER}
+      to = #{to,jdbcType=BIGINT},
+      readed = #{readed,jdbcType=INTEGER},
+      createdAt = #{createdat,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

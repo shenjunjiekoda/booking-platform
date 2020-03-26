@@ -26,6 +26,8 @@ public interface PlanBookMapper {
 
     PlanBook selectByPlanId(@Param("planId") Long planId);
 
+    PlanBook selectByPlanIdAndStatus(@Param("planId") Long planId,@Param("status") String status);
+
     int updateByExampleSelective(@Param("record") PlanBook record, @Param("example") PlanBookExample example);
 
     int updateByExample(@Param("record") PlanBook record, @Param("example") PlanBookExample example);
@@ -33,4 +35,9 @@ public interface PlanBookMapper {
     int updateByPrimaryKeySelective(PlanBook record);
 
     int updateByPrimaryKey(PlanBook record);
+
+    List<PlanBook> selectByClassIdAndStatus(@Param("classId") Long classId,@Param("status") String status);
+
+    List<PlanBook> selectByClassId(@Param("classId") Long classId);
+
 }

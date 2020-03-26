@@ -3,7 +3,6 @@
     <el-form
       :inline="true"
       size="mini">
-      <!-- <el-button type="success" size="mini" style="margin:0.1em;margin-right:1em" icon="el-icon-plus" @click="createPlan()">新增计划</el-button> -->
       <el-form-item :label="`已选数据下载 [ ${currentTableData.length} ]`">
         <el-button-group>
           <el-button
@@ -43,9 +42,9 @@
     </el-form>
     <el-row>
       <el-button size="mini" icon="el-icon-refresh" @click="flush()">刷新页面</el-button>
-      <el-tooltip class="item" effect="dark" content="在该计划中添加一个新的服务项" placement="top">
-        <el-button v-if="planStatus==='new'" size="mini" icon="el-icon-document-add" @click="createPlanService()">新增服务项</el-button>
-      </el-tooltip>
+      <!-- <el-tooltip class="item" effect="dark" content="在该计划中添加一个新的服务项" placement="top">
+        <el-button v-if="planStatus==='new'" size="mini" icon="el-icon-document-add" @click="chooseBook()">填写信息</el-button>
+      </el-tooltip> -->
       <el-tooltip class="item" effect="dark" content="查看服务间的依赖关系" placement="top">
         <el-button size="mini" icon="el-icon-connection">依赖关系</el-button>
       </el-tooltip>
@@ -157,21 +156,15 @@
 
       <el-table-column label="操作" align="center">
         <template slot-scope="row">
-          <el-tooltip class="item" effect="dark" content="立即执行正在等待发布的服务项" placement="top">
-            <el-button v-if="row.row.status=='waiting'" size="mini" :loading="nowDeployLoading" icon="el-icon-bicycle" @click="deployOne(row)">即时执行</el-button>
-          </el-tooltip>
-          <el-button v-if="row.row.status=='new'" type="primary" size="mini" icon="el-icon-edit" @click="editPlanService(row)">编辑</el-button>
-          <el-popconfirm title="确定要删除这个服务项吗？" @onConfirm="deletePlanService(row)">
-            <el-button v-if="row.row.status=='new'" slot="reference" type="danger" size="mini" icon="el-icon-delete">删除</el-button>
+          <el-popconfirm title="确定要提交吗" @onConfirm="submitPlanBook(row)">
+            <el-button v-if="row.row.status==='new'" slot="reference" type="warning" :loading="submitLoading" size="mini" icon="el-icon-delete">提交</el-button>
+          </el-popconfirm>
+          <el-button v-if="isAdmin>0 || row.row.status==='new'" type="primary" size="mini" icon="el-icon-edit" @click="editPlanBook(row)">编辑</el-button>
+          <el-popconfirm title="确定要删除吗？该操作同时会删除对应的上课计划项" @onConfirm="deletePlanBook(row)">
+            <el-button v-if="row.row.status==='new'" slot="reference" type="danger" size="mini" icon="el-icon-delete">删除</el-button>
           </el-popconfirm>
           <el-tooltip class="item" effect="dark" content="中止正在等待发布或被阻塞的服务项，取消发布" placement="top">
-            <el-button v-if="row.row.status=='waiting' || row.row.status=='blocked'" type="danger" size="mini" icon="el-icon-delete" :loading="terminateLoading" @click="terminate(row)">中止等待</el-button>
-          </el-tooltip>
-          <el-tooltip class="item" effect="dark" content="暂不支持" placement="top">
-            <el-button v-if="row.row.status=='completed'" type="primary" size="mini" icon="el-icon-delete" @click="rollbackOne">回滚</el-button>
-          </el-tooltip>
-          <el-tooltip class="item" effect="dark" content="暂不支持" placement="top">
-            <el-button v-if="row.row.status=='failed' || row.row.status=='terminated' || row.row.status=='rollbacked'" size="mini" icon="el-icon-delete" @click="resume(row)">重新执行</el-button>
+            <el-button v-if="row.row.status==='waiting' || row.row.status==='blocked'" type="danger" size="mini" icon="el-icon-delete" :loading="terminateLoading" @click="terminate(row)">中止等待</el-button>
           </el-tooltip>
         </template>
       </el-table-column>
@@ -205,59 +198,42 @@
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form ref="dataForm" :model="temp" label-position="left" label-width="70px" style="width: 400px; margin-left:50px;">
-        <el-form-item label="服务名" prop="serviceName">
+        <el-form-item label="书名" prop="book">
           <el-select
-            v-model="temp.serviceId"
+            :disabled="rowStatus === 'submitted'"
+            @input="change($event)"
+            v-model="temp.book"
             multiple
             filterable
             remote
             reserve-keyword
-            placeholder="请输入服务"
+            placeholder="请输入书"
             :remote-method="remoteMethod"
             :loading="searchLoading"
-            loading-text="正在加载服务">
+            loading-text="正在加载书">
             <el-option
-              v-for="item in options"
-              :key="item.id"
+              v-for="(item,index) in options"
+              :key="index"
               :label="item.name"
-              :value="item.id">
+              :value="item.name">
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="标签" prop="tag" :rules="[{ required: dialogStatus === 'create', message: '标签不能为空'}]">
-          <el-input v-model="temp.tag" />
+        <el-form-item label="老师书数" prop="teacherNum" :rules="[{ required: dialogStatus === 'choose', message: '老师书数不能为空'}]">
+          <el-input @input="change($event)" :disabled="rowStatus === 'submitted'" v-model="temp.teacherNum" />
         </el-form-item>
-        <el-form-item label="泳道" prop="unit">
-          <el-input v-model="temp.unit" />
+        <el-form-item label="学生书数" prop="stuNum" :rules="[{ required: dialogStatus === 'choose', message: '老师书数不能为空'}]">
+          <el-input @input="change($event)" :disabled="rowStatus === 'submitted'" v-model="temp.stuNum" />
         </el-form-item>
-        <el-form-item label="个数" prop="count" :rules="[{ required: dialogStatus === 'create', message: '负责人不能为空'}]">
-          <el-input v-model="temp.count" />
-        </el-form-item>
-        <el-form-item v-if="dialogStatus==='update'" label="发布顺序" prop="order">
-          <el-input v-model="temp.order" />
-        </el-form-item>
-        <el-form-item v-if="dialogStatus==='update'" label="执行日期" prop="executedAt">
-          <!-- <el-input :disabled="rowStatus === 'confirmed'" v-model="temp.executeAt" /> -->
-          <el-date-picker
-            :disabled="rowStatus === 'confirmed'"
-            v-model="temp.executedAt"
-            type="datetime"
-            placeholder="选择日期时间"
-            align="right"
-            value-format="yyyy-MM-dd HH:mm:ss"
-            format="yyyy-MM-dd HH:mm:ss"
-            :picker-options="pickerOptions">
-          </el-date-picker>
-        </el-form-item>
-        <el-form-item label="描述" prop="desc">
-          <el-input v-model="temp.desc" />
+        <el-form-item v-if="isAdmin > 0 && rowStatus !== 'new'" label="到货书数" prop="actualNum">
+          <el-input @input="change($event)" v-model="temp.actualNum" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">
           Cancel
         </el-button>
-        <el-button type="primary" @click="dialogStatus==='create'?createData():updateData()">
+        <el-button type="primary" @click="dialogStatus==='choose'?chooseData():updateData()">
           Confirm
         </el-button>
       </div>
@@ -285,10 +261,11 @@
 import Vue from 'vue'
 import pluginExport from '@d2-projects/vue-table-export'
 import D2Crud from '@d2-projects/d2-crud'
-import { deployPlanService, addPlanService, updatePlanService, deletePlanService, autoSorting, resumePlanService, terminatePlanService, getCurWaitingServiceIds } from '@api/planbook'
+import { submitPlanBookInfo, addPlanService, updatePlanBookInfo, deletePlanBookInfo, resumePlanService, terminatePlanService, getCurWaitingServiceIds } from '@api/planbook'
 import { confirmPlan } from '@api/plan'
-import { getServiceByKeyword } from '@api/service'
 import { getNameByClassId } from '@api/institute'
+import { getSpecificBookByKeyword } from '@api/book'
+import util from '@/libs/util.js'
 
 Vue.use(D2Crud)
 Vue.use(pluginExport)
@@ -323,6 +300,9 @@ export default {
   },
   data () {
     return {
+      admin: false,
+      isAdmin: 0,
+      submitLoading: false,
       deployAllLoading: false,
       resumeDialogVisible: false,
       terminateLoading: false,
@@ -340,8 +320,8 @@ export default {
       currentTableData: [],
       multipleSelection: [],
       textMap: {
-        update: '更新服务项(不填则不修改)',
-        create: '新增服务项',
+        update: '编辑信息',
+        choose: '填写信息',
         type: ''
       },
       temp: {
@@ -398,56 +378,24 @@ export default {
     }
   },
   methods: {
-    deployAll () {
-      console.log('deployAll')
-      console.log('planId:', this.planId)
-      this.deployAllLoading = true
-      var serviceIds = []
-      getCurWaitingServiceIds(this.planId)
+    change (e) {
+      this.$forceUpdate()
+    },
+    submitPlanBook (row) {
+      console.log('submitPlanBook id', row.row.id)
+      this.submitLoading = true
+      submitPlanBookInfo(row.row.id)
         .then(res => {
-          console.log('getCurWaitingServiceIds res:', res)
+          console.log('submitPlanBookInfo res:', res)
+          this.submitLoading = false
           if (res.errorCode === 0) {
-            serviceIds = res.data
-            console.log('serviceIds', serviceIds)
-            console.log(serviceIds.length === 0)
-            if (serviceIds.length === 0) {
-              console.log('serviceIds === []')
-              this.$message({
-                title: '失败',
-                message: '当前没有可以发布的服务项',
-                type: 'error',
-                duration: 2000
-              })
-              return
-            }
-            deployPlanService({
-              planId: this.planId,
-              serviceIds: serviceIds
+            this.$notify({
+              title: 'OK',
+              message: '成功提交',
+              type: 'success',
+              duration: 2000
             })
-              .then(res => {
-                console.log('deployAll res:', res)
-                this.deployAllLoading = false
-                if (res.errorCode === 0) {
-                  this.$notify({
-                    title: 'OK',
-                    message: '批量执行成功',
-                    type: 'success',
-                    duration: 2000
-                  })
-                  this.$emit('reload', {})
-                } else {
-                  this.$message({
-                    title: '失败',
-                    message: res.msg,
-                    type: 'error',
-                    duration: 2000
-                  })
-                  this.$emit('reload', {})
-                }
-              }).catch(err => {
-                this.deployAllLoading = false
-                console.log('err: ', err)
-              })
+            this.$emit('reload', {})
           } else {
             this.$message({
               title: '失败',
@@ -456,12 +404,11 @@ export default {
               duration: 2000
             })
             this.$emit('reload', {})
-            this.deployAllLoading = false
           }
         }).catch(err => {
+          this.submitLoading = false
           console.log('err: ', err)
         })
-      this.deployAllLoading = false
     },
     rollBackAll () {
       this.$notify({
@@ -602,48 +549,19 @@ export default {
           console.log('err: ', err)
         })
     },
-    sortItems () {
-      console.log('sort planId:', this.planId)
-      this.sortLoading = true
-      autoSorting(this.planId)
-        .then(res => {
-          console.log('sort res:', res)
-          this.sortLoading = false
-          if (res.errorCode === 0) {
-            this.$notify({
-              title: 'OK',
-              message: '自动排序成功',
-              type: 'success',
-              duration: 2000
-            })
-            this.$emit('reload', {})
-          } else {
-            this.$message({
-              title: '失败',
-              message: res.msg,
-              type: 'error',
-              duration: 2000
-            })
-            this.$emit('reload', {})
-          }
-        }).catch(err => {
-          this.sortLoading = false
-          console.log('err: ', err)
-        })
-    },
     flush () {
       this.$emit('reload')
     },
     decorateStatus (status) {
       switch (status) {
         case 'new':
-          return '未提交'
+          return '待提交'
         case 'submitted':
           return '已提交'
         case 'instock':
-          return '有货'
+          return '已到货'
         case 'notinstock':
-          return '无货'
+          return '货不足'
         default:
           return '未知'
       }
@@ -653,7 +571,7 @@ export default {
       if (query !== '') {
         console.log('name query:', query)
         this.searchLoading = true
-        getServiceByKeyword(query)
+        getSpecificBookByKeyword(query)
           .then(res => {
             _this.searchLoading = false
             _this.list = res.data
@@ -673,75 +591,42 @@ export default {
           _this.options = _this.list.filter(item => {
             console.log('filter item:', item)
             return item.name
-              .indexOf(query.toLowerCase()) > -1
+              .indexOf(query.toLowerCase()) > -1 && item !== undefined && item !== null
           })
         }, 1500)
       } else {
         this.options = []
       }
     },
-    deployOne (row) {
-      this.rowId = row.row.id
-      // console.log('deployOne row:', row.row)
-      const serviceId = [ row.row.serviceId ]
-      this.nowDeployLoading = true
-      console.log('deployOne planServiceId:', serviceId)
-      deployPlanService({
-        planId: this.planId,
-        serviceIds: serviceId
-      })
-        .then(res => {
-          console.log('deployone res:', res)
-          this.nowDeployLoading = false
-          if (res.errorCode === 0) {
-            this.$notify({
-              title: 'OK',
-              message: '当前服务项进入执行状态',
-              type: 'success',
-              duration: 2000
-            })
-            this.$emit('reload', {})
-          } else {
-            this.$message({
-              title: '失败',
-              message: res.msg,
-              type: 'error',
-              duration: 2000
-            })
-            this.$emit('reload', {})
-          }
-        }).catch(err => {
-          this.nowDeployLoading = false
-          console.log('err: ', err)
-        })
-    },
-    createPlanService () {
+    chooseBook () {
       this.resetTemp()
       this.rowStatus = ''
-      this.dialogStatus = 'create'
+      this.dialogStatus = 'choose'
       this.dialogFormVisible = true
       this.$nextTick(() => {
         this.$refs['dataForm'].clearValidate()
       })
     },
-    editPlanService (row) {
+    editPlanBook (row) {
       console.log('edit modal:', row.row)
       this.resetTemp()
       this.rowId = row.row.id
       this.rowStatus = row.row.status
-      // this.temp.serviceName = row.row.serviceName
-      // console.log('modify:', this.temp.serviceName)
       this.dialogStatus = 'update'
       this.dialogFormVisible = true
+      this.temp.book = [row.row.bookName]
+      this.temp.teacherNum = row.row.teacherNum
+      this.temp.stuNum = row.row.stuNum
+      this.temp.actualNum = row.row.actualNum
       this.$nextTick(() => {
         this.$refs['dataForm'].clearValidate()
       })
     },
-    deletePlanService (row) {
-      console.log('deletePlanService id:', row.row.id)
-      deletePlanService(row.row.id)
+    deletePlanBook (row) {
+      console.log('deletePlanBook id:', row.row.id)
+      deletePlanBookInfo(row.row.id)
         .then(res => {
-          console.log('deletePlanService res:', res)
+          console.log('deletePlanBook res:', res)
           if (res.errorCode === 0) {
             this.$notify({
               title: 'OK',
@@ -763,67 +648,40 @@ export default {
         })
     },
     updateData () {
-      console.log('update planservice Data form....')
+      console.log('update planBook Data form....')
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          console.log('planServiceId:', this.rowId)
-          const serviceList = this.temp.serviceId
-          console.log('serviceList:', serviceList)
-          console.log('tag:', this.temp.tag)
-          console.log('desc:', this.temp.desc)
-          console.log('count:', this.temp.count)
-          console.log('order:', this.temp.order)
-          console.log('executedAt:', this.temp.executedAt)
-          var serviceId = -1
-          if (serviceList !== undefined && serviceList.length === 1) {
-            serviceId = serviceList[0]
-          } else if (serviceList !== undefined && serviceList.length > 1) {
+          console.log('planBookId:', this.rowId)
+          const bookList = this.temp.book
+          console.log('teacherNum:', this.temp.teacherNum)
+          console.log('stuNum:', this.temp.stuNum)
+          console.log('actualNum:', this.temp.actualNum)
+          var bookName = ''
+          console.log('bookList', bookList)
+          if (bookList !== undefined && bookList.length === 1) {
+            bookName = bookList[0]
+          } else if (bookList.length === 2) {
+            bookName = bookList[1]
+          } else if (bookList !== undefined && bookList.length > 1) {
             this.$message({
               title: '失败',
-              message: '只能选择一个服务',
+              message: '只能选择一本书',
               type: 'error',
               duration: 2000
             })
             return
           }
-          if (serviceId === -1 && this.temp.tag === undefined && this.temp.count === undefined && this.temp.unit === undefined &&
-          this.temp.desc === undefined && this.temp.order === undefined && this.temp.executedAt === undefined) {
-            this.dialogFormVisible = false
-            return
-          }
-          if (this.temp.order !== undefined && isNaN(this.temp.order)) {
-            this.$message({
-              title: '失败',
-              message: '执行顺序必须是个数字类型',
-              type: 'error',
-              duration: 2000
-            })
-            return
-          }
-          if (this.temp.executedAt !== undefined && Date.parse(this.temp.executedAt) - new Date().getTime() <= 1000) {
-            console.log('wrong executedAt')
-            this.$message({
-              title: '失败',
-              message: '执行时间不能比现在早',
-              type: 'error',
-              duration: 2000
-            })
-            return
-          }
-          console.log('serviceId:', serviceId)
-          updatePlanService({
-            id: this.rowId,
-            unit: this.temp.unit === undefined ? null : this.temp.unit,
-            tag: this.temp.tag === undefined ? null : this.temp.tag,
-            count: this.temp.count === undefined ? null : this.temp.count,
-            serviceId: serviceId === -1 ? null : serviceId,
-            desc: this.temp.desc === undefined ? null : this.temp.desc,
-            order: this.temp.order === undefined ? null : this.temp.order,
-            executedAt: this.temp.executedAt === undefined ? null : this.temp.executedAt
+          console.log('bookName:', bookName)
+          updatePlanBookInfo({
+            planBookId: this.rowId,
+            bookName: bookName === undefined ? null : bookName,
+            teacherNum: this.temp.teacherNum === undefined ? null : this.temp.teacherNum,
+            stuNum: this.temp.stuNum === undefined ? null : this.temp.stuNum,
+            actualNum: this.temp.actualNum === undefined ? null : this.temp.actualNum
           }).then(res => {
-            console.log('update res:', res)
+            console.log('updatePlanBookInfo res:', res)
             if (res.errorCode === 0) {
-              console.log('addPlan success!')
+              console.log('updatePlanBookInfo success!')
               this.dialogFormVisible = false
               this.$notify({
                 title: 'OK',
@@ -846,8 +704,8 @@ export default {
         }
       })
     },
-    createData () {
-      console.log('create planservice Data form....')
+    chooseData () {
+      console.log('chooseData form....')
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           console.log('planId:', this.planId)
@@ -913,13 +771,6 @@ export default {
     },
     resetTemp () {
       this.temp = {
-        id: undefined,
-        importance: 1,
-        remark: '',
-        timestamp: new Date(),
-        title: '',
-        status: 'published',
-        type: ''
       }
     },
     handleSelectionChange (val) {
@@ -982,6 +833,11 @@ export default {
           this.$message.success('导出CSV成功')
         })
     }
+  },
+  mounted () {
+    this.isAdmin = util.cookies.get('isAdmin')
+    console.log('mounted.... isAdmin:', this.isAdmin)
+    console.log('isAdmin>0:', util.cookies.get('isAdmin') > 0)
   }
 }
 </script>

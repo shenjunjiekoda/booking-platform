@@ -22,6 +22,7 @@ import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Junjie.Shen
@@ -65,6 +66,15 @@ public class BookServiceImpl implements BookService {
         }
 
         return booksFromWebResponseList;
+    }
+
+    @Override
+    public List<Book> getSpecificBookByKeyword(String keyword) {
+        List<Book> books = bookRepo.selectByPartName(keyword);
+        if(!CollectionUtils.isEmpty(books)){
+            books = books.stream().limit(5).collect(Collectors.toList());
+        }
+        return books;
     }
 
     @Transactional

@@ -28,9 +28,20 @@ public class UserUtil {
 
     public static String getCurrentUserName() {
         if (Objects.nonNull(getCurrentUser())) {
-            return getCurrentUser().getName();
+            try{
+                return getCurrentUser().getName();
+            }catch(Exception e){
+                return "未知";
+            }
         }
-        return "";
+        return "未知";
+    }
+
+    public static boolean isAdmin() {
+        if(Objects.nonNull(getCurrentUser())){
+            return getCurrentUser().getIsadmin() == 1;
+        }
+        return false;
     }
 
 }
