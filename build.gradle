@@ -2,28 +2,65 @@ plugins {
     id 'org.springframework.boot' version '2.2.2.RELEASE'
     id 'io.spring.dependency-management' version '1.0.8.RELEASE'
     id 'java'
+    id "com.arenagod.gradle.MybatisGenerator" version "1.4"
 }
 
 group = 'cn.shenjunjie'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '1.8'
 
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+[ compileJava, compileTestJava ]*.options*.encoding = "UTF-8"
+
+[compileJava, compileTestJava]*.options.collect {options -> options.encoding = 'UTF-8'}
+
 configurations {
     compileOnly {
         extendsFrom annotationProcessor
     }
+    mybatisGenerator
+}
+
+mybatisGenerator {
+    verbose = true
+    configFile = 'C:\\Users\\JunjieShen\\Desktop\\tips\\myproject\\booking-platform\\src\\main\\resources\\mybatis\\generator.xml'
 }
 
 repositories {
+    maven{ url 'http://maven.aliyun.com/nexus/content/groups/public/'}
     mavenCentral()
 }
 
 dependencies {
-
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter', version: '2.2.2.RELEASE'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-actuator', version: '2.2.2.RELEASE'
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
-    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+    compile group: 'mysql', name: 'mysql-connector-java', version: '8.0.17'
+    compile group: 'org.apache.shiro', name: 'shiro-spring-boot-starter', version: '1.4.2'
+    compile group: 'org.mybatis.spring.boot', name: 'mybatis-spring-boot-starter', version: '2.1.1'
+    compile group: 'org.mybatis.generator', name: 'mybatis-generator-core', version: '1.4.0'
+    compile group: 'org.apache.poi', name: 'poi', version: '4.1.2'
+    compile group: 'org.apache.poi', name: 'poi-ooxml', version: '4.1.2'
+    compile group: 'com.alibaba', name: 'druid-spring-boot-starter', version: '1.1.21'
+    compile group: 'com.github.pagehelper', name: 'pagehelper-spring-boot-starter', version: '1.2.13'
+    compile group: 'com.google.guava', name: 'guava', version: '28.2-jre'
+    compile group: 'com.alibaba', name: 'fastjson', version: '1.2.62'
+    compile group: 'io.springfox', name: 'springfox-swagger2', version: '2.9.2'
+    compile group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.9.2'
+    compile group: 'org.jsoup', name: 'jsoup', version: '1.12.1'
+    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.9'
+    compile group: 'redis.clients', name: 'jedis', version: '2.9.0'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-redis', version: '2.2.2.RELEASE'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-aop', version: '2.2.2.RELEASE'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-freemarker', version: '2.2.2.RELEASE'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-mail', version: '2.2.2.RELEASE'
+    testCompile('org.springframework.boot:spring-boot-starter-test:2.2.2.RELEASE')
+    testImplementation('org.springframework.boot:spring-boot-starter-test:2.2.2.RELEASE') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }
 }

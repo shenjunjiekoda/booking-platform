@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="false" scanPeriod="60 seconds" debug="false">
+    <include resource="org/springframework/boot/logging/logback/defaults.xml" />
+
+    <!-- dev logback config -->
+    <include resource="org/springframework/boot/logging/logback/console-appender.xml" />
+    <logger name="org.springframework.web" level="DEBUG"/>
+    <logger name="cn.shenjunjie" level="DEBUG" />
+    <root level="INFO">
+        <appender-ref ref="CONSOLE" />
+    </root>
+
+</configuration>
