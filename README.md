@@ -32,7 +32,7 @@ npm run serve
 >视情况修改配置文件,位于:src/main/resources/application.yml
 
 **mysql**
-运行sql目录下db.sql的ddl
+运行sql目录下db.sql的ddl,可据实际情况往class与institute表插入对应信息。
 
 **redis**
 本地启动
