@@ -41,23 +41,7 @@
       </el-form-item>
     </el-form>
     <el-row>
-      <el-button size="mini" icon="el-icon-refresh" @click="flush()">刷新页面</el-button>
-      <!-- <el-tooltip class="item" effect="dark" content="在该计划中添加一个新的服务项" placement="top">
-        <el-button v-if="planStatus==='new'" size="mini" icon="el-icon-document-add" @click="chooseBook()">填写信息</el-button>
-      </el-tooltip> -->
-      <el-tooltip class="item" effect="dark" content="查看服务间的依赖关系" placement="top">
-        <el-button size="mini" icon="el-icon-connection">依赖关系</el-button>
-      </el-tooltip>
-      <el-tooltip class="item" effect="dark" content="通过服务间的依赖关系对该计划中的服务项自动排序，排序序号相同的服务可以同时部署" placement="top">
-        <el-button v-if="planStatus==='new'" size="mini" icon="el-icon-sort" @click="sortItems" :loading="sortLoading">自动排序</el-button>
-      </el-tooltip>
-      <el-tooltip class="item" effect="dark" content="只有负责人可以确认，确认后会自动发布所有服务项" placement="top">
-        <el-button v-if="planStatus==='new'" size="mini" icon="el-icon-truck" @click="confirmDeploy" :loading="confirmLoading">确认发布</el-button>
-      </el-tooltip>
-      <el-tooltip class="item" effect="dark" content="即时执行当前待发布的所有服务项" placement="top">
-        <el-button v-if="planStatus==='confirmed'" size="mini" icon="el-icon-finished" :loading="deployAllLoading" @click="deployAll">批量执行</el-button>
-      </el-tooltip>
-      <el-button v-if="planStatus==='completed'" size="mini" icon="el-icon-refresh-left" @click="rollBackAll">全部回滚</el-button>
+      <!-- <el-button size="mini" icon="el-icon-refresh" @click="flush()">刷新页面</el-button> -->
     </el-row>
     <el-table
       :data="currentTableData"
@@ -157,9 +141,9 @@
       <el-table-column label="操作" align="center">
         <template slot-scope="row">
           <el-popconfirm title="确定要提交吗" @onConfirm="submitPlanBook(row)">
-            <el-button v-if="row.row.status==='new'" slot="reference" type="warning" :loading="submitLoading" size="mini" icon="el-icon-delete">提交</el-button>
+            <el-button v-if="row.row.status!=='submitted'" slot="reference" type="warning" :loading="submitLoading" size="mini" icon="el-icon-delete">提交</el-button>
           </el-popconfirm>
-          <el-button v-if="isAdmin>0 || row.row.status==='new'" type="primary" size="mini" icon="el-icon-edit" @click="editPlanBook(row)">编辑</el-button>
+          <el-button v-if="isAdmin>0 || row.row.status!=='submitted'" type="primary" size="mini" icon="el-icon-edit" @click="editPlanBook(row)">编辑</el-button>
           <el-popconfirm title="确定要删除吗？该操作同时会删除对应的上课计划项" @onConfirm="deletePlanBook(row)">
             <el-button v-if="row.row.status==='new'" slot="reference" type="danger" size="mini" icon="el-icon-delete">删除</el-button>
           </el-popconfirm>
@@ -261,7 +245,7 @@
 import Vue from 'vue'
 import pluginExport from '@d2-projects/vue-table-export'
 import D2Crud from '@d2-projects/d2-crud'
-import { submitPlanBookInfo, addPlanService, updatePlanBookInfo, deletePlanBookInfo, resumePlanService, terminatePlanService, getCurWaitingServiceIds } from '@api/planbook'
+import { submitPlanBookInfo, addPlanService, updatePlanBookInfo, deletePlanBookInfo } from '@api/planbook'
 import { confirmPlan } from '@api/plan'
 import { getNameByClassId } from '@api/institute'
 import { getSpecificBookByKeyword } from '@api/book'
@@ -425,129 +409,6 @@ export default {
         type: 'warning',
         duration: 2000
       })
-    },
-    terminate (row) {
-      this.terminateLoading = true
-      console.log('terminate planServiceId:', row.row.id)
-      terminatePlanService({
-        planServiceIds: [row.row.id]
-      })
-        .then(res => {
-          console.log('terminate res:', res)
-          this.terminateLoading = false
-          if (res.errorCode === 0) {
-            this.$notify({
-              title: 'OK',
-              message: '成功中止发布',
-              type: 'success',
-              duration: 2000
-            })
-            this.$emit('reload', {})
-          } else {
-            this.$message({
-              title: '失败',
-              message: res.msg,
-              type: 'error',
-              duration: 2000
-            })
-            this.$emit('reload', {})
-          }
-        }).catch(err => {
-          this.terminateLoading = false
-          console.log('err: ', err)
-        })
-    },
-    resume (row) {
-      console.log('open resume dialog')
-      this.resumeDialogVisible = true
-      this.newExecuteAt = undefined
-      this.resumeRowId = row.row.id
-    },
-    doResume () {
-      this.resumeLoading = true
-      console.log('do resume.....')
-      console.log('planServiceId:', this.resumeRowId)
-      console.log('new executeAt:', this.newExecuteAt)
-      if (this.newExecuteAt === undefined) {
-        console.log('wrong executedAt')
-        this.$message({
-          title: '失败',
-          message: '新的执行时间不能为空',
-          type: 'error',
-          duration: 2000
-        })
-        this.resumeLoading = false
-        return
-      }
-      if (this.newExecuteAt !== undefined && Date.parse(this.newExecuteAt) - new Date().getTime() <= 1000) {
-        console.log('wrong executedAt')
-        this.$message({
-          title: '失败',
-          message: '新的执行时间不能比现在早',
-          type: 'error',
-          duration: 2000
-        })
-        this.resumeLoading = false
-        return
-      }
-      resumePlanService({
-        planServiceId: this.resumeRowId,
-        executedAt: this.newExecuteAt
-      })
-        .then(res => {
-          console.log('resume res:', res)
-          this.resumeLoading = false
-          if (res.errorCode === 0) {
-            this.$notify({
-              title: 'OK',
-              message: '重新进入待发布状态',
-              type: 'success',
-              duration: 2000
-            })
-            this.resumeDialogVisible = false
-            this.$emit('reload', {})
-          } else {
-            this.$message({
-              title: '失败',
-              message: res.msg,
-              type: 'error',
-              duration: 2000
-            })
-            this.$emit('reload', {})
-          }
-        }).catch(err => {
-          this.resumeLoading = false
-          console.log('err: ', err)
-        })
-    },
-    confirmDeploy () {
-      console.log('confirm deploy planId:', this.planId)
-      this.confirmLoading = true
-      confirmPlan(this.planId)
-        .then(res => {
-          console.log('confirm res:', res)
-          this.confirmLoading = false
-          if (res.errorCode === 0) {
-            this.$notify({
-              title: 'OK',
-              message: '确认发布成功，计划进入发布状态',
-              type: 'success',
-              duration: 2000
-            })
-            this.$emit('reload', {})
-          } else {
-            this.$message({
-              title: '失败',
-              message: res.msg,
-              type: 'error',
-              duration: 2000
-            })
-            this.$emit('reload', {})
-          }
-        }).catch(err => {
-          this.confirmLoading = false
-          console.log('err: ', err)
-        })
     },
     flush () {
       this.$emit('reload')

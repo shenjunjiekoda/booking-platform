@@ -272,7 +272,7 @@ public class PlanServiceImpl implements PlanService {
         if (planBook.getTeacherNum() + planBook.getStuNum() == 0) {
             return RestBody.fail("不需要订书，无需提交");
         }
-        if (!planBook.getStatus().equals(PlanBookStatus.NEW.getStatus())) {
+        if (planBook.getStatus().equals(PlanBookStatus.SUBMITTED.getStatus())) {
             return RestBody.fail("状态异常，请检查最新状态");
         }
         planBookRepo.updateByIdAndStatus(id, PlanBookStatus.SUBMITTED);
