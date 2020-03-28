@@ -1,7 +1,10 @@
 package cn.shenjunjie.booking.entity;
 
+import lombok.ToString;
+
 import java.util.Date;
 
+@ToString
 public class Message {
     private Long id;
 

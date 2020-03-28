@@ -32,7 +32,7 @@
 <template>
   <span>
     <el-dialog
-      title="切换环境"
+      title="切换设置"
       :visible.sync="active"
       width="300px"
       custom-class="d2-api-base-url-controller"
@@ -45,19 +45,19 @@
             class="item">
             <d2-button
               size="default"
-              :type="isItemActive(option.value) ? 'primary' : 'default'"
+              :type="isItemActive(option.name) ? 'primary' : 'default'"
               style="width: 100%;"
-              @click="onSelect(option.value)">
+              @click="onSelect(option.name)">
               <div flex="main:justify cross:center">
                 <div flex="dir:top cross:top">
                   <div class="item-name">
                     {{option.name}}
                   </div>
-                  <div class="item-value">
+                  <div class="item-value" style="text-align:right">
                     {{option.value}}
                   </div>
                 </div>
-                <span v-if="isItemActive(option.value)">
+                <span v-if="isItemActive(option.name)">
                   <d2-icon class="item-icon" name="check-circle"/>
                 </span>
                 <span
@@ -70,18 +70,6 @@
           </div>
         </div>
       </el-scrollbar>
-      <el-divider>或者</el-divider>
-      <div flex="main:justify cross:center">
-        <el-input
-          size="default"
-          v-model="custom"
-          class="d2-mr-5"/>
-        <d2-button
-          size="default"
-          :disabled="custom.length === 0"
-          label="好"
-          @click="onSelect(custom)"/>
-      </div>
       <el-divider/>
       <d2-button
         size="default"
@@ -97,28 +85,64 @@
 </template>
 
 <script>
-import { mapState, mapGetters, mapActions } from 'vuex'
+// import { mapActions } from 'vuex'
+import { getEmailConfig, getBookConfig, switchEmailConfig, updateBooks, scheduledUpdateBooks, stopScheduled } from '@api/config'
 export default {
   name: 'd2-api-base-url-controller',
   data () {
     return {
+      email: 0,
+      schedule: 0,
+      options: [
+        {
+          name: '邮箱推送'
+        },
+        {
+          name: '自动更新书库'
+        },
+        {
+          name: '更新一次书库'
+        }
+      ],
       active: false,
       custom: 'http://127.0.0.1:8088'
     }
   },
   computed: {
-    ...mapState('d2admin/api', [
-      'base'
-    ]),
-    ...mapGetters('d2admin/api', [
-      'options'
-    ])
+
   },
   methods: {
-    ...mapActions('d2admin/api', [
-      'set', 'remove'
-    ]),
+    // ...mapActions('d2admin/api', [
+    //   'set', 'remove'
+    // ]),
+    getConfigs () {
+      getEmailConfig()
+        .then(res => {
+          this.email = res.data
+          console.log('getEmailConfig res:', res.data)
+          console.log('after getemail config:', this.email)
+        })
+        .catch(err => {
+          this.$notify({
+            title: '数据请求异常'
+          })
+          console.log('err', err)
+        })
+      getBookConfig()
+        .then(res => {
+          this.schedule = res.data
+          console.log('getBookConfig res:', res.data)
+          console.log('after getBookConfig schedule:', this.schedule)
+        })
+        .catch(err => {
+          this.$notify({
+            title: '数据请求异常'
+          })
+          console.log('err', err)
+        })
+    },
     onOpen () {
+      this.getConfigs()
       console.log('onOpen')
       this.active = true
     },
@@ -126,17 +150,117 @@ export default {
       console.log('onClose')
       this.active = false
     },
-    onSelect (value) {
-      console.log('onSelect value:', value)
-      this.set(value)
+    onSelect (name) {
+      console.log('onSelect name:', name)
+      if (name === '邮箱推送') {
+        switchEmailConfig()
+          .then(res => {
+            if (res.errorCode === 0) {
+              this.email = res.data
+              console.log('switchEmailConfig res:', res.data)
+              this.getConfigs()
+              this.$notify({
+                title: '成功切换！'
+              })
+            } else {
+              this.$notify({
+                title: '变更异常'
+              })
+            }
+          })
+          .catch(err => {
+            this.$notify({
+              title: '数据请求异常'
+            })
+            console.log('err', err)
+          })
+      }
+      if (name === '自动更新书库' && this.schedule === 1) {
+        stopScheduled()
+          .then(res => {
+            if (res.errorCode === 0) {
+              this.schedule = 0
+              console.log('stopScheduled res:', res.data)
+              this.getConfigs()
+              this.$notify({
+                title: '成功停止自动更新！'
+              })
+            } else {
+              this.$notify({
+                title: '请求异常'
+              })
+            }
+          })
+          .catch(err => {
+            this.$notify({
+              title: '数据请求异常'
+            })
+            console.log('err', err)
+          })
+      }
+      if (name === '自动更新书库' && this.schedule === 0) {
+        scheduledUpdateBooks()
+          .then(res => {
+            if (res.errorCode === 0) {
+              this.schedule = 1
+              console.log('scheduledUpdateBooks res:', res.data)
+              this.getConfigs()
+              this.$notify({
+                title: '成功开始自动更新！每个月这个时刻会自动更新一次书库'
+              })
+            } else {
+              this.$notify({
+                title: '请求异常'
+              })
+            }
+          })
+          .catch(err => {
+            this.$notify({
+              title: '数据请求异常'
+            })
+            console.log('err', err)
+          })
+      }
+      if (name === '更新一次书库') {
+        updateBooks()
+          .then(res => {
+            if (res.errorCode === 0) {
+              console.log('updateBooks res:', res.data)
+              this.getConfigs()
+              this.$notify({
+                title: '开始更新！'
+              })
+            } else {
+              this.$notify({
+                title: '更新请求失败！'
+              })
+            }
+          })
+          .catch(err => {
+            this.$notify({
+              title: '数据请求异常'
+            })
+            console.log('err', err)
+          })
+      }
+      // this.set(value)
     },
     onRemove (value) {
       console.log('onRemove value', value)
-      this.remove(value)
+      // this.remove(value)
     },
-    isItemActive (value) {
-      console.log('isItemActive value', value)
-      return this.base === value
+    isItemActive (name) {
+      console.log('isItemActive name', name)
+      // console.log('this.email:', this.email)
+      // console.log('this.email === 0', this.email === 0)
+      if (name === '邮箱推送' && this.email === 1) {
+        return true
+      }
+      if (name === '自动更新书库' && this.schedule === 1) {
+        return true
+      }
+      // return this.base === value
+      return false
     }
   }
 }

@@ -62,10 +62,18 @@
 <!--			enableUpdateByExample="true" enableSelectByExample="true"-->
 <!--			selectByExampleQueryId="true" enableUpdateByPrimaryKey="true">-->
 <!--		</table>-->
-		<table tableName="message" domainObjectName="Message"
+<!--		<table tableName="message" domainObjectName="Message"-->
+<!--			   enableUpdateByExample="true" enableSelectByExample="true"-->
+<!--			   selectByExampleQueryId="true" enableUpdateByPrimaryKey="true">-->
+<!--		</table>-->
+		<table tableName="teacher_class" domainObjectName="TeacherClass"
 			   enableUpdateByExample="true" enableSelectByExample="true"
 			   selectByExampleQueryId="true" enableUpdateByPrimaryKey="true">
 		</table>
+<!--		<table tableName="operationlog" domainObjectName="OperationLog"-->
+<!--			   enableUpdateByExample="true" enableSelectByExample="true"-->
+<!--			   selectByExampleQueryId="true" enableUpdateByPrimaryKey="true">-->
+<!--		</table>-->
 <!--		<table tableName="plan_book" domainObjectName="PlanBook"-->
 <!--			enableUpdateByExample="true" enableSelectByExample="true"-->
 <!--			selectByExampleQueryId="true" enableUpdateByPrimaryKey="true">-->

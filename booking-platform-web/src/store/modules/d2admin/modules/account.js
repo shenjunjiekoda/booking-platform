@@ -59,16 +59,20 @@ export default {
     },
     register ({ dispatch }, {
       name = '',
+      teacherId = '',
       password = '',
-      email = ''
+      email = '',
+      isAdmin = 0
     } = {}) {
       console.log('start request register ')
       return new Promise((resolve, reject) => {
         // 开始请求登录接口
         Register({
           name,
+          teacherId,
           password,
-          email
+          email,
+          isAdmin
         })
           .then(async res => {
             console.log('register login resp: ', res)

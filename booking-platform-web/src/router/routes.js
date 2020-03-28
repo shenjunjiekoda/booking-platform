@@ -43,6 +43,28 @@ const frameIn = [
           title: '订书'
         }
       },
+      {
+        path: 'operationlog',
+        name: 'operationlog',
+        component: () => import('@/views/operationlog'),
+        props: true,
+        meta: {
+          auth: true,
+          cache: true,
+          title: '动态'
+        }
+      },
+      {
+        path: 'message',
+        name: 'message',
+        component: () => import('@/views/message'),
+        props: true,
+        meta: {
+          auth: true,
+          cache: true,
+          title: '站内信'
+        }
+      },
       // 系统 前端日志
       {
         path: 'log',

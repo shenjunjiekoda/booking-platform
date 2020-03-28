@@ -25,8 +25,13 @@ public class BookRepo {
     @Resource
     private BookMapper bookMapper;
 
-    public Book selectById(Long id){
+    public Book selectById(Long id) {
         return bookMapper.selectByPrimaryKey(id);
+    }
+
+    public Long count() {
+        BookExample example = new BookExample();
+        return bookMapper.countByExample(example);
     }
 
     public Page<Book> selectByGetBooksRequest(GetBooksRequest request) {
@@ -54,18 +59,18 @@ public class BookRepo {
         return (Page<Book>) bookMapper.selectByExample(example);
     }
 
-    public Book selectByName(String name){
+    public Book selectByName(String name) {
         return bookMapper.selectByName(name);
     }
 
-    public List<Book> selectByPartName(String partName){
+    public List<Book> selectByPartName(String partName) {
         BookExample example = new BookExample();
         BookExample.Criteria criteria = example.createCriteria();
         criteria.andNameLike("%".concat(partName).concat("%"));
         return bookMapper.selectByExample(example);
     }
 
-    public Book selectByISBN(String name){
+    public Book selectByISBN(String name) {
         return bookMapper.selectByISBN(name);
     }
 
@@ -76,12 +81,12 @@ public class BookRepo {
         record.setAuthor(request.getAuthor());
         record.setEdition(request.getEdition());
         record.setPress(request.getPress());
-        record.setPublishedAt(request.getPublishedAtYear()+"."+request.getPublishedAtMonth());
+        record.setPublishedAt(request.getPublishedAtYear() + "." + request.getPublishedAtMonth());
         record.setRemark(request.getRemark());
         bookMapper.insertSelective(record);
     }
 
-    public void updateByUpdateBookRequest(UpdateBookRequest request,String publishedAt) {
+    public void updateByUpdateBookRequest(UpdateBookRequest request, String publishedAt) {
         Book record = new Book();
         record.setId(request.getId());
         record.setName(request.getName());
@@ -94,7 +99,11 @@ public class BookRepo {
         bookMapper.updateByPrimaryKeySelective(record);
     }
 
-    public void deleteById(Long id){
+    public int updateByPrimaryKey(Book record) {
+        return bookMapper.updateByPrimaryKeySelective(record);
+    }
+
+    public void deleteById(Long id) {
         bookMapper.deleteByPrimaryKey(id);
     }
 }

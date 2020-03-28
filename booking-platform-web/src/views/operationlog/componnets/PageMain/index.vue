@@ -8,66 +8,21 @@
       style="width: 100%;font-size:16px"
       :default-sort = "{prop: 'executeAt', order: 'ascending'}"
       @selection-change="handleSelectionChange">
-      <el-table-column
-          width="55">
-        </el-table-column>
-        <el-table-column type="expand">
-          <template slot-scope="props">
-            <el-form label-position="left" inline class="demo-table-expand">
-              <el-form-item label="页面/对象">
-                <span>{{ decoratePage(props.row.page) }}页/{{ decorateTarget(props.row.target) }}</span>
-              </el-form-item>
-              <el-form-item label="类型">
-                <span>{{ decorateType(props.row.type) }}</span>
-              </el-form-item>
-              <el-form-item label="操作人">
-                <span>{{ props.row.createdBy === '' ? '未知用户':props.row.createdBy }}</span>
-              </el-form-item>
-              <el-form-item label="操作时间">
-                <span>{{ props.row.createdAt }}</span>
-              </el-form-item>
-              <el-form-item label="操作参数" v-if="props.row.param!==undefined">
-                <span>
-                  <vue-json-pretty
-                    deep=1
-                    :data="resolveJSON(props.row.param)"
-                    highlightMouseoverNode=true
-                    >
-                  </vue-json-pretty>
-                </span>
-              </el-form-item>
-              <!-- <el-form-item label="操作后参数" v-if="props.row.after!==undefined">
-                <span><vue-json-pretty :data="JSON.parse(props.row.after)">
-              </vue-json-pretty></span>
-              </el-form-item> -->
-            </el-form>
-          </template>
-        </el-table-column>
       <div v-if="!tableStyle">
         <el-table-column label="" v-if="!tableStyle">
           <template slot-scope="scope">
-            <div style="float:left">
-              <div style="margin: 5px;">
-                {{scope.row.createdBy===''?'未知用户':scope.row.createdBy}}
-             {{decorateType(scope.row.type)}} {{decorateTarget(scope.row.target)}}
+            <div>
+              <div style="margin: 1em;font-size:18px">
+                {{ scope.row.msg }}
               </div>
-              <div style="color: rgba(0, 0, 0, 0.45);font-size:14px;line-height: 22px;margin: 5px;">
+              <div style="color: rgba(0, 0, 0, 0.45);font-size:16px;line-height: 22px;margin: 5px;text-align:right">
                 {{scope.row.createdAt}}
               </div>
-            </div>
-            <div style="text-align:rightl;float:right;display:block;margin: 5px;">
-              {{decoratePage(scope.row.page)}}页
             </div>
           </template>
         </el-table-column>
       </div>
       <div v-if="tableStyle">
-
-        <el-table-column label="页面" align="center">
-          <template slot-scope="scope">
-            {{decoratePage(scope.row.page)}}
-          </template>
-        </el-table-column>
 
         <el-table-column label="类型" align="center">
           <template slot-scope="scope">
@@ -75,15 +30,9 @@
           </template>
         </el-table-column>
 
-        <el-table-column label="对象" align="center">
+        <el-table-column label="详情" align="center" width="500px">
           <template slot-scope="scope">
-            {{ decorateTarget(scope.row.target) }}
-          </template>
-        </el-table-column>
-
-        <el-table-column label="操作时间" prop="createdBy" align="center" sortable>
-          <template slot-scope="scope">
-            {{scope.row.createdBy === '' ? '未知用户':scope.row.createdBy}}
+            {{ scope.row.msg }}
           </template>
         </el-table-column>
         <el-table-column label="操作时间" prop="executeAt" align="center" sortable>
@@ -204,6 +153,7 @@ export default {
     }
   },
   components: {
+    // eslint-disable-next-line vue/no-unused-components
     VueJsonPretty
   },
   data () {
@@ -356,30 +306,10 @@ export default {
       switch (type) {
         case 'add':
           return '增加'
-        case 'modify':
-          return '修改'
-        case 'delete':
-          return '删除'
-        case 'deploy':
-          return '请求发布'
-        case 'deploy success':
-          return '发布成功'
-        case 'deploy fail':
-          return '发布失败'
-        case 'sort':
-          return '排序'
-        case 'confirm':
-          return '确认'
-        case 'resume':
-          return '重新请求发布'
-        case 'terminate':
-          return '终止未开始的发布'
-        case 'rollback':
-          return '请求回滚'
-        case 'rollback success':
-          return '回滚成功'
-        case 'rollback fail':
-          return '回滚失败'
+        case 'update':
+          return '更新'
+        case 'submit':
+          return '提交'
         case 'unknown':
           return '未知操作'
         case '':
@@ -415,7 +345,7 @@ export default {
           .catch(err => {
             _this.searchLoading = false
             _this.$notify({
-              title: '书库数据请求异常'
+              title: '数据请求异常'
             })
             console.log('err', err)
           })

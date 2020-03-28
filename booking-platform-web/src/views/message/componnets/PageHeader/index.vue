@@ -7,43 +7,26 @@
     size="mini"
     style="margin-bottom: -18px;">
     <template v-if="advanced">
-      <el-form-item label="页面" prop="name">
-        <el-select v-model="form.pageName" clearable placeholder="请选择">
+      <el-form-item label="班级" prop="classId">
+        <el-select
+          v-model="form.classId"
+          multiple
+          filterable
+          remote
+          reserve-keyword
+          placeholder="请输入班级"
+          :remote-method="remoteMethod"
+          :loading="searchLoading"
+          loading-text="正在加载班级">
           <el-option
-            v-for="item in pageOptions"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value">
+            v-for="item in options"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id">
           </el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="操作类型" prop="type">
-        <el-select v-model="form.type" clearable placeholder="请选择">
-          <el-option
-            v-for="item in typeOptions"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value">
-          </el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item label="对象" prop="target">
-        <el-select v-model="form.target" clearable placeholder="请选择">
-          <el-option
-            v-for="item in targetOptions"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value">
-          </el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item label="创建人" prop="createdBy">
-        <el-input
-          v-model="form.createdBy"
-          placeholder=""
-          style="width: 80px;"/>
-      </el-form-item>
-      <el-form-item label="执行时间" prop="courseName">
+      <el-form-item label="时间" prop="courseName">
         <el-date-picker
           v-model="form.createdAt"
           type="datetimerange"
@@ -93,10 +76,13 @@
 </template>
 
 <script>
-
+import { getSubscribeClass } from '@/api/subscribe'
 export default {
   data () {
     return {
+      options: [],
+      list: [],
+      searchLoading: false,
       // 高级搜索 展开/关闭
       advanced: false,
       tableStyle: false,
@@ -131,6 +117,9 @@ export default {
       }, {
         value: 'sort',
         label: 'sort'
+      }, {
+        value: 'set',
+        label: 'set'
       }, {
         value: 'confirm',
         label: 'confirm'
@@ -270,6 +259,38 @@ export default {
     }
   },
   methods: {
+    remoteMethod (query) {
+      var _this = this
+      if (query !== '') {
+        console.log('name query:', query)
+        this.searchLoading = true
+        getSubscribeClass(query)
+          .then(res => {
+            _this.searchLoading = false
+            _this.list = res.data
+            console.log('name res:', res.data)
+            console.log('search name res:', _this.list)
+          })
+          .catch(err => {
+            _this.searchLoading = false
+            _this.$notify({
+              title: '服务数据请求异常'
+            })
+            console.log('err', err)
+          })
+        setTimeout(() => {
+          _this.searchLoading = false
+          console.log('timeout list', _this.list)
+          _this.options = _this.list.filter(item => {
+            console.log('filter item:', item)
+            return item.name
+              .indexOf(query.toLowerCase()) > -1
+          })
+        }, 1500)
+      } else {
+        this.options = []
+      }
+    },
     changeStyle () {
       console.log('cur table style:', this.tableStyle)
     },

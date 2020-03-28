@@ -1,5 +1,6 @@
 package cn.shenjunjie.booking.service.impl;
 
+import cn.shenjunjie.booking.annotation.AuditLog;
 import cn.shenjunjie.booking.common.rest.RestBody;
 import cn.shenjunjie.booking.dto.request.*;
 import cn.shenjunjie.booking.dto.response.GetPlanBooksResponse;
@@ -7,6 +8,7 @@ import cn.shenjunjie.booking.dto.response.GetPlanResponse;
 import cn.shenjunjie.booking.dto.response.PageBean;
 import cn.shenjunjie.booking.entity.*;
 import cn.shenjunjie.booking.entity.Class;
+import cn.shenjunjie.booking.enums.OperationType;
 import cn.shenjunjie.booking.enums.PlanBookStatus;
 import cn.shenjunjie.booking.repo.*;
 import cn.shenjunjie.booking.service.PlanService;
@@ -48,7 +50,7 @@ public class PlanServiceImpl implements PlanService {
     private MessageUtil messageUtil;
 
     @Override
-    public List<GetPlanResponse> getPlans(GetPlanRequest request) {
+    public PageBean<GetPlanResponse> getPlans(GetPlanRequest request) {
         List<GetPlanResponse> planResponseList = Lists.newArrayList();
         Long clazzId = null;
         if (!Strings.isNullOrEmpty(request.getClassName())) {
@@ -93,7 +95,12 @@ public class PlanServiceImpl implements PlanService {
                 planResponseList.add(response);
             });
         }
-        return planResponseList;
+        long size = planResponseList.size();
+        if(!CollectionUtils.isEmpty(planResponseList)) {
+            planResponseList.stream().skip(request.getPageSize() * (request.getPageCurrent() - 1))
+                    .limit(request.getPageSize()).collect(Collectors.toList());
+        }
+        return new PageBean<>(request, planResponseList, size);
     }
 
     @Transactional
@@ -222,6 +229,7 @@ public class PlanServiceImpl implements PlanService {
         return RestBody.succeed();
     }
 
+    @AuditLog(type = OperationType.UPDATE)
     @Transactional
     @Override
     public RestBody updatePlanBook(UpdatePlanBookRequest request) {
@@ -229,7 +237,7 @@ public class PlanServiceImpl implements PlanService {
         PlanBook planBook = planBookRepo.selectById(request.getPlanBookId());
         planBookRepo.updateByIdAndBookIdAndTeacherNumAndStuNumAndActualNum(request.getPlanBookId(), book.getId(), request.getTeacherNum(), request.getStuNum(), request.getActualNum());
         Long sum = request.getTeacherNum() + request.getStuNum();
-        if (sum > 0 && sum.intValue() >= request.getActualNum() && !planBook.getStatus().equals(PlanBookStatus.NEW.getStatus())) {
+        if (sum > 0 && sum.intValue() <= request.getActualNum() && !planBook.getStatus().equals(PlanBookStatus.NEW.getStatus())) {
             planBookRepo.updateByIdAndStatus(request.getPlanBookId(), PlanBookStatus.IN_STOCK);
             messageUtil.sendInStockMessage(planBookRepo.selectById(request.getPlanBookId()));
         } else if(sum > 0 && request.getActualNum() >= 0 && !planBook.getStatus().equals(PlanBookStatus.NEW.getStatus())){
@@ -251,6 +259,7 @@ public class PlanServiceImpl implements PlanService {
         return RestBody.succeed();
     }
 
+    @AuditLog(type = OperationType.SUBMIT)
     @Transactional
     @Override
     public RestBody submitPlanBook(Long id) {
@@ -270,7 +279,7 @@ public class PlanServiceImpl implements PlanService {
         if (allSubmitted(plan.getClassId())) {
             messageUtil.sendAllSubmittedMessageToAdmin(plan.getClassId(), plan);
         }
-        return RestBody.succeed();
+        return RestBody.succeed(planBook);
     }
 
     private boolean allSubmitted(Long classId) {
@@ -278,6 +287,9 @@ public class PlanServiceImpl implements PlanService {
         List<PlanBook> list = planBookRepo.selectByClassId(classId);
         list = list.stream().filter(planBook -> {
             if (planBook.getStuNum() + planBook.getTeacherNum() == 0) {
+                return false;
+            }
+            if (planBook.getStatus().equals(PlanBookStatus.IN_STOCK.getStatus()) || planBook.getStatus().equals(PlanBookStatus.NOT_IN_STOCK.getStatus())) {
                 return false;
             }
             return true;

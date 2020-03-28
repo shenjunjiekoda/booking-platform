@@ -6,6 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ImportResource;
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 /**
  * @author JunjieShen
@@ -14,6 +15,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 @MapperScan("cn.shenjunjie.booking.dao")
 @EnableAsync
 @EnableWebMvc
+@EnableScheduling
 @SpringBootApplication
 public class BookingPlatformApplication {
 

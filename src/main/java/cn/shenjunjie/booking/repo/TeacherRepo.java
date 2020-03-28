@@ -22,12 +22,12 @@ public class TeacherRepo {
 
     private final static String PERCENT_SIGN = "%";
 
-    public Teacher selectById(Long id){
-        return teacherMapper.selectByPrimaryKey(id);
-    }
-
     public Teacher selectByTeacherId(String teacherId) {
         return teacherMapper.selectByTeacherId(teacherId);
+    }
+
+    public Teacher selectById(Long id){
+        return teacherMapper.selectByPrimaryKey(id);
     }
 
     public Teacher selectByEmail(String email) {
@@ -59,6 +59,7 @@ public class TeacherRepo {
         record.setIsadmin(request.getIsAdmin());
         record.setPassword(request.getPassword());
         record.setTeacherId(request.getTeacherId());
+        teacherMapper.insertSelective(record);
     }
 
 }

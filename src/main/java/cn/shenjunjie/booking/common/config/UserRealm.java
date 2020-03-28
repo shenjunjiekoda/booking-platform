@@ -12,6 +12,7 @@ import org.apache.shiro.subject.PrincipalCollection;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * @author Junjie.Shen
@@ -24,6 +25,7 @@ public class UserRealm extends AuthorizingRealm {
     @Autowired
     private TeacherRepo teacherRepo;
 
+    private final static String ADMIN = "admin";
     /**
      * 授权
      *
@@ -34,8 +36,10 @@ public class UserRealm extends AuthorizingRealm {
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
         log.info("执行了=>授权doGetAuthorizationInfo principals:{}", JSON.toJSONString(principals));
         SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
-//        info.addStringPermission("user:add");
-//        info.addRole("admin");
+        Teacher teacher = (Teacher) principals.getPrimaryPrincipal();
+        if(teacher.getIsadmin()==1){
+            info.addRole(ADMIN);
+        }
         return info;
     }
 

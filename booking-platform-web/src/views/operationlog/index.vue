@@ -56,6 +56,7 @@ export default {
         pageSize: val.size,
         pageTotal: val.total
       }
+
       // nextTick 只是为了优化示例中 notify 的显示
       this.$nextTick(() => {
         this.$refs.header.handleFormSubmit()
@@ -71,10 +72,19 @@ export default {
         form.createdAtFrom = form.createdAt[0]
         form.createdAtTo = form.createdAt[1]
       }
+      const classIds = form.classId
+      var classId = 0
+      if (classIds !== undefined && classIds.length === 1) {
+        classId = classIds[0]
+      } else if (classIds !== undefined && classIds.length > 1) {
+        this.$notify({
+          title: '只能选择一个班级！'
+        })
+      }
       getOperationLogs({
-        ...form,
-        createdAtFrom: form.createdAtFrom,
-        createdAtTo: form.createdAtTo,
+        classIds: classId === 0 ? null : classId,
+        createdAtFrom: form.createdAtFrom === undefined ? null : form.createdAtFrom,
+        createdAtTo: form.createdAtTo === undefined ? null : form.createdAtTo,
         pageCurrent: this.page.pageCurrent,
         pageSize: this.page.pageSize
       })
@@ -85,8 +95,9 @@ export default {
             console.log('log data:', res.data.items)
             this.table = res.data.items
             this.page.pageTotal = res.data.total
-            this.page.pageCurrent = res.data.current
+            this.page.pageCurrent = res.data.pageNo
             this.page.pageSize = res.data.pageSize
+            console.log('afeter getlog page:', this.page)
           } else {
             this.$notify({
               title: '异常信息: ' + res.msg

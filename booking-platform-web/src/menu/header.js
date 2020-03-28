@@ -15,5 +15,15 @@ export default [
     path: '/book',
     title: '书库',
     icon: 'book'
+  },
+  {
+    path: '/operationlog',
+    title: '动态',
+    icon: 'superpowers'
+  },
+  {
+    path: '/message',
+    title: '站内信',
+    icon: 'envelope-o'
   }
 ]

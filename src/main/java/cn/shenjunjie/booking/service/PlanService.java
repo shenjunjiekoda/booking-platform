@@ -16,7 +16,7 @@ import java.util.List;
  */
 public interface PlanService {
 
-    List<GetPlanResponse> getPlans(GetPlanRequest request);
+    PageBean<GetPlanResponse> getPlans(GetPlanRequest request);
 
     RestBody addPlan(AddPlanRequest request);
 

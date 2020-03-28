@@ -100,7 +100,7 @@
 
       <el-table-column label="操作" align="center" width="300">
         <template slot-scope="row">
-          <el-button size="mini" icon="el-icon-tickets" @click="goToPlanServicePage(row)">详情</el-button>
+          <!-- <el-button size="mini" icon="el-icon-tickets" @click="goToPlanServicePage(row)">详情</el-button> -->
           <el-button :disabled="row.row.status==='completed'" type="primary" size="mini" icon="el-icon-edit" @click="editPlan(row)">编辑</el-button>
           <el-popconfirm
             title="确定要删除这个目标计划吗？"
@@ -299,8 +299,6 @@ export default {
       this.$forceUpdate()
     },
     goToPlanServicePage (row) {
-      // console.log('curId:', row.row.id)
-      // console.log('curplanName:', row.row.name)
       this.$router.push({
         name: 'planservice',
         params: {

@@ -25,21 +25,20 @@ public class ExecutorConfig {
 
     private int keepAlive = 120;
 
-    @Bean("deploymentExecutor")
-    public AsyncTaskExecutor taskExecutor() {
-        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-        executor.setCorePoolSize(corePoolSize);
-        executor.setMaxPoolSize(maxPoolSize);
-        executor.setQueueCapacity(queueCapacity);
-        executor.setThreadNamePrefix("deployment-taskExecutor-");
-        executor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
-        executor.setKeepAliveSeconds(keepAlive);
-        executor.initialize();
-        return executor;
-    }
-
-//    @Bean("scheduledExecutor")
-//    public ScheduledExecutorService scheduleTaskExecutor() {
-//        return Executors.newScheduledThreadPool(100);
+//    public AsyncTaskExecutor taskExecutor() {
+//        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+//        executor.setCorePoolSize(corePoolSize);
+//        executor.setMaxPoolSize(maxPoolSize);
+//        executor.setQueueCapacity(queueCapacity);
+//        executor.setThreadNamePrefix("deployment-taskExecutor-");
+//        executor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
+//        executor.setKeepAliveSeconds(keepAlive);
+//        executor.initialize();
+//        return executor;
 //    }
+
+    @Bean("scheduledExecutor")
+    public ScheduledExecutorService scheduleTaskExecutor() {
+        return Executors.newScheduledThreadPool(100);
+    }
 }

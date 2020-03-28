@@ -85,8 +85,11 @@ export default {
           this.loading = false
           this.table = res.data.items
           this.page.pageTotal = res.data.total
-          this.page.pageCurrent = res.data.pageCurrent
+          this.page.pageCurrent = res.data.pageNo
           this.page.pageSize = res.data.pageSize
+          if (this.page.pageTotal === 0) {
+            this.page.pageCurrent = 1
+          }
           if (res.errorCode !== 0) {
             this.$notify({
               title: '异常信息: ' + res.msg

@@ -22,7 +22,7 @@
           class="page-login--content-main"
           flex="dir:top main:center cross:center">
           <!-- logo -->
-          <img class="page-login--logo" src="./image/logo@2x.png">
+          <img class="page-login--logo" src="./image/title.png">
           <!-- form -->
           <div class="page-login--form">
             <el-card shadow="never">
@@ -76,7 +76,7 @@
                   <span style="margin-right:1em;">教材部人员:</span>
                   <el-radio-group v-model="radio">
                     <el-radio :label=1>是</el-radio>
-                    <el-radio :label=2>不是</el-radio>
+                    <el-radio :label=0>不是</el-radio>
                   </el-radio-group>
                 </el-form-item>
                 <el-form-item prop="code">
@@ -106,9 +106,9 @@
               <span v-if="status==='registry'" @click="goLogin">返回登录</span>
             </p>
             <!-- quick login -->
-            <el-button class="page-login--quick" size="default" type="info" @click="dialogVisible = true">
+            <!-- <el-button class="page-login--quick" size="default" type="info" @click="dialogVisible = true">
               快速登录
-            </el-button>
+            </el-button> -->
           </div>
         </div>
         <div class="page-login--content-footer">
@@ -163,7 +163,7 @@ export default {
   ],
   data () {
     return {
-      radio: 2,
+      radio: -1,
       status: 'login',
       timeInterval: null,
       time: dayjs().format('HH:mm:ss'),
@@ -255,11 +255,17 @@ export default {
             this.$message.error('两次输入的密码不一致')
             return
           }
+          if (this.radio === -1) {
+            this.$message.error('请选择是否是教材部人员')
+            return
+          }
+          console.log('register isAdmin:', this.radio)
           this.register({
             teacherId: this.formLogin.teacherId,
             name: this.formLogin.username,
             password: md5(this.formLogin.password),
-            email: this.formLogin.email
+            email: this.formLogin.email,
+            isAdmin: this.radio
           })
             .then(() => {
               console.log('hi.....')
@@ -401,7 +407,8 @@ export default {
   }
   // main
   .page-login--logo {
-    width: 240px;
+    width: 35em;
+    margin-left: 12em;
     margin-bottom: 2em;
     margin-top: -2em;
     // margin-left: 11em;

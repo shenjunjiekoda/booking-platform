@@ -236,7 +236,7 @@ public class MessageExample {
         }
 
         public Criteria andToEqualTo(Long value) {
-            addCriterion("to =", value, "to");
+            addCriterion("`to` =", value, "to");
             return (Criteria) this;
         }
 

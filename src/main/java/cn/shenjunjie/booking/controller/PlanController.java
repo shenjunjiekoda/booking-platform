@@ -1,7 +1,9 @@
 package cn.shenjunjie.booking.controller;
 
+import cn.shenjunjie.booking.annotation.AuditLog;
 import cn.shenjunjie.booking.common.rest.RestBody;
 import cn.shenjunjie.booking.dto.request.*;
+import cn.shenjunjie.booking.enums.OperationType;
 import cn.shenjunjie.booking.service.PlanService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -28,12 +30,14 @@ public class PlanController {
         return RestBody.succeed(planService.getPlans(request));
     }
 
+    @AuditLog(type = OperationType.ADD)
     @PostMapping("/add")
     public RestBody addPlan(@RequestBody @Valid AddPlanRequest request) {
         log.info("addPlan request:{}",request);
         return planService.addPlan(request);
     }
 
+    @AuditLog(type = OperationType.UPDATE)
     @PutMapping("/update")
     public RestBody updatePlan(@RequestBody @Valid UpdatePlanRequest request){
         log.info("updatePlan request:{}",request);

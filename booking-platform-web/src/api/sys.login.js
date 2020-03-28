@@ -28,7 +28,7 @@ export function LogOut (data) {
 
 export function Register (data) {
   return request({
-    url: '/register',
+    url: '/teacher/register',
     method: 'post',
     data
   })

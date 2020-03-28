@@ -19,7 +19,7 @@
         <div style="display:inline-flex;">
           <img style="float:left;" :src="`${$baseUrl}image/theme/${themeActiveSetting.name}/logo/icon-only.png`">
           <!-- <img v-else :src="`${$baseUrl}image/theme/d2/logo/icon-only.png`" style="margin-left: -2.5em;"> -->
-          <img style="float:left;margin-top:0.2em;width: 12em;height: 3.5em;" v-if="!asideCollapse" :src="`${$baseUrl}image/theme/d2/logo/dc.png`">
+          <!-- <img style="float:left;margin-top:0.2em;width: 12em;height: 3.5em;" v-if="!asideCollapse" :src="`${$baseUrl}image/theme/d2/logo/title.png`"> -->
         </div>
         </router-link>
         <div class="toggle-aside-btn" @click="handleToggleAside" flex-box="0">
@@ -30,7 +30,7 @@
         <div class="d2-header-right" flex-box="0">
           <!-- 如果你只想在开发环境显示这个按钮请添加 v-if="$env === 'development'" -->
           <d2-header-search @click="handleSearchClick"/>
-          <d2-header-base-url/>
+          <d2-header-base-url v-if="isAdmin > 0" />
           <d2-header-log/>
           <d2-header-fullscreen/>
           <d2-header-theme/>
@@ -101,6 +101,8 @@ import d2HeaderColor from './components/header-color'
 import d2HeaderBaseUrl from './components/header-base-url'
 import { mapState, mapGetters, mapActions } from 'vuex'
 import mixinSearch from './mixins/search'
+import util from '@/libs/util.js'
+
 export default {
   name: 'd2-layout-header-aside',
   mixins: [
@@ -122,11 +124,16 @@ export default {
   },
   data () {
     return {
+      isAdmin: 0,
       // [侧边栏宽度] 正常状态
       asideWidth: '200px',
       // [侧边栏宽度] 折叠状态
       asideWidthCollapse: '65px'
     }
+  },
+  created: function () {
+    console.log('hi...created layout ')
+    this.isAdmin = util.cookies.get('isAdmin')
   },
   computed: {
     ...mapState('d2admin', {

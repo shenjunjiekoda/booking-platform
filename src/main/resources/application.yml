@@ -26,6 +26,18 @@ spring:
       test-while-idle: true
       test-on-borrow: true
       test-on-return: false
+  mail:
+    enabled: false
+    host: smtp.qq.com
+    username:
+    password:
+    port: 587
+    protocol: smtp
+    default-encoding: UTF-8
+    properties:
+      mail.smtp.socketFactory.fallback: true
+      mail.smtp.starttls.enable: true
+    test-connection: true
   redis:
     host: 127.0.0.1
     password:

@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class GetPlanRequest {
+public class GetPlanRequest extends BaseRequest {
 
     private String courseName;
 

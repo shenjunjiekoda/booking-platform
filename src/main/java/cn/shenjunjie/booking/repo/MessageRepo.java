@@ -1,12 +1,17 @@
 package cn.shenjunjie.booking.repo;
 
 import cn.shenjunjie.booking.dao.MessageMapper;
+import cn.shenjunjie.booking.dto.request.GetMessageRequest;
 import cn.shenjunjie.booking.entity.Message;
 import cn.shenjunjie.booking.entity.MessageExample;
+import cn.shenjunjie.booking.utils.DateUtil;
 import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.Resource;
+import java.util.Date;
 
 /**
  * @author Junjie.Shen
@@ -19,33 +24,29 @@ public class MessageRepo {
     @Resource
     private MessageMapper messageMapper;
 
-    public Message selectById(Long id){
+    public Message selectById(Long id) {
         return messageMapper.selectByPrimaryKey(id);
     }
 
-    public Page<Message> selectByGetMessagesRequest() {
-        return selectByGetMessagesRequest(true);
+    public Page<Message> selectByRequestAndTo(GetMessageRequest request, Long to) {
+        return selectByRequestAndTo(request, to, true);
     }
 
-    public Page<Message> selectByGetMessagesRequest(boolean pageAble) {
-//        if (pageAble) {
-//            PageHelper.startPage(request.getPageCurrent(), request.getPageSize());
-//        }
+    public Page<Message> selectByRequestAndTo(GetMessageRequest request, Long to, boolean pageAble) {
+        if (pageAble) {
+            PageHelper.startPage(request.getPageCurrent(), request.getPageSize());
+        }
         MessageExample example = new MessageExample();
         MessageExample.Criteria criteria = example.createCriteria();
-//        if (!StringUtils.isEmpty(request.getName())) {
-//            criteria.andNameLike("%".concat(request.getName()).concat("%"));
-//        }
-//        if (!StringUtils.isEmpty(request.getIsbn())) {
-//            criteria.andIsbnLike("%".concat(request.getIsbn()).concat("%"));
-//        }
-//        if (!StringUtils.isEmpty(request.getAuthor())) {
-//            criteria.andAuthorLike("%".concat(request.getAuthor()).concat("%"));
-//        }
-//        if (!StringUtils.isEmpty(request.getPress())) {
-//            criteria.andPressLike("%".concat(request.getPress()).concat("%"));
-//        }
-        return (Page<Message>) messageMapper.selectByExample(example);
+        if (to != null) {
+            criteria.andToEqualTo(to);
+        }
+        if (StringUtils.isNotBlank(request.getCreatedAtFrom()) && StringUtils.isNotBlank(request.getCreatedAtTo())) {
+            Date atFrom = DateUtil.formatDateByString(request.getCreatedAtFrom());
+            Date atTo = DateUtil.formatDateByString(request.getCreatedAtTo());
+            criteria.andCreatedatBetween(atFrom,atTo);
+        }
+        return (Page<Message>) messageMapper.selectByExampleWithBLOBs(example);
     }
 
 
@@ -53,7 +54,22 @@ public class MessageRepo {
         messageMapper.insertSelective(record);
     }
 
-    public void deleteById(Long id){
+    public void updateByIdAndReaded(Long id, Integer readed) {
+        Message record = new Message();
+        record.setId(id);
+        record.setReaded(readed);
+        messageMapper.updateByPrimaryKeySelective(record);
+    }
+
+    public void deleteById(Long id) {
         messageMapper.deleteByPrimaryKey(id);
+    }
+
+    public Long countByReaded(Integer readed, Long to) {
+        MessageExample example = new MessageExample();
+        MessageExample.Criteria criteria = example.createCriteria();
+        criteria.andReadedEqualTo(readed);
+        criteria.andToEqualTo(to);
+        return messageMapper.countByExample(example);
     }
 }

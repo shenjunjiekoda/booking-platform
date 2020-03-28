@@ -3,7 +3,9 @@ package cn.shenjunjie.booking.utils;
 import cn.shenjunjie.booking.entity.*;
 import cn.shenjunjie.booking.entity.Class;
 import cn.shenjunjie.booking.repo.*;
+import cn.shenjunjie.booking.service.ConfigService;
 import org.apache.commons.collections.CollectionUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -27,6 +29,10 @@ public class MessageUtil {
     private PlanRepo planRepo;
     @Resource
     private BookRepo bookRepo;
+    @Resource
+    private ConfigService configService;
+    @Autowired(required = false)
+    private EmailUtil emailUtil;
 
 
     public void sendAllSubmittedMessageToAdmin(Long classId, Plan plan) {
@@ -40,7 +46,7 @@ public class MessageUtil {
         List<Teacher> admins = teacherRepo.selectAdmins();
         if (CollectionUtils.isNotEmpty(admins)) {
             admins.stream().map(Teacher::getId).forEach(to -> {
-                insertMessage(to, data);
+                generateMessage(to, data);
             });
         }
     }
@@ -64,24 +70,27 @@ public class MessageUtil {
     }
 
     public void sendMessage(Long from, Long to, String data) {
-        insertMessage(from, to, data);
+        generateMessage(from, to, data);
     }
 
     public void sendMessageToUser(Long to, String data) {
-        insertMessage(UserUtil.getCurrentUser().getId(), to, data);
+        generateMessage(UserUtil.getCurrentUser().getId(), to, data);
     }
 
-    public void insertMessage(Long to, String data) {
-        insertMessage(UserUtil.getCurrentUser().getId(), to, data);
+    public void generateMessage(Long to, String data) {
+        generateMessage(UserUtil.getCurrentUser().getId(), to, data);
     }
 
-    public void insertMessage(Long from, Long to, String data) {
+    public void generateMessage(Long from, Long to, String data) {
         Message record = new Message();
         record.setData(data);
         record.setFrom(from);
         record.setTo(to);
         record.setReaded(0);
         messageRepo.insertByRecord(record);
+        if(configService.getEmailConfig()==1){
+            emailUtil.sendMail(record);
+        }
     }
 
 }

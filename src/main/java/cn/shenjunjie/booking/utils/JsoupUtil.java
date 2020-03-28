@@ -31,7 +31,8 @@ public class JsoupUtil {
     @Value("${booking.result-limit}")
     private static final Integer SEARCH_RESULTS = 5;
 
-    private static final String SEARCH_PREFIX = "?key=";
+    private static final String PRIMARY_SEARCH_PREFIX = "?key=";
+    private static final String ISBN_SEARCH_PREFIX ="?medium=01&category_path=01.00.00.00.00.00&key4=";
     private static final String TITLE = "title";
     private static final String HREF = "href";
     private static final String NAME_SELECTOR = ".name";
@@ -50,7 +51,7 @@ public class JsoupUtil {
         } catch (UnsupportedEncodingException e) {
             throw new JsoupException(e.getMessage());
         }
-        String url = DANG_URL.concat(SEARCH_PREFIX).concat(encodeKeyword);
+        String url = DANG_URL.concat(PRIMARY_SEARCH_PREFIX).concat(encodeKeyword);
         Document document = null;
         try {
             document = Jsoup.connect(url).get();
@@ -71,6 +72,72 @@ public class JsoupUtil {
             String bookUrl = nameElement.children().attr(HREF);
             if (!StringUtils.isEmpty(bookUrl)) {
                 String isbn = getISBN(bookUrl);
+                record.setIsbn(isbn);
+            }
+            Element detailElement = detail.get(i);
+            if (detailElement.hasText()) {
+                String author = "";
+                try {
+                    author = detailElement.childNode(0).childNode(0).attr(TITLE).trim();
+                }catch (Exception e){
+                    continue;
+                }
+                if (detailElement.childNode(1).childNodes().size() > 0 && detailElement.childNode(1).childNode(0).toString().length() > 2) {
+                    String publishedAt = detailElement.childNode(1).childNode(0).toString().substring(2);
+                    if (Strings.isNotBlank(publishedAt)) {
+                        try {
+                            String[] ss = publishedAt.split("-");
+                            publishedAt = ss[0] + "." + ss[1].substring(1);
+                        } catch (Exception e) {
+                        }
+                        record.setPublishedAt(publishedAt);
+                    }
+                }
+                String press = detailElement.childNode(2).childNode(1).attr(TITLE);
+                record.setName(name);
+                record.setAuthor(author);
+                record.setPress(press);
+            }
+            log.info("book:{}", record);
+            if (recordIsRational(record)) {
+                books.add(record);
+            }
+        }
+        return books;
+    }
+    public static List<Book> getBookListByIsbn(String isbn) {
+        List<Book> books = Lists.newArrayList();
+        //encode the keyword
+        String encodeKeyword = null;
+        try {
+            encodeKeyword = URLEncoder.encode(isbn, GBK);
+        } catch (UnsupportedEncodingException e) {
+            throw new JsoupException(e.getMessage());
+        }
+        String url = DANG_URL.concat(ISBN_SEARCH_PREFIX).concat(encodeKeyword);
+        Document document = null;
+        try {
+            document = Jsoup.connect(url).get();
+        } catch (IOException e) {
+            throw new JsoupException(e.getMessage());
+        }
+        Elements names = document.select(NAME_SELECTOR);
+        Elements detail = document.select(DETAIL_SELECTOR);
+        int length = names.size();
+        length = length > SEARCH_RESULTS ? SEARCH_RESULTS : length;
+        for (int i = 0; i < length; i++) {
+            Book record = new Book();
+            Element nameElement = names.get(i);
+            String name = nameElement.children().attr(TITLE).trim();
+            if(name.indexOf(" ")!=-1){
+                name = name.substring(0,name.indexOf(" "));
+            }
+            String bookUrl = nameElement.children().attr(HREF);
+            if (!StringUtils.isEmpty(bookUrl)) {
+                String newIsbn = getISBN(bookUrl);
+                if(!isbn.equals(newIsbn)){
+                    continue;
+                }
                 record.setIsbn(isbn);
             }
             Element detailElement = detail.get(i);

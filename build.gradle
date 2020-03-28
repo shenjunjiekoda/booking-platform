@@ -50,17 +50,17 @@ dependencies {
     compile group: 'com.github.pagehelper', name: 'pagehelper-spring-boot-starter', version: '1.2.13'
     compile group: 'com.google.guava', name: 'guava', version: '28.2-jre'
     compile group: 'com.alibaba', name: 'fastjson', version: '1.2.62'
-//    compile group: 'com.spring4all', name: 'swagger-spring-boot-starter', version: '1.9.1.RELEASE'
     compile group: 'io.springfox', name: 'springfox-swagger2', version: '2.9.2'
     compile group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.9.2'
     compile group: 'org.jsoup', name: 'jsoup', version: '1.12.1'
     compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.9'
     compile group: 'redis.clients', name: 'jedis', version: '2.9.0'
-
-//    compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.5'
-
-//    compile group: 'org.crazycake', name: 'shiro-redis-spring-boot-starter', version: '3.2.1'
-    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-redis', version: '2.2.2.RELEASE'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-aop', version: '2.2.2.RELEASE'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-freemarker', version: '2.2.2.RELEASE'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-mail', version: '2.2.2.RELEASE'
+    testCompile('org.springframework.boot:spring-boot-starter-test:2.2.2.RELEASE')
+    testImplementation('org.springframework.boot:spring-boot-starter-test:2.2.2.RELEASE') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }
 }
