@@ -59,6 +59,8 @@ dependencies {
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-aop', version: '2.2.2.RELEASE'
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-freemarker', version: '2.2.2.RELEASE'
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-mail', version: '2.2.2.RELEASE'
+    compile group: 'org.crazycake', name: 'shiro-redis', version: '3.2.3'
+
     testCompile('org.springframework.boot:spring-boot-starter-test:2.2.2.RELEASE')
     testImplementation('org.springframework.boot:spring-boot-starter-test:2.2.2.RELEASE') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
