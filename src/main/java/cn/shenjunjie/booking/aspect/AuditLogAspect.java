@@ -2,6 +2,7 @@ package cn.shenjunjie.booking.aspect;
 
 import cn.shenjunjie.booking.annotation.AuditLog;
 import cn.shenjunjie.booking.common.rest.RestBody;
+import cn.shenjunjie.booking.dto.request.AddPlanBookRequest;
 import cn.shenjunjie.booking.dto.request.AddPlanRequest;
 import cn.shenjunjie.booking.dto.request.UpdatePlanBookRequest;
 import cn.shenjunjie.booking.dto.request.UpdatePlanRequest;
@@ -59,6 +60,9 @@ public class AuditLogAspect {
             case "updatePlan":
                 resolveUpdatePlan(args, type, (RestBody) result);
                 break;
+            case "addJournal":
+                resolveAddJournal(args, type, (RestBody) result);
+                break;
             case "updatePlanBook":
                 resolveUpdatePlanBook(args, type, (RestBody) result);
                 break;
@@ -77,6 +81,18 @@ public class AuditLogAspect {
         AddPlanRequest request = (AddPlanRequest) args[0];
         String msg = "班级" + request.getClassName() + "添加了" + request.getTeacherName() + "老师的上课计划, 课程名：" + request.getCourseName();
         Class clazz = classRepo.selectByName(request.getClassName());
+        service.insert(clazz.getId(), type, msg);
+    }
+
+    public void resolveAddJournal(Object[] args, OperationType type, RestBody result) {
+        if (result.getErrorCode() != 0) {
+            return;
+        }
+        AddPlanBookRequest request = (AddPlanBookRequest) args[0];
+        Plan plan = planRepo.selectById(request.getPlanId());
+        Class clazz = classRepo.selectById(plan.getClassId());
+        Course course = courseRepo.selectById(plan.getCourseId());
+        String msg = "在班级" + clazz.getName() + "的上课计划：" + course.getName() + ", 添加了教辅：" + request.getBookName()+" 共" + request.getTeacherNum() + "本";
         service.insert(clazz.getId(), type, msg);
     }
 

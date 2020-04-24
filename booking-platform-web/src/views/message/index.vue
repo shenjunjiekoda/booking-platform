@@ -1,10 +1,11 @@
 <template>
   <d2-container>
-    <!-- <demo-page-header
+    <demo-page-header
       slot="header"
+      @reload="handleSubmit"
       @submit="handleSubmit"
       @changeStyle="handleChangeStyle"
-      ref="header"/> -->
+      ref="header"/>
     <demo-page-main
       :table-data="table"
       :table-style="tableStyle"
@@ -25,7 +26,7 @@ export default {
   // name 值和本页的 $route.name 一致才可以缓存页面
   name: 'message',
   components: {
-    // 'DemoPageHeader': () => import('./componnets/PageHeader'),
+    'DemoPageHeader': () => import('./componnets/PageHeader'),
     'DemoPageMain': () => import('./componnets/PageMain'),
     'DemoPageFooter': () => import('./componnets/PageFooter')
   },

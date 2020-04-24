@@ -44,17 +44,24 @@ public class PlanController {
         return planService.updatePlan(request);
     }
 
+    @AuditLog(type = OperationType.ADD)
+    @PostMapping("/book/add")
+    public RestBody addPlanBook(@RequestBody @Valid AddPlanBookRequest request){
+        log.info("addPlanBook request:{}",request);
+        return planService.addPlanBook(request);
+    }
+
     @GetMapping("/book/list")
     public RestBody listPlanBooks(@Valid GetPlanBookRequest request) {
         log.info("listPlanBooks request:{}",request);
         return RestBody.succeed(planService.getPlanBooks(request));
     }
 
-    @PostMapping("/book/add")
-    public RestBody addPlanBook(@RequestBody @Valid AddPlanBookRequest request) {
-        log.info("addPlanBook request:{}",request);
-        return planService.addPlanBook(request);
-    }
+//    @PostMapping("/book/add")
+//    public RestBody addPlanBook(@RequestBody @Valid AddPlanBookRequest request) {
+//        log.info("addPlanBook request:{}",request);
+//        return planService.addPlanBook(request);
+//    }
 
     @PutMapping("/book/update")
     public RestBody updatePlanBook(@RequestBody @Valid UpdatePlanBookRequest request){

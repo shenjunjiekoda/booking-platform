@@ -1,12 +1,14 @@
 package cn.shenjunjie.booking.controller;
 
 import cn.shenjunjie.booking.common.rest.RestBody;
+import cn.shenjunjie.booking.dto.request.AddMessageRequest;
 import cn.shenjunjie.booking.dto.request.GetMessageRequest;
 import cn.shenjunjie.booking.service.MessageService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.validation.Valid;
 
 /**
  * @author Junjie.Shen
@@ -34,11 +36,23 @@ public class MessageController {
         return RestBody.succeed();
     }
 
+    @PostMapping("/readall")
+    public RestBody readAll(){
+        log.debug("readall");
+        messageService.readAll();
+        return RestBody.succeed();
+    }
+
     @GetMapping("/unread/count")
     public RestBody getUnReadedCount() {
         log.debug("getUnReadedCount");
         return RestBody.succeed(messageService.getUnReadedCount());
     }
 
+    @PostMapping("/add")
+    public RestBody addMessage(@RequestBody @Valid AddMessageRequest request){
+        log.debug("addMessage request:{}", request);
+        return RestBody.succeed(messageService.addMsg(request));
+    }
 
 }

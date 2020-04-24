@@ -55,6 +55,17 @@ const frameIn = [
         }
       },
       {
+        path: 'newMsg',
+        name: 'newMsg',
+        component: () => import('@/views/newMsg'),
+        props: true,
+        meta: {
+          auth: true,
+          cache: true,
+          title: '写信'
+        }
+      },
+      {
         path: 'message',
         name: 'message',
         component: () => import('@/views/message'),

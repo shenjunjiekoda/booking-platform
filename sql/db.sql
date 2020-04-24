@@ -30,14 +30,14 @@ CREATE TABLE `institute` (
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 
 CREATE TABLE `message` (
-  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `from` bigint(20) NOT NULL,
-  `to` bigint(20) NOT NULL,
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `from` bigint NOT NULL,
+  `to` bigint NOT NULL,
   `data` text NOT NULL,
-  `readed` int(1) NOT NULL DEFAULT '0' COMMENT '0为未读，1为读过',
-  `createdAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `readed` int NOT NULL DEFAULT '0' COMMENT '0为未读，1为读过',
+  `createdAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
 
 CREATE TABLE `operationlog` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,

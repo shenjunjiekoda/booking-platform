@@ -1,5 +1,7 @@
 package cn.shenjunjie.booking.service;
 
+import cn.shenjunjie.booking.common.rest.RestBody;
+import cn.shenjunjie.booking.dto.request.AddMessageRequest;
 import cn.shenjunjie.booking.dto.request.GetMessageRequest;
 import cn.shenjunjie.booking.dto.response.GetMessagesResponse;
 import cn.shenjunjie.booking.dto.response.PageBean;
@@ -15,5 +17,10 @@ public interface MessageService {
 
     void read(Long id);
 
+    void readAll();
+
     Long getUnReadedCount();
+
+    RestBody addMsg(AddMessageRequest request);
+
 }

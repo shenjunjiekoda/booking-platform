@@ -128,6 +128,7 @@
 
       <el-table-column label="书名" align="center" :show-overflow-tooltip="true">
         <template slot-scope="scope">
+          <el-tag v-if="scope.row.stuNum === 0 && scope.row.teacherNum > 0">教辅</el-tag>
           {{ scope.row.bookName }}
         </template>
       </el-table-column>
@@ -140,16 +141,10 @@
 
       <el-table-column label="操作" align="center">
         <template slot-scope="row">
-          <el-popconfirm title="确定要提交吗" @onConfirm="submitPlanBook(row)">
-            <el-button v-if="row.row.status!=='submitted'" slot="reference" type="warning" :loading="submitLoading" size="mini" icon="el-icon-delete">提交</el-button>
-          </el-popconfirm>
+          <el-button v-if="row.row.status!=='submitted'" slot="reference" type="warning" :loading="submitLoading" size="mini" icon="el-icon-delete" @click="submitPlanBook(row)">提交</el-button>
           <el-button v-if="isAdmin>0 || row.row.status!=='submitted'" type="primary" size="mini" icon="el-icon-edit" @click="editPlanBook(row)">编辑</el-button>
-          <el-popconfirm title="确定要删除吗？该操作同时会删除对应的上课计划项" @onConfirm="deletePlanBook(row)">
-            <el-button v-if="row.row.status==='new'" slot="reference" type="danger" size="mini" icon="el-icon-delete">删除</el-button>
-          </el-popconfirm>
-          <el-tooltip class="item" effect="dark" content="中止正在等待发布或被阻塞的服务项，取消发布" placement="top">
-            <el-button v-if="row.row.status==='waiting' || row.row.status==='blocked'" type="danger" size="mini" icon="el-icon-delete" :loading="terminateLoading" @click="terminate(row)">中止等待</el-button>
-          </el-tooltip>
+          <el-button v-if="isAdmin>0 || row.row.status!=='submitted'" type="primary" size="mini" icon="el-icon-add" @click="addBook(row)">添加教辅</el-button>
+          <el-button v-if="row.row.status==='new'" slot="reference" type="danger" size="mini" icon="el-icon-delete"  @click="deletePlanBook(row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -207,7 +202,7 @@
           <el-input @input="change($event)" :disabled="rowStatus === 'submitted'" v-model="temp.teacherNum" />
         </el-form-item>
         <el-form-item label="学生书数" prop="stuNum" :rules="[{ required: dialogStatus === 'choose', message: '老师书数不能为空'}]">
-          <el-input @input="change($event)" :disabled="rowStatus === 'submitted'" v-model="temp.stuNum" />
+          <el-input  @input="change($event)" :disabled="rowStatus === 'submitted'" v-model="temp.stuNum" />
         </el-form-item>
         <el-form-item v-if="isAdmin > 0 && rowStatus !== 'new'" label="到货书数" prop="actualNum">
           <el-input @input="change($event)" v-model="temp.actualNum" />
@@ -217,7 +212,7 @@
         <el-button @click="dialogFormVisible = false">
           Cancel
         </el-button>
-        <el-button type="primary" @click="dialogStatus==='choose'?chooseData():updateData()">
+        <el-button type="primary" @click="dialogStatus==='journal'?addData():updateData()">
           Confirm
         </el-button>
       </div>
@@ -245,7 +240,7 @@
 import Vue from 'vue'
 import pluginExport from '@d2-projects/vue-table-export'
 import D2Crud from '@d2-projects/d2-crud'
-import { submitPlanBookInfo, addPlanService, updatePlanBookInfo, deletePlanBookInfo } from '@api/planbook'
+import { submitPlanBookInfo, addPlanBook, updatePlanBookInfo, deletePlanBookInfo } from '@api/planbook'
 import { getNameByClassId } from '@api/institute'
 import { getSpecificBookByKeyword } from '@api/book'
 import util from '@/libs/util.js'
@@ -292,6 +287,7 @@ export default {
       resumeLoading: false,
       newExecuteAt: undefined,
       rowId: 0,
+      rowPlanId: 0,
       resumeRowId: -1,
       rowStatus: '',
       sortLoading: false,
@@ -305,6 +301,7 @@ export default {
       textMap: {
         update: '编辑信息',
         choose: '填写信息',
+        journal: '添加书籍',
         type: ''
       },
       temp: {
@@ -482,6 +479,20 @@ export default {
         this.$refs['dataForm'].clearValidate()
       })
     },
+    addBook (row) {
+      console.log('addPlanBook modal:', row.row)
+      this.resetTemp()
+      console.log(row.row.planId)
+      this.rowPlanId = row.row.planId
+      this.rowStatus = row.row.status
+      this.dialogStatus = 'journal'
+      this.dialogFormVisible = true
+      this.temp.teacherNum = row.row.teacherNum
+      this.temp.stuNum = row.row.stuNum
+      this.$nextTick(() => {
+        this.$refs['dataForm'].clearValidate()
+      })
+    },
     deletePlanBook (row) {
       console.log('deletePlanBook id:', row.row.id)
       deletePlanBookInfo(row.row.id)
@@ -564,53 +575,49 @@ export default {
         }
       })
     },
-    chooseData () {
-      console.log('chooseData form....')
+    addData () {
+      console.log('addData journal Data form....')
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          console.log('planId:', this.planId)
-          const serviceList = this.temp.serviceId
-          if (serviceList === undefined) {
+          const bookList = this.temp.book
+          console.log('teacherNum:', this.temp.teacherNum)
+          var bookName = ''
+          console.log('bookList', bookList)
+          if (bookList === undefined || bookList.length === 0) {
             this.$message({
               title: '失败',
-              message: '必须选择一个服务名',
+              message: '请选择一本书',
+              type: 'error',
+              duration: 2000
+            })
+            return
+          } else if (bookList !== undefined && bookList.length === 1) {
+            bookName = bookList[0]
+          } else if (bookList.length === 2) {
+            bookName = bookList[1]
+          } else if (bookList !== undefined && bookList.length > 1) {
+            this.$message({
+              title: '失败',
+              message: '只能选择一本书',
               type: 'error',
               duration: 2000
             })
             return
           }
-          console.log('tag:', this.temp.tag)
-          console.log('type:', this.temp.type)
-          console.log('desc:', this.temp.desc)
-          console.log('count:', this.temp.count)
-          var serviceId = -1
-          if (serviceList !== undefined && serviceList.length === 1) {
-            serviceId = serviceList[0]
-          } else if (serviceList !== undefined && serviceList.length > 1) {
-            this.$message({
-              title: '失败',
-              message: '只能选择一个服务',
-              type: 'error',
-              duration: 2000
-            })
-            return
-          }
-          console.log('serviceId:', serviceId)
-          addPlanService({
-            planId: this.planId,
-            unit: this.temp.unit === undefined ? null : this.temp.unit,
-            tag: this.temp.tag === undefined ? null : this.temp.tag,
-            count: this.temp.count === undefined ? null : this.temp.count,
-            serviceId: serviceId === -1 ? null : serviceId,
-            desc: this.temp.desc === undefined ? null : this.temp.desc
+          console.log('bookName:', bookName)
+          addPlanBook({
+            planId: this.rowPlanId,
+            bookName: bookName === undefined ? null : bookName,
+            stuNum: this.temp.stuNum === undefined ? null : this.temp.stuNum,
+            teacherNum: this.temp.teacherNum === undefined ? null : this.temp.teacherNum
           }).then(res => {
-            console.log('addPlan res:', res)
+            console.log('addPlanBook res:', res)
             if (res.errorCode === 0) {
-              console.log('addPlan success!')
+              console.log('addPlanBook success!')
               this.dialogFormVisible = false
               this.$notify({
                 title: 'OK',
-                message: '添加成功',
+                message: '添加书籍成功',
                 type: 'success',
                 duration: 2000
               })

@@ -17,6 +17,8 @@ public class GetPlanBooksResponse {
 
     private Long id;
 
+    private Long planId;
+
     private Long classId;
 
     private String className;

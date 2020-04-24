@@ -8,6 +8,22 @@ export function getMessages (params) {
   })
 }
 
+export function addMsg (data) {
+  return request({
+    url: '/message/add',
+    method: 'post',
+    data
+  })
+}
+
+export function readAll (data) {
+  return request({
+    url: '/message/readall',
+    method: 'post',
+    data
+  })
+}
+
 export function read (id) {
   return request({
     url: '/message/read/' + id,

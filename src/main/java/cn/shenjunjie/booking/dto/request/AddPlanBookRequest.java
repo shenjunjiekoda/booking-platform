@@ -5,14 +5,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import java.util.List;
 
 /**
  * @author Junjie.Shen
  * @version 1.0
- * @date 2020/2/27 15:44
+ * @date 2020/4/23 22:07
  */
 @Data
 @NoArgsConstructor
@@ -22,11 +20,13 @@ public class AddPlanBookRequest {
     @NotNull(message = "计划号不能为空")
     private Long planId;
 
-    @NotEmpty(message = "书列表不能为空")
-    private List<Long> bookIds;
-
+    @NotNull(message = "老师订购数量不能为空")
     private Long teacherNum;
 
+    @NotNull(message = "学生订购数量不能为空")
     private Long stuNum;
+
+    @NotBlank(message = "书名不能为空")
+    private String bookName;
 
 }

@@ -5,9 +5,6 @@ import cn.shenjunjie.booking.dto.request.*;
 import cn.shenjunjie.booking.dto.response.GetPlanBooksResponse;
 import cn.shenjunjie.booking.dto.response.GetPlanResponse;
 import cn.shenjunjie.booking.dto.response.PageBean;
-import com.github.pagehelper.Page;
-
-import java.util.List;
 
 /**
  * @author Junjie.Shen
@@ -25,6 +22,8 @@ public interface PlanService {
     PageBean<GetPlanBooksResponse> getPlanBooks(GetPlanBookRequest request);
 
     RestBody addPlanBook(AddPlanBookRequest request);
+
+//    RestBody addPlanBook(AddPlanBookRequest request);
 
     RestBody updatePlanBook(UpdatePlanBookRequest request);
 

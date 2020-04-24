@@ -178,10 +178,10 @@ export default {
       // 表单
       formLogin: {
         teacherId: 'f16011727',
-        username: 'admin',
-        password: '123456',
-        repeat: 'admin',
-        email: 'junjie.shen@oriente.com',
+        username: '',
+        password: '',
+        repeat: '',
+        email: '',
         code: 'v9am'
       },
       // 表单校验

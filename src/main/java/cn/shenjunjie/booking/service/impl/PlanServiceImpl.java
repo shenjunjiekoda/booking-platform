@@ -96,7 +96,7 @@ public class PlanServiceImpl implements PlanService {
             });
         }
         long size = planResponseList.size();
-        if(!CollectionUtils.isEmpty(planResponseList)) {
+        if (!CollectionUtils.isEmpty(planResponseList)) {
             planResponseList.stream().skip(request.getPageSize() * (request.getPageCurrent() - 1))
                     .limit(request.getPageSize()).collect(Collectors.toList());
         }
@@ -130,7 +130,7 @@ public class PlanServiceImpl implements PlanService {
         Long classId = clazz.getId();
         planRepo.insertByTeacherIdAndCourseIdAndClassIdAndYearAndSemesterAndWeek(teacherId, courseId, classId, request.getYear(), request.getSemester(), request.getWeek());
         Plan plan = planRepo.selectByTeacherIdAndCourseIdAndClassIdAndYearAndSemesterAndWeek(teacherId, courseId, classId, request.getYear(), request.getSemester(), request.getWeek());
-        planBookRepo.insertByPlanIdAndStatus(plan.getId(),PlanBookStatus.NEW);
+        planBookRepo.insertByPlanIdAndStatus(plan.getId(), PlanBookStatus.NEW);
         return RestBody.succeed();
     }
 
@@ -162,52 +162,55 @@ public class PlanServiceImpl implements PlanService {
         Long classId = request.getClassId();
         String status = request.getStatus();
         List<GetPlanBooksResponse> planBooksResponseList = Lists.newArrayList();
-        List<Plan> plans = planRepo.selectByClassIdAndYearAndSemester(classId,request.getYear(),request.getSemester());
+        List<Plan> plans = planRepo.selectByClassIdAndYearAndSemester(classId, request.getYear(), request.getSemester());
         Class clazz = classRepo.selectById(classId);
         String className = clazz.getName();
         if (!CollectionUtils.isEmpty(plans)) {
             List<GetPlanBooksResponse> finalPlanBooksResponseList = planBooksResponseList;
             plans.forEach(plan -> {
-                PlanBook planBook = null;
+                List<PlanBook> planBooks = null;
                 if ("all".equals(status)) {
-                    planBook = planBookRepo.selectByPlanId(plan.getId());
+                    planBooks = planBookRepo.selectByPlanId(plan.getId());
                 } else {
-                    planBook = planBookRepo.selectByPlanIdAndStatus(plan.getId(), status);
+                    planBooks = planBookRepo.selectByPlanIdAndStatus(plan.getId(), status);
                 }
-                if (planBook != null) {
-                    GetPlanBooksResponse response = new GetPlanBooksResponse();
-                    response.setYear(plan.getYear());
-                    response.setSemester(plan.getSemester());
-                    Long teacherId = plan.getTeacherId();
-                    Teacher teacher = teacherRepo.selectById(teacherId);
-                    Long courseId = plan.getCourseId();
-                    Course course = courseRepo.selectById(courseId);
-                    String week = plan.getWeek();
-                    response.setId(planBook.getId());
-                    if (planBook.getBookId() != null) {
-                        response.setBookId(planBook.getBookId());
-                        Book book = bookRepo.selectById(planBook.getBookId());
-                        response.setBookName(book.getName());
-                        response.setIsbn(book.getIsbn());
-                        response.setEdition(book.getEdition());
-                        response.setPress(book.getPress());
-                        response.setPublishedAt(book.getPublishedAt());
-                        response.setAuthor(book.getAuthor());
-                    }
-                    response.setCourseId(courseId);
-                    response.setCourseName(course.getName());
-                    if (teacher != null) {
-                        response.setTeacherId(teacherId);
-                        response.setTeacherName(teacher.getName());
-                    }
-                    response.setStuNum(planBook.getStuNum());
-                    response.setTeacherNum(planBook.getTeacherNum());
-                    response.setActualNum(planBook.getActualNum());
-                    response.setClassId(classId);
-                    response.setClassName(className);
-                    response.setStatus(planBook.getStatus());
-                    response.setWeek(week);
-                    finalPlanBooksResponseList.add(response);
+                if (!CollectionUtils.isEmpty(planBooks)) {
+                    planBooks.forEach(planBook -> {
+                        GetPlanBooksResponse response = new GetPlanBooksResponse();
+                        response.setPlanId(plan.getId());
+                        response.setYear(plan.getYear());
+                        response.setSemester(plan.getSemester());
+                        Long teacherId = plan.getTeacherId();
+                        Teacher teacher = teacherRepo.selectById(teacherId);
+                        Long courseId = plan.getCourseId();
+                        Course course = courseRepo.selectById(courseId);
+                        String week = plan.getWeek();
+                        response.setId(planBook.getId());
+                        if (planBook.getBookId() != null) {
+                            response.setBookId(planBook.getBookId());
+                            Book book = bookRepo.selectById(planBook.getBookId());
+                            response.setBookName(book.getName());
+                            response.setIsbn(book.getIsbn());
+                            response.setEdition(book.getEdition());
+                            response.setPress(book.getPress());
+                            response.setPublishedAt(book.getPublishedAt());
+                            response.setAuthor(book.getAuthor());
+                        }
+                        response.setCourseId(courseId);
+                        response.setCourseName(course.getName());
+                        if (teacher != null) {
+                            response.setTeacherId(teacherId);
+                            response.setTeacherName(teacher.getName());
+                        }
+                        response.setStuNum(planBook.getStuNum());
+                        response.setTeacherNum(planBook.getTeacherNum());
+                        response.setActualNum(planBook.getActualNum());
+                        response.setClassId(classId);
+                        response.setClassName(className);
+                        response.setStatus(planBook.getStatus());
+                        response.setWeek(week);
+                        finalPlanBooksResponseList.add(response);
+                    });
                 }
             });
         }
@@ -219,15 +222,32 @@ public class PlanServiceImpl implements PlanService {
         return new PageBean<>(request, planBooksResponseList, size);
     }
 
-    @Transactional
     @Override
     public RestBody addPlanBook(AddPlanBookRequest request) {
-        request.getBookIds().forEach(bookId -> {
-            planBookRepo.insertByPlanIdAndBookIdAndStatusAndStuNumAndTeacherNum(request.getPlanId(), bookId, PlanBookStatus.NEW, request.getStuNum(), request.getTeacherNum());
-
-        });
+        if(request.getStuNum() <0 || request.getStuNum() <0){
+            return RestBody.fail("数量非法！");
+        }
+        if (request.getTeacherNum() <= 0 && request.getStuNum() <=0) {
+            return RestBody.fail("不需要定书！");
+        }
+        Book book = bookRepo.selectByName(request.getBookName());
+        if (book == null) {
+            return RestBody.fail("书不存在！");
+        }
+        planBookRepo.insertByPlanIdAndBookIdAndStatusAndStuNumAndTeacherNum(request.getPlanId(), book.getId(), PlanBookStatus.NEW,
+                request.getStuNum(), request.getTeacherNum());
         return RestBody.succeed();
     }
+
+//    @Transactional
+//    @Override
+//    public RestBody addPlanBook(AddPlanBookRequest request) {
+//        request.getBookIds().forEach(bookId -> {
+//            planBookRepo.insertByPlanIdAndBookIdAndStatusAndStuNumAndTeacherNum(request.getPlanId(), bookId, PlanBookStatus.NEW, request.getStuNum(), request.getTeacherNum());
+//
+//        });
+//        return RestBody.succeed();
+//    }
 
     @AuditLog(type = OperationType.UPDATE)
     @Transactional
@@ -240,8 +260,8 @@ public class PlanServiceImpl implements PlanService {
         if (sum > 0 && sum.intValue() <= request.getActualNum() && !planBook.getStatus().equals(PlanBookStatus.NEW.getStatus())) {
             planBookRepo.updateByIdAndStatus(request.getPlanBookId(), PlanBookStatus.IN_STOCK);
             messageUtil.sendInStockMessage(planBookRepo.selectById(request.getPlanBookId()));
-        } else if(sum > 0 && request.getActualNum() >= 0 && !planBook.getStatus().equals(PlanBookStatus.NEW.getStatus())){
-            planBookRepo.updateByIdAndStatus(request.getPlanBookId(),PlanBookStatus.NOT_IN_STOCK);
+        } else if (sum > 0 && request.getActualNum() >= 0 && !planBook.getStatus().equals(PlanBookStatus.NEW.getStatus())) {
+            planBookRepo.updateByIdAndStatus(request.getPlanBookId(), PlanBookStatus.NOT_IN_STOCK);
             messageUtil.sendNotInStockMessage(planBookRepo.selectById(request.getPlanBookId()));
         }
         return RestBody.succeed();
@@ -254,8 +274,11 @@ public class PlanServiceImpl implements PlanService {
         if (planBook == null) {
             return RestBody.fail("计划号不存在！");
         }
-        planRepo.deleteById(planBook.getPlanId());
         planBookRepo.deleteById(id);
+        List<PlanBook> planBooks = planBookRepo.selectByPlanId(planBook.getPlanId());
+        if(CollectionUtils.isEmpty(planBooks)){
+            planRepo.deleteById(planBook.getPlanId());
+        }
         return RestBody.succeed();
     }
 

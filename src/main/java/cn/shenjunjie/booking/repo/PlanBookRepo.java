@@ -2,6 +2,7 @@ package cn.shenjunjie.booking.repo;
 
 import cn.shenjunjie.booking.dao.PlanBookMapper;
 import cn.shenjunjie.booking.entity.PlanBook;
+import cn.shenjunjie.booking.entity.PlanBookExample;
 import cn.shenjunjie.booking.enums.PlanBookStatus;
 import org.springframework.stereotype.Repository;
 
@@ -23,12 +24,19 @@ public class PlanBookRepo {
         return planBookMapper.selectByPrimaryKey(id);
     }
 
-    public PlanBook selectByPlanId(Long planId) {
-        return planBookMapper.selectByPlanId(planId);
+    public List<PlanBook> selectByPlanId(Long planId) {
+        PlanBookExample example = new PlanBookExample();
+        PlanBookExample.Criteria criteria = example.createCriteria();
+        criteria.andPlanIdEqualTo(planId);
+        return planBookMapper.selectByExample(example);
     }
 
-    public PlanBook selectByPlanIdAndStatus(Long planId, String status) {
-        return planBookMapper.selectByPlanIdAndStatus(planId, status);
+    public List<PlanBook> selectByPlanIdAndStatus(Long planId, String status) {
+        PlanBookExample example = new PlanBookExample();
+        PlanBookExample.Criteria criteria = example.createCriteria();
+        criteria.andPlanIdEqualTo(planId);
+        criteria.andStatusEqualTo(status);
+        return planBookMapper.selectByExample(example);
     }
 
     public List<PlanBook> selectByClassIdAndStatus(Long classId, PlanBookStatus status) {

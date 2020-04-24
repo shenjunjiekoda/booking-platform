@@ -1,82 +1,13 @@
 <template>
-  <el-form
-    :inline="true"
-    :model="form"
-    :rules="rules"
-    ref="form"
-    size="mini"
-    style="margin-bottom: -18px;">
-    <template v-if="advanced">
-      <el-form-item label="班级" prop="classId">
-        <el-select
-          v-model="form.classId"
-          multiple
-          filterable
-          remote
-          reserve-keyword
-          placeholder="请输入班级"
-          :remote-method="remoteMethod"
-          :loading="searchLoading"
-          loading-text="正在加载班级">
-          <el-option
-            v-for="item in options"
-            :key="item.id"
-            :label="item.name"
-            :value="item.id">
-          </el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item label="时间" prop="courseName">
-        <el-date-picker
-          v-model="form.createdAt"
-          type="datetimerange"
-          value-format="yyyy-MM-dd HH:mm:ss"
-          format="yyyy-MM-dd HH:mm:ss"
-          :picker-options="pickerOptions"
-          range-separator="至"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-          align="right">
-        </el-date-picker>
-      </el-form-item>
-      <el-form-item>
-        <el-button
-          type="primary"
-          @click="handleFormSubmit">
-          <d2-icon name="search"/>
-          查询
-        </el-button>
-      </el-form-item>
-
-      <el-form-item>
-        <el-button
-          @click="handleFormReset">
-          <d2-icon name="refresh"/>
-          重置
-        </el-button>
-      </el-form-item>
-    </template>
-    <el-form-item>
-      <a @click="toggleAdvanced" style="margin-left: 8px">
-        {{ advanced ? '收起查询' : '展开查询' }}
-        <i v-if="advanced" class="el-icon-caret-top"></i>
-        <i v-else class="el-icon-caret-bottom"></i>
-        <!-- <el-icon :type="advanced ? 'up' : 'down'"/> -->
-      </a>
-    </el-form-item>
-    <el-form-item label=" ">
-      <el-switch
-        v-model="tableStyle"
-        @click="changeStyle"
-        active-text="table显示">
-      </el-switch>
-    </el-form-item>
-
-  </el-form>
+  <div>
+    <el-button type="info" icon="el-icon-refresh" @click="refreshPage">刷新</el-button>
+    <el-button type="success" icon="el-icon-plus" @click="newMessage">写信</el-button>
+    <el-button type="primary" icon="el-icon-check" @click="readAllMsgs">一键已读</el-button>
+  </div>
 </template>
 
 <script>
-import { getSubscribeClass } from '@/api/subscribe'
+import { readAll } from '@api/message'
 export default {
   data () {
     return {
@@ -259,62 +190,31 @@ export default {
     }
   },
   methods: {
-    remoteMethod (query) {
-      var _this = this
-      if (query !== '') {
-        console.log('name query:', query)
-        this.searchLoading = true
-        getSubscribeClass(query)
-          .then(res => {
-            _this.searchLoading = false
-            _this.list = res.data
-            console.log('name res:', res.data)
-            console.log('search name res:', _this.list)
-          })
-          .catch(err => {
-            _this.searchLoading = false
-            _this.$notify({
-              title: '服务数据请求异常'
-            })
-            console.log('err', err)
-          })
-        setTimeout(() => {
-          _this.searchLoading = false
-          console.log('timeout list', _this.list)
-          _this.options = _this.list.filter(item => {
-            console.log('filter item:', item)
-            return item.name
-              .indexOf(query.toLowerCase()) > -1
-          })
-        }, 1500)
-      } else {
-        this.options = []
-      }
-    },
-    changeStyle () {
-      console.log('cur table style:', this.tableStyle)
-    },
-    handleFormSubmit () {
-      this.$refs.form.validate((valid) => {
-        if (valid) {
-          this.$emit('submit', this.form)
-        } else {
-          this.$notify.error({
-            title: '错误',
-            message: '表单校验失败'
-          })
-          return false
-        }
+    newMessage () {
+      this.$router.push({
+        name: 'newMsg'
       })
     },
-    handleFormReset () {
-      this.$refs.form.resetFields()
-      this.$refs.form.createdAt = undefined
-      this.$refs.form.createdAtFrom = undefined
-      this.$refs.form.createdAtTo = undefined
+    refreshPage () {
+      this.$emit('reload', {})
     },
-    toggleAdvanced () {
-      this.advanced = !this.advanced
+    readAllMsgs () {
+      readAll().then(res => {
+        console.log('readAll res:', res.data)
+        if (res.errorCode === 0) {
+          this.$notify({
+            title: 'OK!'
+          })
+          this.$emit('reload', {})
+        } else {
+          this.$notify({
+            title: '异常信息: ' + res.msg
+          })
+        }
+      })
+        .catch(err => {
+          console.log('err', err)
+        })
     }
   }
 }

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.annotation.Resource;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author Junjie.Shen
@@ -71,5 +72,13 @@ public class MessageRepo {
         criteria.andReadedEqualTo(readed);
         criteria.andToEqualTo(to);
         return messageMapper.countByExample(example);
+    }
+
+    public List<Message> selectByToAndReaded(Long to, int readed) {
+        MessageExample example = new MessageExample();
+        MessageExample.Criteria criteria = example.createCriteria();
+        criteria.andToEqualTo(to);
+        criteria.andReadedEqualTo(readed);
+        return messageMapper.selectByExampleWithBLOBs(example);
     }
 }
