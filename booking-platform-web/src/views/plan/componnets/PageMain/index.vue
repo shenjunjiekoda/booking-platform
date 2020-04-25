@@ -47,6 +47,7 @@
       v-loading="loading"
       size="mini"
       stripe
+      border
       style="width: 100%;"
       :default-sort = "{prop: 'executeAt', order: 'descending'}"
       @selection-change="handleSelectionChange">
@@ -95,6 +96,12 @@
       <el-table-column label="老师" align="center">
         <template slot-scope="scope">
           {{scope.row.teacherName}}
+        </template>
+      </el-table-column>
+
+      <el-table-column label="周次" align="center">
+        <template slot-scope="scope">
+          {{scope.row.week}}
         </template>
       </el-table-column>
 
@@ -273,16 +280,12 @@ export default {
       dialogStatus: '',
       dialogFormVisible: false,
       downloadColumns: [
-        { label: 'No', prop: 'id' },
-        { label: '计划名', prop: 'name' },
-        { label: '类型', prop: 'type' },
-        { label: '创建人', prop: 'createdBy' },
-        { label: '负责人', prop: 'manager' },
-        { label: '创建时间', prop: 'createdAt' },
-        { label: '执行时间', prop: 'executeAt' },
-        { label: '描述', prop: 'desc' },
-        { label: '状态', prop: 'status' },
-        { label: '用时', prop: 'timeUsed' }
+        { label: '学年', prop: 'year' },
+        { label: '学期', prop: 'semester' },
+        { label: '课程', prop: 'courseName' },
+        { label: '班级', prop: 'className' },
+        { label: '老师', prop: 'teacherName' },
+        { label: '周次', prop: 'week' }
       ]
     }
   },
@@ -592,7 +595,7 @@ export default {
     },
     handleDownloadXlsx (data) {
       this.$export.excel({
-        title: '发布计划',
+        title: '上课计划',
         columns: this.downloadColumns,
         data: this.downloadDataTranslate(data)
       })

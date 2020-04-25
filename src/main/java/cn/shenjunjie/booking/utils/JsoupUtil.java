@@ -16,7 +16,9 @@ import org.springframework.util.StringUtils;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 /**
@@ -29,10 +31,14 @@ public class JsoupUtil {
     @Value("${booking.url}")
     private static final String DANG_URL = "http://search.dangdang.com/";
     @Value("${booking.result-limit}")
-    private static final Integer SEARCH_RESULTS = 5;
+    private static final Integer SEARCH_RESULTS = 10;
 
-    private static final String PRIMARY_SEARCH_PREFIX = "?key=";
-    private static final String ISBN_SEARCH_PREFIX ="?medium=01&category_path=01.00.00.00.00.00&key4=";
+    private static final String PRIMARY_SEARCH_PREFIX = "?medium=01";
+    private static final String FIX_SEARCH_PARAM = "&category_path=01.00.00.00.00.00";
+    private static final String BOOKNAME_PARAM = "&key1=";
+    private static final String AUTHOR_PARAM = "&key2=";
+    private static final String PRESS_PARAM = "&key3=";
+    private static final String ISBN_PARAM = "&key4=";
     private static final String TITLE = "title";
     private static final String HREF = "href";
     private static final String NAME_SELECTOR = ".name";
@@ -42,19 +48,30 @@ public class JsoupUtil {
     private static final String ISBN_PREFIX = "：";
     private static final String ISBN_PAGE_SELECTOR = ".key.clearfix";
 
-    public static List<Book> getBookList(String keyword) {
+    public static List<Book> getBookList(String bookNameKeyWord, String authorKeyWord, String pressKeyWord, String isbnKeyWord) {
+        if (StringUtils.isEmpty(bookNameKeyWord) && StringUtils.isEmpty(authorKeyWord) && StringUtils.isEmpty(pressKeyWord) && StringUtils.isEmpty(isbnKeyWord)) {
+            return null;
+        }
+        StringBuilder url = new StringBuilder();
+        url.append(DANG_URL).append(PRIMARY_SEARCH_PREFIX).append(FIX_SEARCH_PARAM);
         List<Book> books = Lists.newArrayList();
         //encode the keyword
-        String encodeKeyword = null;
-        try {
-            encodeKeyword = URLEncoder.encode(keyword, GBK);
-        } catch (UnsupportedEncodingException e) {
-            throw new JsoupException(e.getMessage());
+        if (!StringUtils.isEmpty(bookNameKeyWord)) {
+            url.append(BOOKNAME_PARAM).append(getEncodeString(bookNameKeyWord));
         }
-        String url = DANG_URL.concat(PRIMARY_SEARCH_PREFIX).concat(encodeKeyword);
+        if (!StringUtils.isEmpty(authorKeyWord)) {
+            url.append(AUTHOR_PARAM).append(getEncodeString(authorKeyWord));
+        }
+        if (!StringUtils.isEmpty(pressKeyWord)) {
+            url.append(PRESS_PARAM).append(getEncodeString(pressKeyWord));
+        }
+        if (!StringUtils.isEmpty(isbnKeyWord)) {
+            url.append(ISBN_PARAM).append(getEncodeString(isbnKeyWord));
+        }
+        log.debug("search url:{}",url.toString());
         Document document = null;
         try {
-            document = Jsoup.connect(url).get();
+            document = Jsoup.connect(url.toString()).get();
         } catch (IOException e) {
             throw new JsoupException(e.getMessage());
         }
@@ -66,8 +83,8 @@ public class JsoupUtil {
             Book record = new Book();
             Element nameElement = names.get(i);
             String name = nameElement.children().attr(TITLE).trim();
-            if(name.indexOf(" ")!=-1){
-                name = name.substring(0,name.indexOf(" "));
+            if (name.indexOf(" ") != -1) {
+                name = name.substring(0, name.indexOf(" "));
             }
             String bookUrl = nameElement.children().attr(HREF);
             if (!StringUtils.isEmpty(bookUrl)) {
@@ -79,7 +96,7 @@ public class JsoupUtil {
                 String author = "";
                 try {
                     author = detailElement.childNode(0).childNode(0).attr(TITLE).trim();
-                }catch (Exception e){
+                } catch (Exception e) {
                     continue;
                 }
                 if (detailElement.childNode(1).childNodes().size() > 0 && detailElement.childNode(1).childNode(0).toString().length() > 2) {
@@ -87,7 +104,7 @@ public class JsoupUtil {
                     if (Strings.isNotBlank(publishedAt)) {
                         try {
                             String[] ss = publishedAt.split("-");
-                            publishedAt = ss[0] + "." + ss[1].substring(1);
+                            publishedAt = ss[0] + "." + ss[1];
                         } catch (Exception e) {
                         }
                         record.setPublishedAt(publishedAt);
@@ -105,16 +122,24 @@ public class JsoupUtil {
         }
         return books;
     }
-    public static List<Book> getBookListByIsbn(String isbn) {
-        List<Book> books = Lists.newArrayList();
-        //encode the keyword
-        String encodeKeyword = null;
+
+    private static String getEncodeString(String s) {
+        String encodeBookName;
         try {
-            encodeKeyword = URLEncoder.encode(isbn, GBK);
+            encodeBookName = URLEncoder.encode(s, GBK);
         } catch (UnsupportedEncodingException e) {
             throw new JsoupException(e.getMessage());
         }
-        String url = DANG_URL.concat(ISBN_SEARCH_PREFIX).concat(encodeKeyword);
+        return encodeBookName;
+    }
+
+
+
+    public static List<Book> getBookListByIsbn(String isbn) {
+        List<Book> books = Lists.newArrayList();
+        //encode the keyword
+        String encodeKeyword = getEncodeString(isbn);
+        String url = DANG_URL.concat(PRIMARY_SEARCH_PREFIX).concat(FIX_SEARCH_PARAM).concat(ISBN_PARAM).concat(encodeKeyword);
         Document document = null;
         try {
             document = Jsoup.connect(url).get();
@@ -129,13 +154,13 @@ public class JsoupUtil {
             Book record = new Book();
             Element nameElement = names.get(i);
             String name = nameElement.children().attr(TITLE).trim();
-            if(name.indexOf(" ")!=-1){
-                name = name.substring(0,name.indexOf(" "));
+            if (name.indexOf(" ") != -1) {
+                name = name.substring(0, name.indexOf(" "));
             }
             String bookUrl = nameElement.children().attr(HREF);
             if (!StringUtils.isEmpty(bookUrl)) {
                 String newIsbn = getISBN(bookUrl);
-                if(!isbn.equals(newIsbn)){
+                if (!isbn.equals(newIsbn)) {
                     continue;
                 }
                 record.setIsbn(isbn);
@@ -145,7 +170,7 @@ public class JsoupUtil {
                 String author = "";
                 try {
                     author = detailElement.childNode(0).childNode(0).attr(TITLE).trim();
-                }catch (Exception e){
+                } catch (Exception e) {
                     continue;
                 }
                 if (detailElement.childNode(1).childNodes().size() > 0 && detailElement.childNode(1).childNode(0).toString().length() > 2) {

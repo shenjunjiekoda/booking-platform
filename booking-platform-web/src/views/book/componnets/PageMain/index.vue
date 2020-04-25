@@ -89,18 +89,26 @@
         </div>
         <div v-if="radio==='搜索'" style="margin:1em;">
           <div style="margin-left:5.5em;" v-if="!showResult">
-            <el-input v-model="temp.keyword" placeholder="请输入书名" @input="change($event)" />
+            <el-input v-model="temp.bookName" placeholder="请输入书名" @input="change($event)" />
+          </div>
+          <div style="margin-left:5.5em;margin-top:1em;" v-if="!showResult">
+            <el-input v-model="temp.author" placeholder="请输入作者" @input="change($event)" />
+          </div>
+          <div style="margin-left:5.5em;margin-top:1em;" v-if="!showResult">
+            <el-input v-model="temp.press" placeholder="请输入出版社" @input="change($event)" />
+          </div>
+          <div style="margin-left:5.5em;margin-top:1em;" v-if="!showResult">
+            <el-input v-model="temp.isbn" placeholder="请输入ISBN号" @input="change($event)" />
           </div>
           <div v-if="!showResult" style="margin:1em;margin-left:12.5em;margin-bottom:2em">
             <el-button type="primary" :loading="searchLoading" icon="el-icon-search" @click=search()>搜索</el-button>
           </div>
             <el-button type="primary" v-if="showResult" @click=returnSearch()>返回搜索</el-button>
-          <div>
+          <div style="width: 160%">
             <el-table
             v-if="showResult"
             :data="results"
-            border
-            style="width: 100%">
+            border>
             <el-table-column
               fixed
               prop="name"
@@ -111,6 +119,11 @@
               fixed
               prop="author"
               label="作者">
+            </el-table-column>
+            <el-table-column
+              fixed
+              prop="press"
+              label="出版社">
             </el-table-column>
             <el-table-column
               fixed="right"
@@ -321,11 +334,22 @@ export default {
       })
     },
     search () {
-      console.log('now keyword:', this.temp.keyword)
-      const keyword = this.temp.keyword
-      if (keyword !== undefined) {
+      const bookName = this.temp.bookName
+      const author = this.temp.author
+      const press = this.temp.press
+      const isbn = this.temp.isbn
+      console.log('now bookName:', bookName)
+      console.log('now author:', author)
+      console.log('now press:', press)
+      console.log('now isbn:', isbn)
+      if (bookName !== undefined || author !== undefined || press !== undefined || isbn !== undefined) {
         this.searchLoading = true
-        searchFromWeb(keyword)
+        searchFromWeb({
+          bookName: bookName,
+          author: author,
+          press: press,
+          isbn: isbn
+        })
           .then(res => {
             this.searchLoading = false
             this.results = res.data
@@ -345,6 +369,10 @@ export default {
             })
             console.log('err', err)
           })
+      } else {
+        this.$notify({
+          title: '请至少输入一项！'
+        })
       }
     },
     change (e) {

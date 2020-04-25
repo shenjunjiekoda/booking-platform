@@ -15,10 +15,11 @@ export function getSpecificBookByKeyword (keyword) {
   })
 }
 
-export function searchFromWeb (keyword) {
+export function searchFromWeb (params) {
   return request({
-    url: '/book/search/' + keyword,
-    method: 'get'
+    url: '/book/search',
+    method: 'get',
+    params
   })
 }
 

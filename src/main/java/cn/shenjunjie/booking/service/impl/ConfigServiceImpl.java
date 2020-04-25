@@ -66,15 +66,15 @@ public class ConfigServiceImpl implements ConfigService {
             for (int i = 1; i <= NUM; i++) {
                 int finalI = i;
                 scheduledExecutorService.schedule(
-                        () -> updateTask((long) finalI, finalI == NUM ? (NUM - finalI + 1) : count / NUM)
+                        () -> updateTask(finalI, finalI == NUM ? (NUM - finalI + 1) : count / NUM)
                         , 10, TimeUnit.SECONDS);
             }
         }
     }
 
-    public void updateTask(Long startId, Long range) {
+    public void updateTask(Integer index, Long range) {
         //分片执行更新操作
-        updateTask(startId, range, false);
+        updateTask((index - 1) * range + 1, range, false);
     }
 
     public void updateTask(Long startId, Long range, boolean check) {

@@ -3,6 +3,7 @@ package cn.shenjunjie.booking.service.impl;
 import cn.shenjunjie.booking.common.rest.RestBody;
 import cn.shenjunjie.booking.dto.request.AddBookRequest;
 import cn.shenjunjie.booking.dto.request.GetBooksRequest;
+import cn.shenjunjie.booking.dto.request.SearchBookRequest;
 import cn.shenjunjie.booking.dto.request.UpdateBookRequest;
 import cn.shenjunjie.booking.dto.response.GetBooksFromWebResponse;
 import cn.shenjunjie.booking.dto.response.GetBooksResponse;
@@ -51,12 +52,12 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public List<GetBooksFromWebResponse> getBooksFromWeb(String keyword) {
-        if (StringUtils.isEmpty(keyword) || StringUtils.isEmpty(keyword.trim())) {
+    public List<GetBooksFromWebResponse> getBooksFromWeb(SearchBookRequest request) {
+        if (StringUtils.isEmpty(request) || (StringUtils.isEmpty(request.getBookName()) && StringUtils.isEmpty(request.getAuthor())) && StringUtils.isEmpty(request.getPress()) && StringUtils.isEmpty(request.getIsbn())) {
             return null;
         }
         List<GetBooksFromWebResponse> booksFromWebResponseList = Lists.newArrayList();
-        List<Book> bookList = JsoupUtil.getBookList(keyword);
+        List<Book> bookList = JsoupUtil.getBookList(request.getBookName(), request.getAuthor(), request.getPress(), request.getIsbn());
         if (!CollectionUtils.isEmpty(bookList)) {
             bookList.forEach(book -> {
                 GetBooksFromWebResponse response = new GetBooksFromWebResponse();
@@ -71,7 +72,7 @@ public class BookServiceImpl implements BookService {
     @Override
     public List<Book> getSpecificBookByKeyword(String keyword) {
         List<Book> books = bookRepo.selectByPartName(keyword);
-        if(!CollectionUtils.isEmpty(books)){
+        if (!CollectionUtils.isEmpty(books)) {
             books = books.stream().limit(5).collect(Collectors.toList());
         }
         return books;

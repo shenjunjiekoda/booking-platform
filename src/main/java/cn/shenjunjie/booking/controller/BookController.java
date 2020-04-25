@@ -3,6 +3,7 @@ package cn.shenjunjie.booking.controller;
 import cn.shenjunjie.booking.common.rest.RestBody;
 import cn.shenjunjie.booking.dto.request.AddBookRequest;
 import cn.shenjunjie.booking.dto.request.GetBooksRequest;
+import cn.shenjunjie.booking.dto.request.SearchBookRequest;
 import cn.shenjunjie.booking.dto.request.UpdateBookRequest;
 import cn.shenjunjie.booking.service.BookService;
 import lombok.extern.slf4j.Slf4j;
@@ -33,10 +34,10 @@ public class BookController {
         return RestBody.succeed(bookService.getBooks(request));
     }
 
-    @GetMapping("/search/{keyword}")
-    public RestBody getBooksFromWeb(@PathVariable("keyword") String keyword) {
-        log.info("getBooksFromWeb keyword:{}", keyword);
-        return RestBody.succeed(bookService.getBooksFromWeb(keyword));
+    @GetMapping("/search")
+    public RestBody getBooksFromWeb(@Valid SearchBookRequest request) {
+        log.info("getBooksFromWeb request:{}", request);
+        return RestBody.succeed(bookService.getBooksFromWeb(request));
     }
 
     @GetMapping("/list/{keyword}")

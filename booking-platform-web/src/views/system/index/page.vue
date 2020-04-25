@@ -290,6 +290,7 @@ export default {
           const list = res.data
           if (list.length === 0) {
             this.subscribe = false
+            this.tableData = []
           } else if (list.length > 0) {
             this.subscribe = true
             var i = 0

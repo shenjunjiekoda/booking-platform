@@ -3,6 +3,7 @@ package cn.shenjunjie.booking.service;
 import cn.shenjunjie.booking.common.rest.RestBody;
 import cn.shenjunjie.booking.dto.request.AddBookRequest;
 import cn.shenjunjie.booking.dto.request.GetBooksRequest;
+import cn.shenjunjie.booking.dto.request.SearchBookRequest;
 import cn.shenjunjie.booking.dto.request.UpdateBookRequest;
 import cn.shenjunjie.booking.dto.response.GetBooksFromWebResponse;
 import cn.shenjunjie.booking.dto.response.GetBooksResponse;
@@ -27,10 +28,10 @@ public interface BookService {
 
     /**
      * 返回从网上搜集的书籍列表
-     * @param keyword
+     * @param request
      * @return
      */
-    List<GetBooksFromWebResponse> getBooksFromWeb(String keyword);
+    List<GetBooksFromWebResponse> getBooksFromWeb(SearchBookRequest request);
 
     /**
      * 通过关键词找到书名

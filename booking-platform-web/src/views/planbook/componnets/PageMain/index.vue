@@ -12,13 +12,13 @@
             @click="handleDownloadXlsx(currentTableData)">
             xlsx
           </el-button>
-          <el-button
+          <!-- <el-button
             type="primary"
             size="mini"
             :disabled="currentTableData.length === 0"
             @click="handleDownloadCsv(currentTableData)">
             csv
-          </el-button>
+          </el-button> -->
         </el-button-group>
       </el-form-item>
       <el-form-item :label="`已选数据下载 [ ${multipleSelection.length} ]`">
@@ -30,13 +30,13 @@
             @click="handleDownloadXlsx(multipleSelection)">
             xlsx
           </el-button>
-          <el-button
+          <!-- <el-button
             type="primary"
             size="mini"
             :disabled="multipleSelection.length === 0"
             @click="handleDownloadCsv(multipleSelection)">
             csv
-          </el-button>
+          </el-button> -->
         </el-button-group>
       </el-form-item>
     </el-form>
@@ -141,10 +141,10 @@
 
       <el-table-column label="操作" align="center">
         <template slot-scope="row">
-          <el-button v-if="row.row.status!=='submitted'" slot="reference" type="warning" :loading="submitLoading" size="mini" icon="el-icon-delete" @click="submitPlanBook(row)">提交</el-button>
-          <el-button v-if="isAdmin>0 || row.row.status!=='submitted'" type="primary" size="mini" icon="el-icon-edit" @click="editPlanBook(row)">编辑</el-button>
-          <el-button v-if="isAdmin>0 || row.row.status!=='submitted'" type="primary" size="mini" icon="el-icon-add" @click="addBook(row)">添加教辅</el-button>
-          <el-button v-if="row.row.status==='new'" slot="reference" type="danger" size="mini" icon="el-icon-delete"  @click="deletePlanBook(row)">删除</el-button>
+          <el-button :disabled="row.row.status==='submitted'" slot="reference" type="warning" :loading="submitLoading" size="mini" icon="el-icon-delete" @click="submitPlanBook(row)">提交</el-button>
+          <el-button :disabled="isAdmin<=0 && row.row.status==='submitted'" type="primary" size="mini" icon="el-icon-edit" @click="editPlanBook(row)">编辑</el-button>
+          <el-button :disabled="isAdmin<=0 && row.row.status==='submitted'" type="primary" size="mini" icon="el-icon-add" @click="addBook(row)">添加书</el-button>
+          <el-button :disabled="row.row.status!=='new'" slot="reference" type="danger" size="mini" icon="el-icon-delete"  @click="deletePlanBook(row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -644,11 +644,8 @@ export default {
       this.multipleSelection = val
     },
     downloadDataTranslate (data) {
-      return data.map(row => ({
-        ...row,
-        type: row.type ? '禁用' : '正常',
-        used: row.used ? '已使用' : '未使用'
-      }))
+      console.log('translate... row', data)
+      return data.filter(row => row.bookName !== null)
     },
     handleDownloadXlsx (data) {
       console.log('xlsx data:', data)
@@ -664,7 +661,7 @@ export default {
             if (res.errorCode === 0) {
               const date = new Date()
               const header = '学院:' + res.data + '   班级:' + data[0].className + '   ' + year + ' ' + semester +
-              '    日期:' + date.getMonth() + '月' + date.getDate() + '日'
+              '    日期:' + date.toLocaleDateString()
               console.log('header:', header)
               if (res.data !== null && res.data !== '') {
                 this.$export.excel({
@@ -692,7 +689,7 @@ export default {
     },
     handleDownloadCsv (data) {
       this.$export.csv({
-        title: '发布计划',
+        title: '上课计划',
         columns: this.downloadColumns,
         data: this.downloadDataTranslate(data)
       })
